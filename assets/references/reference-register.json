@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "references": [
+    {
+      "id": "approved_chat_visual_target",
+      "source_conversation_id": "6a9fb717-93e4-83ec-8fe6-135aecd0307a",
+      "source_title": "Plan 2D Platformer Animations",
+      "status": "original_files_unavailable",
+      "approval_scope": "Written aesthetic confirmed by user; exact source images not inspected during setup",
+      "purposes": ["lighting", "hero readability", "temple detail", "divine detail contrast"],
+      "local_files": [],
+      "recovery_task": "F01",
+      "note": "Do not populate with substitute renders or fabricated hashes."
+    }
+  ]
+}
