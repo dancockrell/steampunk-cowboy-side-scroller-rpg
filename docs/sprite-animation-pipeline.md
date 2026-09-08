@@ -2,6 +2,8 @@
 
 Codex's principal production responsibility is sprites, art direction and game plans. Claude and Grok are expected to take much of the implementation. This pipeline supplies consistent assets and explicit integration contracts to those implementers; it does not assume a shared chat history.
 
+The [first production batch](production/README.md) supplies concrete pose, emergence, Keeper and room briefs. Those briefs refine this pipeline; all dimensions and timing remain provisional until reviewed against originals and native behavior.
+
 ## Stages and deliverables
 
 1. **Recover and register references.** Import originals without alteration; record source, file hash, purpose, approval scope and rights status. Missing references remain missing.
