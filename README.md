@@ -1,4 +1,4 @@
-# Michael: Temples, Goddesses, and the Dead
+# Steampunk Cowboy Side Scroller RPG
 
 A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
@@ -49,4 +49,4 @@ From PowerShell, run `./tools/validate-foundation.ps1` to check the documentatio
 
 The first slice is the **Temple of the Clay Dead**, a proposed 20–30 minute route with Michael, one adult goddess, three enemy families, all four core tools and one divine intervention. No campaign, procedural temple generator, multiplayer, follower squad or general-purpose RPG framework is included.
 
-Repository visibility defaults to private. No open-source license is granted at setup. Asset provenance and permission must be recorded before admission; engine licensing does not license project art. See [asset policy](docs/asset-policy.md).
+The repository is public at [dancockrell/steampunk-cowboy-side-scroller-rpg](https://github.com/dancockrell/steampunk-cowboy-side-scroller-rpg), as requested by the owner. Public visibility does not grant an open-source license; project rights remain reserved pending a licensing decision. Asset provenance and permission must be recorded before admission; engine licensing does not license project art. See [asset policy](docs/asset-policy.md).
