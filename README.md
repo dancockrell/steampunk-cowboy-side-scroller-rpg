@@ -4,6 +4,8 @@ A side-view steampunk-cowboy platformer about entering beautiful, haunted temple
 
 **Stage: documentation-first production foundation.** This repository contains design contracts, art-production specifications, a Godot project shell, and a bounded implementation backlog. It contains no playable platformer, approved image files, or completed animation assets yet.
 
+**Working division:** Codex primarily handles sprites, visual continuity and game plans. Much of the gameplay code is intended for Claude and Grok through the bounded implementation briefs in this repository.
+
 ## The visual promise
 
 Rich pixel/painted temple environments; a chunky, instantly readable Michael; warm torchlight against deep shadow; ceramics, inscriptions, doors and burial pits becoming monsters; and higher-detail divine portraits and manifestations. The tone is sensual, strange, adventurous, beautiful, occasionally macabre and funny. The dead are characters, not interchangeable gore.

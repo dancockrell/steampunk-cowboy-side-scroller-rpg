@@ -2,6 +2,8 @@
 
 Read README.md, docs/decisions.md and the document for the assigned feature before editing. This is a documentation-first foundation. Implement gameplay only when the assigned task requests it; do not turn setup into a framework or full game.
 
+Codex primarily owns sprites and game plans. Much of the implementation will be handed to Claude and Grok. Prepare self-contained briefs, asset contracts and acceptance evidence; do not assume this task is the owner of all future code work.
+
 - Preserve the approved written art direction. Original images are pending recovery, not implicitly replaced or approved.
 - Keep simulation state separate from animation/VFX. Stable authored IDs own save and encounter truth.
 - Every romanceable character is an explicitly adult woman. Mutual interest, consent and personal agendas remain part of the design.
