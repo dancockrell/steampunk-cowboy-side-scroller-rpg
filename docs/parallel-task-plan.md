@@ -7,7 +7,7 @@ Each task aims for one independently reviewable result in roughly one working se
 | ID | Suggested owner | Task and owned paths | Dependencies | Acceptance evidence |
 | --- | --- | --- | --- | --- |
 | F01 | Codex + original files from user | Recover references, identity/scale sheet; assets/references/, art-source/michael/, docs/art-direction.md | None | Original hashes/provenance and explicit continuity decisions; no substituted approval |
-| F02 | Claude or Grok | Pin editor and world/portrait compositor; project.godot, scenes/bootstrap.tscn, scenes/ui/, docs/architecture/ | None | Exact version, clean import/run, native-scale and full-detail portrait test |
+| F02 | Claude or Grok | World/portrait compositor on pinned 4.4.1 editor; project.godot, scenes/bootstrap.tscn, scenes/ui/, docs/architecture/ | None | Clean import/run, native-scale and full-detail portrait test |
 | F03 | Claude | Movement/camera graybox; src/player/, scenes/actors/michael/, tests/player/ | F02 | Jump, ledge, landing, pause/focus and collision evidence; provisional tuning recorded |
 | F04 | Grok | Lasso prototype in isolated test scene; src/tools/lasso/, scenes/tests/lasso/, tests/lasso/ | F02; integrate after F03 | Miss, attach, pull, swing, release and destroyed-anchor cases |
 | F05 | Codex | First Michael movement/lasso pack; art-source/michael/, assets/sprites/michael/ | F01; final timing after F03/F04 | Contact sheet, loop, metadata, continuity and in-engine review |

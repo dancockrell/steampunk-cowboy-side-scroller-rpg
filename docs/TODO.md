@@ -3,7 +3,7 @@
 This checked-in backlog is the initial issue tracker. Items are not started and are not scheduled. Detailed ownership/dependencies live in [the task plan](parallel-task-plan.md).
 
 - [ ] F01 Recover original approved renders; register provenance and lock identity/scale.
-- [ ] F02 Pin and validate the Godot editor; demonstrate world/portrait compositor.
+- [ ] F02 Demonstrate world/portrait compositor on the pinned and shell-validated Godot 4.4.1 editor.
 - [ ] F03 Implement movement/camera graybox and input mapping.
 - [ ] F04 Implement isolated lasso spike, then integrate with movement.
 - [ ] F05 Produce and admit Michael movement/lasso action pack.

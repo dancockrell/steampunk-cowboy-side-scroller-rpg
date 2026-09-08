@@ -20,9 +20,9 @@ The user approved this direction in **Plan 2D Platformer Animations**. Its writt
 
 ## Engine and opening the project
 
-Godot 4, typed GDScript, native 2D scenes, Compatibility renderer. The [engine decision](docs/architecture/engine-decision.md) explains ownership, resolution and version policy. The shell uses a Godot 4.4 feature baseline; exact editor patch pinning is task F02 before gameplay implementation.
+Godot **4.4.1 stable**, typed GDScript, native 2D scenes, Compatibility renderer. The [engine decision](docs/architecture/engine-decision.md) explains ownership, resolution and version policy. This editor version passed the foundation import and headless bootstrap checks. F02 still owns the future world/portrait compositor.
 
-Import `project.godot` in Godot 4.4 or a later compatible Godot 4 editor. Press F6 on `scenes/bootstrap.tscn` or F5 for the configured main scene. It displays a foundation-status label only. No plugins, paid services, or export templates are required to inspect the shell.
+Import `project.godot` in Godot 4.4.1 stable. Press F6 on `scenes/bootstrap.tscn` or F5 for the configured main scene. It displays a foundation-status label only. No plugins, paid services, or export templates are required to inspect the shell. Editor upgrades require a recorded validation pass.
 
 From PowerShell, run `./tools/validate-foundation.ps1` to check the documentation foundation. With a selected Godot executable, run `godot --headless --path . --editor --quit` and `godot --headless --path . --quit-after 2`. Engine import/run and real visual QA are separate from the foundation check.
 
