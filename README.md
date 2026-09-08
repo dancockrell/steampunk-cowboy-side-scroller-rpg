@@ -19,6 +19,7 @@ The user approved this direction in **Plan 2D Platformer Animations**. Its writt
 3. Use the [weapon/tool kit](docs/weapon-tool-kit.md), [emergence system](docs/temple-emergence.md), [relationships](docs/relationships.md) and [data contracts](docs/data-contracts.md) for design and implementation.
 4. Build only the [vertical slice](docs/vertical-slice.md), following the [roadmap](docs/implementation-roadmap.md) and [short-task plan](docs/parallel-task-plan.md).
 5. Track work in [TODO](docs/TODO.md); check the [validation plan](tests/README.md) and [contribution rules](CONTRIBUTING.md) before handing off.
+6. For current art work, use the [first sprite-production batch](docs/production/README.md). Ready-to-use future briefs are available for [Claude's compositor](docs/handoffs/claude-f02-compositor.md) and [Grok's lasso test](docs/handoffs/grok-f04-lasso.md).
 
 ## Engine and opening the project
 

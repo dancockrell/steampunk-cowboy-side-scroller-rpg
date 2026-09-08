@@ -18,4 +18,6 @@ This checked-in backlog is the initial issue tracker. Items are not started and 
 
 ## Setup completion record
 
+Production planning pass: Michael run/lasso pose briefs, three emergence keyframe sequences, Keeper expression/manifestation brief, gallery staging and export handoff are in [docs/production](production/README.md). F02 and F04 have filled Claude/Grok briefs. These planning deliverables do not complete the corresponding art or implementation tasks.
+
 Foundation documentation and engine shell are committed separately from future production. Check docs/validation/foundation.md for checks actually performed. No TODO above becomes complete merely because a folder or a design document exists.

@@ -30,4 +30,6 @@ One integrator owns project.godot, common scene roots and shared contracts at a 
 
 ## Copyable implementation brief
 
+Filled first assignments: [F02 for Claude](handoffs/claude-f02-compositor.md) and [F04 for Grok](handoffs/grok-f04-lasso.md). They are documents for future dispatch; no external messages or implementation tasks have been started.
+
 Use docs/templates/implementation-brief.md. Fill in one TODO ID, base commit, exact owned paths, allowed shared interfaces, scope, examples, exclusions, test command and completion evidence. The implementer returns changed files, assumptions, tests run, screenshots/clips where behavior is visual, commit SHA and unresolved gaps. Codex can review resulting sprite behavior against the admitted art pack.
