@@ -1,0 +1,324 @@
+[
+  {
+    "file": "ceramic_sentinel_combat_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2203052,
+    "sha256": "408b8c3334d24ca1365fea9f69095c35bb25c80dabc00fceed0b8d4bbfd6e90d",
+    "corner_argb": "255,237,12,239",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "ceramic_sentinel_emergence_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2342706,
+    "sha256": "cc1df9c36f99853a21af907c5158b217803fd34dd09412cf603982b9ede62aea",
+    "corner_argb": "255,235,12,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "keeper_manifestation_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2444729,
+    "sha256": "f3f64e9375d8e6de14f9cc518cc05327e1002aef282be2174692c1edcc25129b",
+    "corner_argb": "255,237,10,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "keeper_portrait_expressions_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2407007,
+    "sha256": "30400e3b4bee7e25b6ad8d8ad61e74b7d6b16c2f1ced53a397406d7e8d716bd5",
+    "corner_argb": "255,241,11,239",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "keeper_portrait_expressions_v002.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2221857,
+    "sha256": "f1607aeb61ec51919a7c76486ee37e9890c4632e4a339c66188febcfa138ff31",
+    "corner_argb": "255,237,13,240",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_hurt_defeat_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1878678,
+    "sha256": "8e7eda5e733b9273f39d042cd9ba38b9e3ac868ca3e4240b33fa7cc9b8b5f387",
+    "corner_argb": "255,237,12,240",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_interact_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1942835,
+    "sha256": "7b059e7e92d3b19777771ab694bdb0c9ac413c3b1a65ebc47de513e765fcc14c",
+    "corner_argb": "255,237,12,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_jump_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1885983,
+    "sha256": "83a5d9939a82ec7395ee68aae19fbdba86256481d234455fdcd692edb1f88a6b",
+    "corner_argb": "255,239,11,241",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_lasso_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1898456,
+    "sha256": "67410faa417d7c14351a3f0b5de4d97098e4e728c2d361593fe9504e3afe3c88",
+    "corner_argb": "255,237,11,239",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_pistol_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1989731,
+    "sha256": "bcce8504294d9cb9f7759e15c3886933295055f9028f622361dfcca9587b1e72",
+    "corner_argb": "255,236,12,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_rifle_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1934940,
+    "sha256": "c79a84131673a67a3785606780e39e8453627c3a08090bc428a0d482584a81fc",
+    "corner_argb": "255,238,11,240",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_run_left_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1973060,
+    "sha256": "ba18605f86e5f0a3e49a54affcd1091d1c2b38bfe7972fa1d8e9bc75f39ac5bc",
+    "corner_argb": "255,237,11,241",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_run_left_v002.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1947943,
+    "sha256": "43dface4dec0e7c828db1e53030585ea9af075cf550597598fc9d2bda9c5de15",
+    "corner_argb": "255,234,14,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_run_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2064781,
+    "sha256": "d013ce20395f96958a2f74c431ee147035b8c5cb7a289df5f5bb64ab1846e99e",
+    "corner_argb": "0,17,10,4",
+    "pixel_format": "Format32bppArgb",
+    "alpha_counts": {
+      "transparent": 1034595,
+      "opaque": 0,
+      "partial": 538269
+    }
+  },
+  {
+    "file": "michael_run_right_v002.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1869988,
+    "sha256": "1c28f7c9a4a973c8937e09e6d227e9cf2d758d69ace02df9784b1a9933da78ab",
+    "corner_argb": "255,234,12,239",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "michael_shotgun_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2001290,
+    "sha256": "71621c1979e7e9bbc66332e7eff6a5d7ac5196d19d7d708acf7b9613a447c83a",
+    "corner_argb": "255,235,11,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "mural_guard_combat_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2051700,
+    "sha256": "f62480c2ac3400d5606a22f9bfb4ab3cacbb038889aeaeb0eab834ef28dd10b9",
+    "corner_argb": "255,236,11,240",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "mural_guard_emergence_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2620010,
+    "sha256": "dff539655fa075bca09bfaa6bd490ed66abcafaf612c17fbc23b9b39e82aba35",
+    "corner_argb": "0,55,47,29",
+    "pixel_format": "Format32bppArgb",
+    "alpha_counts": {
+      "transparent": 776611,
+      "opaque": 0,
+      "partial": 796253
+    }
+  },
+  {
+    "file": "pit_assembler_emergence_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2136325,
+    "sha256": "80d33cfde7e4d92fa3b59f961c33c41c9267afbd3071309c4336b0337d76accc",
+    "corner_argb": "0,1,1,1",
+    "pixel_format": "Format32bppArgb",
+    "alpha_counts": {
+      "transparent": 942588,
+      "opaque": 0,
+      "partial": 630276
+    }
+  },
+  {
+    "file": "pit_crawler_combat_right_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1776036,
+    "sha256": "f43cd4b4d3b48911a4037ab2fea3d0c1bd04c774bd7e886c54afb289bb56c5c0",
+    "corner_argb": "255,238,11,238",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "temple_interactable_props_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1733156,
+    "sha256": "56bc22eb0ec1bbf59ae1978938c8583b0987f3860dc5de5705cdd86d0cb169aa",
+    "corner_argb": "255,243,10,240",
+    "pixel_format": "Format24bppRgb",
+    "alpha_counts": {
+      "transparent": 0,
+      "opaque": 1572864,
+      "partial": 0
+    }
+  },
+  {
+    "file": "temple_torch_flame_v001.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1750292,
+    "sha256": "b2c4625178b871d2bfddb833b55ef957daee349d5c52982ca414c8450ad664f1",
+    "corner_argb": "0,5,1,1",
+    "pixel_format": "Format32bppArgb",
+    "alpha_counts": {
+      "transparent": 1144730,
+      "opaque": 0,
+      "partial": 428134
+    }
+  },
+  {
+    "file": "weapon_impact_vfx_v001.png",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 846384,
+    "sha256": "58de5f15988accfbcdc758baa9928d3bece7140988c86d34b84dfecf3c4b91f2",
+    "corner_argb": "0,0,0,0",
+    "pixel_format": "Format32bppArgb",
+    "alpha_counts": {
+      "transparent": 1120035,
+      "opaque": 240,
+      "partial": 452241
+    }
+  }
+]

@@ -1,7 +1,9 @@
 {
   "batch": "001",
+  "date": "2026-09-08",
   "status": "candidate",
   "tool": "built-in image_gen",
+  "count": 23,
   "records": [
     {
       "id": "michael_run_right_v001",
@@ -62,6 +64,84 @@
       "prompt": "Use case: stylized-concept. A polished HIGH-DETAIL PAINTED portrait expression sprite sheet for an adult goddess in a 2D steampunk cowboy magical-realist temple game. Exactly 3 columns by 2 rows = 6 equal isolated waist-up portraits of THE SAME adult woman, landscape 1536x1024. She is the Keeper of the Clay Dead: visibly mature woman around 35-45 in appearance, warm bronze skin, dignified strong face, dark wavy hair, ancient turquoise and gold funerary crown, elegant ivory and deep teal draped gown covering breasts, bronze collar with ceramic inlay. Beautiful sensual and commanding, agency and intelligence, not youthful/cute. Same camera three-quarter facing left, same crop, scale, lighting, face, costume and hair in all cells. Six distinct expressions: composed assessing neutral; subtly amused smile; controlled displeasure; earnest soft trust; surprised raised brow; warmly affectionate smile. No nudity, no sexual act. Rich painterly portrait detail with subtle pixel-textured edges deliberately higher detail than gameplay sprites. Perfect FLAT PURE MAGENTA #FF00FF background, no shadows, gradients, borders, text or extra objects. Generous separation and full crown within each cell.",
       "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-29703cee-ac3e-4002-889a-8f992d6d8a7b.png",
       "note": "Candidate original design based on written target, not recovered approved render."
+    },
+    {
+      "id": "michael_interact_right_v001",
+      "prompt": "Use case: stylized-concept. Actual polished 2D game sprite sheet, crisp chunky pixel art with rich warm material shading. Exactly 4 columns x 2 rows, eight equal 384x512 cells in 1536x1024 sheet. One complete isolated sprite per cell, all extremities INSIDE with 30-pixel clear margin, no overlap. STRICT FLAT SOLID MAGENTA #FF00FF background, no shading/gradients/shadows/floor, no words or grid. Match attached Michael identity EXACTLY: adult rugged face, goggles on brown hat, brown duster, ivory shirt, teal waistcoat, brass forearm, boots holster lasso. All right-facing side-view. Eight DISTINCT INTERACTION poses: relaxed idle; inspect small object in hand; lean forward reach to chest-height mechanism; brace pushing invisible heavy door with both hands; crouch reach down; stand pull lever with both hands; politely tip hat; confident hands-on-hips idle. No rendered door or lever except a short small handle if required. Stable costume scale and proportions.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-d33e667c-4473-4bdb-b6b3-1d36860d0f63.png",
+      "note": "Reference-derived candidate; alignment, extraction and motion review pending."
+    },
+    {
+      "id": "keeper_manifestation_v001",
+      "prompt": "Use case: stylized-concept. Actual polished 2D game sprite sheet, crisp chunky pixel art with rich warm material shading. Exactly 4 columns x 2 rows, eight equal 384x512 cells in 1536x1024 sheet. One complete isolated sprite per cell, all extremities INSIDE with 30-pixel clear margin, no overlap. STRICT FLAT SOLID MAGENTA #FF00FF background, no shading/gradients/shadows/floor, no words or grid. Use attached portrait sheet as the exact adult Keeper goddess identity, costume and palette reference, but now FULL BODY sprite forms. Same mature bronze-skinned woman, dark wavy hair, tall turquoise/gold funerary crown, ivory and teal draped elegant gown, bronze collar. Higher detail than cowboy while still coherent pixel/painted game sprites. Eight stages: small swirl of ivory-gold dust; faint full-body silhouette forming; solid dignified standing goddess; composed idle with one hand at waist; commanding gesture toward screen-left; both hands drawing golden spirals inward for Recall to Clay; form dissolving into ceramic-gold motes; final small fading dust curl. Keep effects separated per cell, no magenta in gown/effects, no nudity or sexual act. Generous crown margins.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-bb58e5a7-db9d-49ef-a95a-4f2d9ae0eac4.png",
+      "note": "Reference-derived candidate; alignment, extraction and motion review pending."
+    },
+    {
+      "id": "michael_hurt_defeat_right_v001",
+      "prompt": "Use case: stylized-concept. Actual polished 2D game sprite sheet, crisp chunky pixel art with rich warm material shading. Exactly 4 columns x 2 rows, eight equal 384x512 cells in 1536x1024 sheet. One complete isolated sprite per cell, all extremities INSIDE with 30-pixel clear margin, no overlap. STRICT FLAT SOLID MAGENTA #FF00FF background, no shading/gradients/shadows/floor, no words or grid. Match attached Michael identity EXACTLY. Eight sequential RIGHT-facing non-graphic HURT AND DEFEAT poses: startled flinch shoulders back; protect torso with arm; stagger backward; sink to one knee; brace hand to floor; slump sitting; unconscious reclined body; recovering push to one knee. NO blood, wounds, gore or death symbols. A full body in each cell, preserve hat and gear, strong readable silhouettes, body size constant. Fit horizontal fallen pose within cell by using generous source padding across ALL frames, never crop.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-5a875b02-dd70-4cc9-9230-e9654383b30f.png",
+      "note": "Reference-derived candidate; alignment, extraction and motion review pending."
+    },
+    {
+      "id": "temple_interactable_props_v001",
+      "prompt": "Use case: stylized-concept. Actual 2D game sprite atlas. Rich chunky readable pixel-art, crisp pixel clusters, ornate ancient temple materials in ochre bronze teal ivory, warm highlights and deep object shadows. Landscape 1536x1024. EXACT 4-column by 2-row layout, 8 isolated subjects in equal cells, 30px clear margin in each, no overlap or clipping. Background absolutely uniform FLAT MAGENTA #FF00FF, no background texture/shading, ground shadow, text, labels, borders or grid. Eight distinct side-view TEMPLE PUZZLE PROP sprites suitable for Michael's temple room, consistent world scale and material vocabulary: 1 bronze lasso anchor ring bolted to stone bracket; 2 suspended decorated stone counterweight with rope eye; 3 bronze lever on low stone base in upright state; 4 same lever pulled down; 5 small ritual bronze bell on carved stand; 6 round cracked stone plug with bronze rim; 7 intact sacred terracotta urn with cream face and teal bands clearly different from monster jar; 8 same sacred urn broken into carefully readable pieces. Orthographic platformer side-view, crisp silhouette, no perspective ground plane. One prop per cell.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-9ebf2b99-9a96-4a28-b25f-2ef43b5c3c76.png",
+      "note": "Candidate; extraction, cell bounds and timing not runtime validated."
+    },
+    {
+      "id": "ceramic_sentinel_combat_v001",
+      "prompt": "Use case: stylized-concept. Actual 2D game sprite atlas. Rich chunky readable pixel-art, crisp pixel clusters, ornate ancient temple materials in ochre bronze teal ivory, warm highlights and deep object shadows. Landscape 1536x1024. EXACT 4-column by 2-row layout, 8 isolated subjects in equal cells, 30px clear margin in each, no overlap or clipping. Background absolutely uniform FLAT MAGENTA #FF00FF, no background texture/shading, ground shadow, text, labels, borders or grid. Attached image is reference ONLY for the fully emerged ceramic sentinel: same bone skull, terracotta armor with teal geometric bands and cream mask motifs, huge clay fists. Generate 8 FULLY EMERGED body poses, all side-view facing right: neutral battle stance; left-foot forward heavy walk; passing step; right-foot forward walk; fist drawn far back anticipation; forceful forward punch; stagger backwards with one small chip flying; kneeling fractured defeat pose. NO jars or emergence states in this new sheet. Maintain exact armor identity and scale.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-bbcfa592-3f4b-437f-ad1e-9e61775e20ef.png",
+      "note": "Candidate; extraction, cell bounds and timing not runtime validated."
+    },
+    {
+      "id": "weapon_impact_vfx_v001",
+      "prompt": "Use case: stylized-concept. Actual 2D PIXEL ART VFX sprite sheet for cowboy temple platformer. Exactly 4 columns x 4 rows =16 equal 256x256 cells in 1024x1024 image. Background perfectly flat pure MAGENTA #FF00FF, no gradients/shadow/texture/text/grid. Each effect fully contained with big clear margin. Row1 four sequential frames of small right-facing pistol muzzle flash: ignition, full star flame, shrinking sparks, faint smoke. Row2 four sequential frames of broad right-facing shotgun blast: compact ignition, wide fan flame, scattered embers, tiny fading smoke. Row3 four sequential frames of stone bullet impact: central bright spark, expanding stone chips, falling dust, fading dust. Row4 four sequential frames of clay break impact: fracture burst, outward terracotta shards, falling smaller chips, settled tiny pieces. Warm gold ivory amber flame, gray-brown dust, ochre clay. NO weapons, people, backgrounds or realistic lens effects. Chunky controlled pixel clusters, clear distinct progression, no magenta in effects.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-a9ed390e-6f70-4a4a-aaab-8ec157cd7fd7.png",
+      "note": "Candidate; extraction, cell bounds and timing not runtime validated."
+    },
+    {
+      "id": "michael_run_left_v001",
+      "prompt": "Actual 2D sprite sheet, crisp chunky premium pixel-art with warm rich shading and deep object shadows. Exactly 4 columns by 2 rows, eight isolated full-body poses inside equal cells, wide 1536x1024 image. Consistent sprite scale, large clear margins, no cropping or overlap. Background flat pure MAGENTA #FF00FF, absolutely no gradient, ground, shadows, words, borders or labels. Same exact Michael identity as reference, but ALL poses face SCREEN-LEFT in strict side view. Adult rugged face, brown hat and brass goggles, brown leather split duster, ivory shirt teal waistcoat brass forearm, boots and belt lasso/holster. Eight consecutive RUN cycle frames, read left-to-right top then bottom: contact/compress/pass/rise/opposite contact/compress/pass/rise. Distinct alternating feet and swinging arms. No held weapons. Maintain character identity and physical gear rather than inventing costume. Provisional left-facing asset for explicit handedness review.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-173d5647-fb30-4d34-b512-af1baf79c8d8.png",
+      "note": "Candidate sheet; frame alignment, alpha extraction and native motion pending."
+    },
+    {
+      "id": "mural_guard_combat_right_v001",
+      "prompt": "Actual 2D sprite sheet, crisp chunky premium pixel-art with warm rich shading and deep object shadows. Exactly 4 columns by 2 rows, eight isolated full-body poses inside equal cells, wide 1536x1024 image. Consistent sprite scale, large clear margins, no cropping or overlap. Background flat pure MAGENTA #FF00FF, absolutely no gradient, ground, shadows, words, borders or labels. Use reference ONLY as identity of the fully emerged guard: gold funerary skull mask, red feather crest, teal/gold ceremonial tunic and spear. NO WALLS OR PANELS. All right-facing side-view. Eight poses: neutral guard; forward walk contact; passing step; alternate walk contact; spear drawn back with shoulders coiled; full long spear thrust; recoil/stagger; collapsed armor and pigment remains. Entire spear always within each cell, shrink ALL sprites consistently if needed. Painted magical-realist temple dead, no gore.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-809c55c4-dea2-4372-adf7-a497e6f8cdd0.png",
+      "note": "Candidate sheet; frame alignment, alpha extraction and native motion pending."
+    },
+    {
+      "id": "pit_crawler_combat_right_v001",
+      "prompt": "Actual 2D sprite sheet, crisp chunky premium pixel-art with warm rich shading and deep object shadows. Exactly 4 columns by 2 rows, eight isolated full-body poses inside equal cells, wide 1536x1024 image. Consistent sprite scale, large clear margins, no cropping or overlap. Background flat pure MAGENTA #FF00FF, absolutely no gradient, ground, shadows, words, borders or labels. Use attached burial monster reference as identity: ivory skull/ribcage, two powerful bone arms, bronze bracelets and torn teal funerary cloth. NOW draw ONLY the fully FREE crawling monster, NO PIT, NO STONE ARCH, NO DOOR. The creature has NO LEGS, just torso and two arms. Eight right-facing crawling/combat poses: low idle supported on both hands; left arm reach forward; pull torso along; right arm reach; raised-arm attack anticipation; forward arm slash/lunge; stagger with ribs twisted; collapsed dry bones and cloth. Eerie wry ancient dead, no blood/gore. Strong silhouette variety.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-36c0e817-f084-4cac-ad83-9b31b2abdbc1.png",
+      "note": "Candidate sheet; frame alignment, alpha extraction and native motion pending."
+    },
+    {
+      "id": "temple_torch_flame_v001",
+      "prompt": "Actual 2D sprite sheet, crisp chunky premium pixel-art with warm rich shading and deep object shadows. Exactly 4 columns by 2 rows, eight isolated full-body poses inside equal cells, wide 1536x1024 image. Consistent sprite scale, large clear margins, no cropping or overlap. Background flat pure MAGENTA #FF00FF, absolutely no gradient, ground, shadows, words, borders or labels. Eight consecutive frames of ONE wall-mounted ancient bronze torch burning warm amber and ivory fire. Same ornate bronze cup and small carved stone wall bracket stationary in every cell; only flame tongues, sparks and a little smoke move. First frame compact flame, second lean left, third rise tall, fourth split flame tips, fifth lean right, sixth curl left, seventh settle lower, eighth return toward first pose. Pixel-art fire, restrained warmth and readable clusters, no enormous glow cloud. No surrounding wall, room, people or ground plane. Perfectly flat magenta behind torch and flames, keep magenta out of subject.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-1685515d-be2f-469d-8c38-29447ac4720e.png",
+      "note": "Candidate sheet; frame alignment, alpha extraction and native motion pending."
+    },
+    {
+      "id": "michael_run_right_v002",
+      "prompt": "Edit supplied sprite sheet. Preserve ALL EIGHT Michael right-facing run poses, exact identity/costume, size, 4x2 placement and pixel artwork. REPLACE THE ENTIRE BROWN SHADED BACKGROUND with a perfectly uniform flat PURE MAGENTA #FF00FF color, including spaces inside legs and around coat, with clean hard sprite edges. No brown gradient, no shadow plane, no glow, no vignette. Do not redraw poses or add props. Actual game sprite sheet for color-key extraction.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-1c5ce214-243a-4796-95db-fb11958d670a.png",
+      "note": "Targeted correction candidate; supersession depends on visual inspection."
+    },
+    {
+      "id": "michael_run_left_v002",
+      "prompt": "Edit the supplied sprite sheet. Correct ONLY direction consistency: the TOP ROW already faces LEFT correctly; KEEP IT. The BOTTOM ROW currently faces right incorrectly. REDRAW all FOUR bottom-row poses facing LEFT so all EIGHT sprites in both rows face SCREEN-LEFT. Preserve distinct run leg positions, identity, costume, pixel style, scale, 4x2 grid, and perfectly flat magenta background. Do not change to a two-direction sheet. Every face/nose and leading movement points LEFT. Keep all sprite extremities inside their cells with padding. No words, borders or shadows.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-d1da50c1-f76b-4a32-a1f1-200324593f22.png",
+      "note": "Targeted correction candidate; supersession depends on visual inspection."
+    },
+    {
+      "id": "keeper_portrait_expressions_v002",
+      "prompt": "Edit supplied 3x2 portrait sheet. Preserve the same SIX facial expressions, adult goddess identity, exact costume and painterly style. Fix CROP: each crown must be ENTIRELY visible and not touch cell edge. Scale each portrait down modestly within its SAME 512x512 cell, keeping waist-up crop and adding at least 35px plain magenta space above full crown and 20px at sides. All six portraits have identical scale/camera. Uniform pure magenta background. No extra portraits, no words, borders or shadows. This is a padded production expression sheet, not a new character design.",
+      "source": "C:\\Users\\Admin\\.codex\\generated_images\\01a07fea-4f9a-77a3-809d-ca098a9bd98c\\exec-5d132980-2382-4209-86ea-32039e25c262.png",
+      "note": "Targeted correction candidate; supersession depends on visual inspection."
     }
   ]
 }
