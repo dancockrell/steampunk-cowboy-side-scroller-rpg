@@ -1,0 +1,16 @@
+# Godot generated data and local exports
+.godot/
+builds/
+exports/
+export_presets.cfg
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+# Local experiments and credentials are never source assets.
+work/
+*.pfx
+*.key
