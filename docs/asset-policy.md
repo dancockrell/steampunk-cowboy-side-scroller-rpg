@@ -1,6 +1,6 @@
 # Asset ownership and admission
 
-No image files were recovered or generated during foundation setup. Empty production directories indicate future work, not missing committed art. `assets/references/reference-register.json` tracks unavailable originals honestly.
+No image files were recovered or generated during the initial foundation setup. The subsequent user-authorized production batch now contains [23 candidate PNG sheets](../art-source/candidates/batch-001/README.md), with exact prompts, hashes, dimensions and review notes. Runtime asset directories remain empty because extraction/alignment and final admission are pending. `assets/references/reference-register.json` still tracks the unavailable original chat renders honestly.
 
 Codex primarily owns planning, identity continuity, sprite production and visual review. Claude/Grok receive admitted exports and integration contracts. Code acceptance and art acceptance are separate responsibilities.
 

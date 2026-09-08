@@ -1,6 +1,6 @@
 # First sprite-production batch
 
-This package turns the existing direction into action-sized commissions. It is planning work, not a completed sprite delivery. Original images are still required to finalize Michael and the Keeper's identities.
+This package turns the existing direction into action-sized commissions. Following the user's explicit request for many actual sprite sheets, [batch 001 now contains 23 PNG candidates](../../art-source/candidates/batch-001/README.md). Original images remain unavailable; Michael and the Keeper have provisional generated identities that need review. The briefs below guide further work and do not certify those candidates as final exports.
 
 Start with [Michael's pose brief](michael-pose-brief.md), then the [emergence keyframes](emergence-keyframes.md), [Keeper brief](keeper-art-brief.md), [room staging](first-room-staging.md) and [generation/export handoff](asset-handoff.md). These refine the main [pipeline](../sprite-animation-pipeline.md); they do not create a second art direction.
 
@@ -19,7 +19,7 @@ Finish and review each small batch before commissioning its expanded animation f
 
 ## What can proceed before image recovery
 
-Pose descriptions, state mapping, source-layer separation, filename/metadata conventions, gameplay event boundaries and implementation briefs. Graybox code may consume labeled stand-ins. Identity-specific prompts, final palette and runtime art admission wait for actual visual evidence.
+Pose descriptions, state mapping, source-layer separation, filename/metadata conventions, gameplay event boundaries and implementation briefs. The user has additionally authorized candidate generation now; provisional identity-specific prompts are recorded in batch 001. Graybox code may consume labeled stand-ins. Final palette/identity and runtime admission remain review steps.
 
 ## Current evidence
 

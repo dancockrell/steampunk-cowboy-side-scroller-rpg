@@ -2,7 +2,7 @@
 
 A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
-**Stage: documentation-first production foundation.** This repository contains design contracts, art-production specifications, a Godot project shell, and a bounded implementation backlog. It contains no playable platformer, approved image files, or completed animation assets yet.
+**Stage: production foundation with generated sprite candidates.** This repository contains design contracts, art-production specifications, a Godot project shell, a bounded implementation backlog and [23 generated sprite/portrait/prop/VFX sheets](art-source/candidates/batch-001/README.md). These candidates are saved and reviewable; there is no playable platformer or admitted final animation pack yet.
 
 **Working division:** Codex primarily handles sprites, visual continuity and game plans. Much of the gameplay code is intended for Claude and Grok through the bounded implementation briefs in this repository.
 

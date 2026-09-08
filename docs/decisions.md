@@ -12,11 +12,11 @@ Updated 2026-09-08. Accepted means explicit user direction; selected means a set
 | D06 | Provisional | 640×360 logical world, 32 px tiles, Michael in 64×96 cells; review against originals and in-engine motion |
 | D07 | Provisional | Temple of the Clay Dead, 20–30 minutes, three enemy families, one patron and one intervention |
 | D08 | Selected | Private repository; project rights reserved pending owner licensing decision |
-| D09 | Selected | Foundation only; no gameplay implementation or generated art during setup |
+| D09 | Historical setup scope; expanded for art | Initial foundation included no generated art. The user's later explicit request authorizes producing many candidate sprite sheets from the written direction; gameplay implementation remains outside this task. |
 | D10 | Provisional | Safe-checkpoint saves, fixed room bounds, authored lasso anchors, desktop first |
 
 ## Future decisions in order
 
 F01 resolves exact reference identity, costume, palette and composition. F02 confirms world/portrait compositing on the pinned editor. F03 tunes movement and camera. F04 validates lasso behavior. Later slice playtests tune firearm cadence, encounter timing and intervention cost. Document changed decisions here and revise their owning specification in the same change.
 
-Final art admission requires inspection against the recovered approved images; this does not prevent contract work or clearly labeled graybox prototypes. No additional approval is required for reversible setup choices within the current request.
+Final art admission requires visual review; unavailable originals remain an explicit reference gap. The user has now authorized candidate sprite production despite that gap. New designs are candidates, not retroactively approved originals. No additional approval is required to generate and save candidates within that request.
