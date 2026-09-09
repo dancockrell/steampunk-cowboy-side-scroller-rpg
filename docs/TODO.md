@@ -13,7 +13,7 @@ This checked-in backlog is the initial issue tracker. Items are not started and 
 - [ ] F09 Produce adult Keeper identity/portrait package and branching dialogue plan.
 - [x] F10 Atomic checkpoints, no duplicated rewards, and progression that survives refusing both the alliance and the romance.
 - [ ] F11 Produce mural/pit enemy packs and Recall to Clay presentation.
-- [ ] F12 Integrate the bounded temple route. ONE of the five authored beats exists (Gallery of Vessels); entry bridge, procession hall, burial works and the shrine/return gate are not built. Resettable puzzles and the alternate exit route are implemented but only exercised in that one room.
+- [ ] F12 Integrate the bounded temple route. TWO of five authored beats exist and connect (Gallery of Vessels, Procession Hall); entry bridge, burial works and the shrine/return gate are not built. Cross-room checkpoints, room-scoped exit facts and the room registry are implemented and tested, not just the single room they were first built for.
 - [ ] F13 Inspect actual motion/renders; complete accessibility, performance and soft-lock validation.
 
 ## What is implemented, and what that does not mean
