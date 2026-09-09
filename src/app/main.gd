@@ -17,6 +17,9 @@ var services: Services
 var world_viewport: SubViewport
 var world_root: WorldRoot
 var ui_layer: CanvasLayer
+var hud: Hud
+var dialogue: Dialogue
+var pause_menu: PauseMenu
 
 var _booted: bool = false
 var _last_window_size: Vector2i = Vector2i.ZERO
@@ -51,6 +54,8 @@ func boot() -> void:
 		if starting_room != null:
 			world_root.load_room(starting_room)
 
+	_build_ui_layer()
+
 	var tree := get_tree()
 	if tree != null and tree.get_root() != null:
 		tree.get_root().size_changed.connect(_apply_integer_scale)
@@ -71,11 +76,6 @@ func _load_authored_content() -> void:
 ## enough: boot can run before the window has settled, and then the world stays
 ## stuck at the scale it was given, which is how it silently rendered at 1x in a
 ## 1280x720 window during a capture.
-func _process(_delta: float) -> void:
-	var window := get_window()
-	if window != null and window.size != _last_window_size:
-		_apply_integer_scale()
-
 func _apply_integer_scale() -> void:
 	var container := get_node_or_null(^"WorldViewportContainer") as SubViewportContainer
 	if container == null:
@@ -96,3 +96,61 @@ func _apply_integer_scale() -> void:
 func current_scale() -> int:
 	var container := get_node_or_null(^"WorldViewportContainer") as SubViewportContainer
 	return int(container.scale.x) if container != null else 1
+
+## Instantiates the UI layer and wires it to Services and WorldRoot by typed
+## reference. No autoload: every UI scene is handed exactly what it reads.
+##
+## Wiring is deferred rather than called right after add_child(). Measured
+## directly (not assumed): _ready() is NEVER synchronous with add_child, even
+## in a normal running engine — it fires later in the same frame, after the
+## calling function returns. Calling bind()/set_health() immediately writes
+## through the UI scene's @onready label references before _ready() has
+## assigned them, which is a null-property-assignment crash, not merely a
+## headless-testing artefact. call_deferred() runs after _ready in both a
+## running engine and the headless suite (verified: PROBE _ready fired before
+## a call_deferred'd method in a --quit-after run), so it is the fix rather
+## than a workaround.
+func _build_ui_layer() -> void:
+	if ui_layer == null:
+		return
+
+	hud = UiScenes.instantiate(UiScenes.HUD) as Hud
+	if hud != null:
+		ui_layer.add_child(hud)
+		hud.call_deferred("bind", services)
+		if world_root != null and world_root.player != null:
+			call_deferred("_wire_player_to_hud", world_root.player)
+
+	dialogue = UiScenes.instantiate(UiScenes.DIALOGUE) as Dialogue
+	if dialogue != null:
+		dialogue.visible = false
+		ui_layer.add_child(dialogue)
+		dialogue.call_deferred("bind", services)
+
+	pause_menu = UiScenes.instantiate(UiScenes.PAUSE_MENU) as PauseMenu
+	if pause_menu != null:
+		ui_layer.add_child(pause_menu)
+		pause_menu.call_deferred("bind", services)
+
+func _wire_player_to_hud(player: Player) -> void:
+	player.health_changed.connect(hud.set_health)
+	hud.set_health(player.health, services.tuning.max_health)
+	if player.tools == null:
+		return
+	player.tools.equipped_changed.connect(hud.set_equipped)
+	player.tools.ammo_changed.connect(hud.set_ammo)
+	hud.set_equipped(player.tools.machine.equipped_id)
+
+## Two unrelated per-frame duties share one _process rather than two, since
+## GDScript refuses a class with the method declared twice.
+func _process(_delta: float) -> void:
+	var window := get_window()
+	if window != null and window.size != _last_window_size:
+		_apply_integer_scale()
+
+	if hud == null or world_root == null:
+		return
+	var state := world_root.intervention_preview()
+	hud.set_intervention_available(bool(state.get("available", false)), String(state.get("reason", "")))
+	if Input.is_action_just_pressed(&"pause") and pause_menu != null:
+		pause_menu.toggle()

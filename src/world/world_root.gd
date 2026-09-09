@@ -19,11 +19,17 @@ var room: Room
 var player: Player
 var camera: Camera2D
 
+## The Keeper's intervention lives here because this is the node that can see
+## both the room's encounters and the player. Created when its first use exists,
+## as ADR 001 asks, rather than reserved in advance.
+var intervention: RecallToClay
+
 var _last_checkpoint: CheckpointSnapshot
 var _last_checkpoint_position: Vector2 = Vector2.ZERO
 
 func bind(p_services: Services) -> void:
 	services = p_services
+	intervention = RecallToClay.new(p_services.tuning, p_services.relationships)
 
 func load_room(scene: PackedScene) -> void:
 	if services == null:
@@ -70,9 +76,13 @@ func _ensure_camera() -> void:
 	add_child(camera)
 
 func _process(delta: float) -> void:
+	if intervention != null:
+		intervention.step(delta)
 	if player == null or camera == null or room == null:
 		return
 	room.update_target(player.global_position)
+	if Input.is_action_just_pressed(&"intervention"):
+		use_intervention()
 	var target := player.global_position
 	var bounds := room.camera_bounds()
 	if bounds.size != Vector2.ZERO:
@@ -97,6 +107,9 @@ func save_checkpoint(checkpoint_id: StringName, at_position: Vector2) -> void:
 		return
 	_last_checkpoint = snapshot
 	_last_checkpoint_position = at_position
+	# Charges refresh with ammunition, so the intervention cannot be spent for good.
+	if intervention != null:
+		intervention.reset_at_checkpoint()
 	checkpoint_reached.emit(checkpoint_id)
 
 ## Falling or defeat returns to the latest checkpoint snapshot.
@@ -121,3 +134,18 @@ func reload_checkpoint() -> bool:
 func _on_player_defeated() -> void:
 	player_defeated.emit()
 	reload_checkpoint()
+
+## What the HUD should show about the intervention right now, including the
+## reason when it is unavailable.
+func intervention_preview() -> Dictionary:
+	if intervention == null or room == null:
+		return {"available": false, "reason": RecallToClay.REASON_NO_ALLIANCE}
+	return intervention.preview(room.encounters())
+
+func use_intervention() -> bool:
+	if intervention == null or room == null:
+		return false
+	var state := intervention.preview(room.encounters())
+	if not bool(state.get("available", false)):
+		return false
+	return intervention.use(state["target"] as Encounter)

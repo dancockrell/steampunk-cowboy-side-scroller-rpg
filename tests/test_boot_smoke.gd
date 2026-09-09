@@ -18,6 +18,26 @@ func before_each() -> void:
 	# _ready does not fire in a --script run that never reaches a frame, so the
 	# explicit entry point is called directly. boot() is idempotent.
 	main.boot()
+	# The UI scenes' @onready lookups need NOTIFICATION_READY, which the same
+	# missing-frame problem also withholds. UiScenes-instantiated nodes are not
+	# yet in the tree when boot() builds them, so drive it by hand for each.
+	for ui_node: Node in [main.hud, main.dialogue, main.pause_menu]:
+		if ui_node != null:
+			ui_node.notification(Node.NOTIFICATION_READY)
+	# Main deliberately defers UI wiring past _ready with call_deferred (see
+	# main.gd for why: writing an @onready label before _ready assigns it is a
+	# real null-property crash, measured, not merely a headless artefact). This
+	# suite never processes a frame, so the deferred queue never flushes on its
+	# own. Run the same calls directly, mirroring boot()'s own idiom for the
+	# identical underlying problem.
+	if main.hud != null:
+		main.hud.bind(main.services)
+		if main.world_root != null and main.world_root.player != null:
+			main._wire_player_to_hud(main.world_root.player)
+	if main.dialogue != null:
+		main.dialogue.bind(main.services)
+	if main.pause_menu != null:
+		main.pause_menu.bind(main.services)
 
 func after_each() -> void:
 	if main != null and is_instance_valid(main):
@@ -131,3 +151,52 @@ func test_the_scale_tracks_the_window_rather_than_sticking_at_its_boot_value() -
 		float(window.size.y) / float(Main.WORLD_HEIGHT)))))
 	assert_eq(int(container.scale.x), expected,
 		"the scale is recomputed from the current window size, not left at its old value")
+
+func test_the_hud_dialogue_and_pause_menu_are_instantiated_in_the_ui_layer() -> void:
+	assert_not_null(main.hud, "the HUD is built at boot")
+	assert_not_null(main.dialogue, "so is the dialogue layer")
+	assert_not_null(main.pause_menu, "and the pause menu")
+	assert_true(main.ui_layer.is_ancestor_of(main.hud), "the HUD lives in the full-window UI layer")
+	assert_true(main.ui_layer.is_ancestor_of(main.dialogue), "so does dialogue")
+	assert_false(main.world_viewport.is_ancestor_of(main.hud),
+		"and none of them are inside the low-resolution world viewport")
+
+func test_the_hud_reflects_michaels_starting_health_and_equipped_tool() -> void:
+	var player := main.world_root.player
+	assert_true(main.hud.health_text().contains(str(player.health)) and main.hud.health_text().contains(str(main.services.tuning.max_health)),
+		"the HUD shows the player's real health at boot, not left at the 0/0 placeholder: %s" % main.hud.health_text())
+	assert_eq(main.hud.equipped(), &"lasso", "and shows the tool actually equipped")
+
+func test_the_intervention_preview_reaches_the_hud_every_frame() -> void:
+	main._process(1.0 / 60.0)
+	assert_true(main.hud.intervention_text().contains(RecallToClay.REASON_NO_ALLIANCE),
+		"before any alliance the HUD shows the specific reason, not a generic unavailable: %s" % main.hud.intervention_text())
+	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", true)
+	main._process(1.0 / 60.0)
+	assert_ne(main.hud.intervention_text(), RecallToClay.REASON_NO_ALLIANCE,
+		"and the reason changes once the alliance exists")
+
+func test_pressing_pause_opens_the_menu() -> void:
+	# Measured, not assumed: a node added via root.add_child() inside a
+	# --script run does NOT report is_inside_tree() == true until the
+	# SceneTree actually processes an iteration, even when a real tree exists
+	# and even outside this project's own harness (probed directly against a
+	# bare SceneTree). This suite runs entirely inside _initialize() and
+	# never iterates, so PauseMenu is never "in tree" from its own point of
+	# view here, and get_tree().paused cannot be exercised. That is the exact
+	# gap the UI lane already documented; it is not new.
+	assert_false(main.pause_menu.is_open(), "starts closed")
+	Input.action_press(&"pause")
+	main._process(1.0 / 60.0)
+	Input.action_release(&"pause")
+	assert_true(main.pause_menu.is_open(), "the pause action opens it")
+
+func test_a_menu_that_cannot_reach_the_tree_admits_it_rather_than_lying() -> void:
+	# The positive side of the gap above: PauseMenu.open() is documented to
+	# return whether the game was ACTUALLY stopped, not whether the menu
+	# appeared. In this exact harness state it is not inside a live-iterated
+	# tree, so it must say so rather than silently reporting success it did
+	# not earn. This is the real, valuable thing that state proves.
+	var stopped := main.pause_menu.open()
+	assert_true(main.pause_menu.is_open(), "the menu still shows itself")
+	assert_false(stopped, "but it never claims to have paused a tree it could not reach")
