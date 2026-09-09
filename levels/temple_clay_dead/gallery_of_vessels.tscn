@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -6,12 +6,33 @@
 [ext_resource type="Script" path="res://src/world/sacred_object.gd" id="4_sacred"]
 [ext_resource type="Script" path="res://src/world/checkpoint_shrine.gd" id="5_shrine"]
 [ext_resource type="Script" path="res://src/puzzles/mechanism_gate.gd" id="6_gate"]
+[ext_resource type="Script" path="res://src/emergence/encounter.gd" id="7_encounter"]
+[ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="8_source"]
+[ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="9_trigger"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
 
 [sub_resource type="RectangleShape2D" id="gate_box"]
 size = Vector2(32, 96)
+
+[sub_resource type="RectangleShape2D" id="trigger_box"]
+size = Vector2(48, 128)
+
+[sub_resource type="Resource" id="jar_source"]
+script = ExtResource("8_source")
+id = &"gallery_jar_01"
+room_id = &"gallery_of_vessels"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"gallery_jar_01_trigger"
+spawn_point_id = &"gallery_jar_01_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"gallery_jar_01_resolved"
 
 [node name="GalleryOfVessels" type="Node2D"]
 script = ExtResource("1_room")
@@ -168,3 +189,20 @@ shape = SubResource("gate_box")
 [node name="GrayboxGate" type="Polygon2D" parent="ExitGate"]
 color = Color(0.30, 0.26, 0.24, 1)
 polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="JarEncounter" type="Node2D" parent="."]
+position = Vector2(640, 288)
+script = ExtResource("7_encounter")
+source = SubResource("jar_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="JarEncounter"]
+
+[node name="JarTrigger" type="Area2D" parent="."]
+position = Vector2(560, 240)
+script = ExtResource("9_trigger")
+encounter_path = NodePath("../JarEncounter")
+
+[node name="TriggerShape" type="CollisionShape2D" parent="JarTrigger"]
+shape = SubResource("trigger_box")

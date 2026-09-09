@@ -161,3 +161,87 @@ func test_a_mechanism_can_always_be_reset() -> void:
 	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 0,
 		"a critical mechanism can always be returned to its start state")
 	assert_true(plug.interactive, "and it is interactive again")
+
+# --- the encounter placed in this room, end to end ------------------------
+
+func _encounter() -> Encounter:
+	return room.get_node_or_null(^"JarEncounter") as Encounter
+
+## Runs the encounter forward until it reaches ACTIVE or the budget expires.
+func _advance_to_active(limit_s: float = 12.0) -> bool:
+	var e := _encounter()
+	var elapsed := 0.0
+	while e.phase() != EncounterBook.Phase.ACTIVE and elapsed < limit_s:
+		e.advance(1.0 / 60.0)
+		elapsed += 1.0 / 60.0
+	return e.phase() == EncounterBook.Phase.ACTIVE
+
+func test_the_authored_jar_encounter_has_valid_content() -> void:
+	var e := _encounter()
+	assert_not_null(e, "the room contains the ceramic encounter")
+	assert_true(e.is_content_valid(),
+		"its authored source validates: %s" % str(e.content_errors()))
+	assert_eq(e.phase(), EncounterBook.Phase.DISGUISED, "and it starts as scenery")
+
+func test_the_jar_becomes_exactly_one_creature() -> void:
+	var e := _encounter()
+	# Well outside min_spawn_clearance_px of the jar at x=640: the encounter
+	# correctly refuses to spawn a hitbox on top of Michael.
+	e.set_target_position(Vector2(480, 288))
+	assert_true(e.trigger(), "the tell starts")
+	assert_true(_advance_to_active(), "and it reaches active, phase is %s"
+		% EncounterBook.PHASE_NAMES[e.phase()])
+	assert_eq(e.actor_count(), 1, "exactly one actor exists, counted as real children")
+	assert_not_null(e.actor(), "and the encounter owns it")
+
+func test_re_triggering_does_not_produce_a_second_creature() -> void:
+	var e := _encounter()
+	# Well outside min_spawn_clearance_px of the jar at x=640: the encounter
+	# correctly refuses to spawn a hitbox on top of Michael.
+	e.set_target_position(Vector2(480, 288))
+	e.trigger()
+	_advance_to_active()
+	e.trigger()
+	e.advance(1.0 / 60.0)
+	assert_eq(e.actor_count(), 1, "one encounter can never own two actors")
+
+func test_recall_actually_runs_end_to_end_and_the_keeper_notices() -> void:
+	var e := _encounter()
+	# Well outside min_spawn_clearance_px of the jar at x=640: the encounter
+	# correctly refuses to spawn a hitbox on top of Michael.
+	e.set_target_position(Vector2(480, 288))
+	e.trigger()
+	assert_true(_advance_to_active(), "the sentinel is up")
+
+	var recall := RecallToClay.new(main.services.tuning, main.services.relationships)
+	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", true)
+
+	var actor := e.actor()
+	assert_false(recall.is_encounter_eligible(e), "a fresh sentinel is not eligible")
+
+	# Wear it down the way the player would, through a real hit on its hurtbox.
+	while actor.health() > 1:
+		var hit := Hit.new(&"pistol", Verbs.PRECISION_HIT, Vector2.ZERO)
+		hit.damage = 1
+		actor.hurtbox().receive(hit)
+	assert_true(recall.is_encounter_eligible(e), "worn down, it can be sent home")
+
+	assert_true(recall.use(e), "the intervention runs")
+	assert_eq(e.result(), Encounter.RESULT_RECALLED,
+		"and being recalled is its own result, not the same as being killed")
+	assert_eq(e.actor_count(), 0, "the creature is gone")
+	assert_true(main.services.relationships.state(&"keeper_of_the_clay_dead")
+		.has_witnessed(&"sentinel_spared_by_recall"), "and she saw Michael choose it")
+
+func test_recall_spends_a_charge_only_when_it_succeeds() -> void:
+	var e := _encounter()
+	# Well outside min_spawn_clearance_px of the jar at x=640: the encounter
+	# correctly refuses to spawn a hitbox on top of Michael.
+	e.set_target_position(Vector2(480, 288))
+	e.trigger()
+	_advance_to_active()
+	var recall := RecallToClay.new(main.services.tuning, main.services.relationships)
+	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", true)
+	var before := recall.uses_remaining()
+	assert_false(recall.use(e), "a healthy sentinel refuses the recall")
+	assert_eq(recall.uses_remaining(), before, "and the refused attempt costs nothing")

@@ -15,6 +15,10 @@ signal room_completed(room_id: StringName)
 
 var services: Services
 
+## Live encounters in this room, so the room can keep them pointed at Michael
+## and hand the intervention its candidate list.
+var _encounters: Array[Encounter] = []
+
 func bind(p_services: Services) -> void:
 	services = p_services
 	for node: Node in _descendants(self):
@@ -32,6 +36,12 @@ func bind(p_services: Services) -> void:
 		var gate := node as MechanismGate
 		if gate != null:
 			gate.bind(services.puzzles)
+		var encounter := node as Encounter
+		if encounter != null:
+			# An encounter with invalid authored content binds inert rather than
+			# guessing; bind() reports why.
+			encounter.bind(services)
+			_encounters.append(encounter)
 
 ## Shrines need the WorldRoot to save through, which the room does not own.
 func bind_world(world: WorldRoot) -> void:
@@ -81,3 +91,12 @@ func report_exit_facts() -> void:
 		if sacred != null:
 			sacred.report_preserved()
 	room_completed.emit(room_id)
+
+func encounters() -> Array[Encounter]:
+	return _encounters.duplicate()
+
+## Encounters need to know where Michael is without holding a reference to him,
+## so the room forwards it. Called by WorldRoot each frame.
+func update_target(position_2d: Vector2) -> void:
+	for encounter: Encounter in _encounters:
+		encounter.set_target_position(position_2d)

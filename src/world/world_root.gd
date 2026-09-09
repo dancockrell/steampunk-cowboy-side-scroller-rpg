@@ -72,6 +72,7 @@ func _ensure_camera() -> void:
 func _process(delta: float) -> void:
 	if player == null or camera == null or room == null:
 		return
+	room.update_target(player.global_position)
 	var target := player.global_position
 	var bounds := room.camera_bounds()
 	if bounds.size != Vector2.ZERO:
