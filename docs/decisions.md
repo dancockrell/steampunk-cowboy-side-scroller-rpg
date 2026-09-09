@@ -1,6 +1,6 @@
 # Decision and approval ledger
 
-Updated 2026-09-08. Accepted means explicit user direction; selected means a setup decision; provisional means a design hypothesis to validate.
+Updated 2026-09-09. Accepted means explicit user direction; selected means a setup decision; provisional means a design hypothesis to validate.
 
 | ID | Status | Decision and consequence |
 | --- | --- | --- |
@@ -13,7 +13,13 @@ Updated 2026-09-08. Accepted means explicit user direction; selected means a set
 | D07 | Provisional | Temple of the Clay Dead, 20–30 minutes, three enemy families, one patron and one intervention |
 | D08 | Accepted, revised by user | Public repository, explicitly requested by owner; project rights reserved pending owner licensing decision. Supersedes initial private default. |
 | D09 | Historical setup scope; expanded for art | Initial foundation included no generated art. The user's later explicit request authorizes producing many candidate sprite sheets from the written direction; gameplay implementation remains outside this task. |
-| D10 | Provisional | Safe-checkpoint saves, fixed room bounds, authored lasso anchors, desktop first |
+| D10 | Provisional, implemented | Safe-checkpoint saves, fixed room bounds, authored lasso anchors, desktop first |
+| D11 | Selected | One ToolStateMachine covers all four tools rather than a firearm version and a lasso version. The rules that matter (ammo spent once, switching queues, hurt interrupts) are identical for every tool and two copies would drift. |
+| D12 | Selected | Movement, swing and tool timing are PURE solvers separate from their nodes, so the forgiveness and action-ownership rules can be asserted without a physics world. |
+| D13 | Selected | Scene state is a view of the persistence books, never the reverse. A restore re-reads the books and mechanisms re-apply; nothing is inferred from how the scene was left. |
+| D14 | Selected | Nodes get explicit idempotent boot()/build()/bind() entry points rather than relying on _ready, which does not fire in a headless --script run and hid two silent initialisation failures. |
+| D15 | Corrected | Relationship dimensions clamp to [-5, 10], not [0, 10]. A floor equal to the starting value silently discarded every negative judgment. |
+| D16 | Selected | Enum-valued authored fields are StringNames rather than engine enums, because an enum export cannot hold an unrecognised value and the "unknown rule fails validation" contract would be unenforceable. |
 
 ## Future decisions in order
 

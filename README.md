@@ -2,7 +2,11 @@
 
 A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
-**Stage: production foundation with generated sprite candidates.** This repository contains design contracts, art-production specifications, a Godot project shell, a bounded implementation backlog and [23 generated sprite/portrait/prop/VFX sheets](art-source/candidates/batch-001/README.md). These candidates are saved and reviewable; there is no playable platformer or admitted final animation pack yet.
+**Stage: playable graybox slice, no admitted art.** The simulation is implemented and tested: movement, all four tools, the three emergence families, checkpoints, the relationship arc and the Keeper's intervention. It runs, and you can walk Michael through the first room.
+
+Everything you see is a **placeholder**. Every character, creature and prop is a flat coloured polygon. The 23 sheets in [art-source/candidates/batch-001](art-source/candidates/batch-001/README.md) are saved candidates, not admitted runtime assets, and [F01 reference recovery](docs/decisions.md) is still open. No sprite has been admitted, nothing here is approved art, and the graybox is not a style.
+
+The [sprite prompt pack](docs/production/prompt-pack/README.md) contains 77 ready-to-use generation prompts for the art that would replace it.
 
 **Working division:** Codex primarily handles sprites, visual continuity and game plans. Much of the gameplay code is intended for Claude and Grok through the bounded implementation briefs in this repository.
 
@@ -27,23 +31,37 @@ Godot **4.4.1 stable**, typed GDScript, native 2D scenes, Compatibility renderer
 
 Import `project.godot` in Godot 4.4.1 stable. Press F6 on `scenes/bootstrap.tscn` or F5 for the configured main scene. It displays a foundation-status label only. No plugins, paid services, or export templates are required to inspect the shell. Editor upgrades require a recorded validation pass.
 
-From PowerShell, run `./tools/validate-foundation.ps1` to check the documentation foundation. With a selected Godot executable, run `godot --headless --path . --editor --quit` and `godot --headless --path . --quit-after 2`. Engine import/run and real visual QA are separate from the foundation check.
+## Running it and checking it
+
+```bash
+bash tools/gate.sh              # every check, one verdict
+bash tools/run-tests.sh         # the headless suite
+bash tools/check-gdscript.sh    # every .gd file parses
+```
+
+`tools/gate.sh` reports three states, not two: passed, failed, and NOT CHECKED. A run that skipped something never prints "all passed".
+
+To play it, open `project.godot` and press F5. `scenes/main.tscn` is the main scene. A/D move, Space jumps, 1-4 select lasso/pistol/shotgun/rifle, left mouse uses the equipped tool, right mouse releases the rope, E interacts, R reloads, Q calls the intervention, Escape pauses.
+
+**The checks in this repository have not been run on the pinned 4.4.1 editor**, which is not installed on the machine they were run on. They ran on 4.7.2 against a throwaway copy so the pin was not silently upgraded, and every run prints the version it used. See [gameplay checks](docs/validation/gameplay-checks.md) for what is verified, what each instrument cannot catch, and what is not checked at all.
+
+From PowerShell, `./tools/validate-foundation.ps1` still checks the documentation foundation.
 
 ## Repository map
 
 | Path | Ownership |
 | --- | --- |
-| `src/` | Future movement, tools, combat, emergence, relationships and save code |
-| `scenes/` | Bootstrap and future reusable actor, world and UI scenes |
+| `src/` | Movement, tools, emergence, puzzles, relationships, save and UI code |
+| `scenes/` | Main compositor, Michael, enemy grayboxes and UI scenes |
 | `levels/` | Hand-authored temple rooms and their composition |
-| `assets/sprites/` | Admitted Michael and enemy frame exports |
+| `assets/sprites/` | Admitted Michael and enemy frame exports (still empty: none admitted) |
 | `assets/backgrounds/`, `assets/tiles/` | Layered environment exports and reusable tiles |
 | `assets/vfx/`, `assets/ui/`, `assets/portraits/` | Effects, interface and divine art |
 | `assets/audio/` | Music, ambience, effects and voice |
 | `assets/references/` | Approved-reference provenance and recoverable originals |
 | `art-source/` | Editable source packs; excluded from Godot import |
 | `narrative/`, `data/` | Authored story, character and gameplay records |
-| `tools/`, `tests/`, `docs/` | Production utilities, validation contracts and design authority |
+| `tools/`, `tests/`, `docs/` | Check scripts, the headless suite and design authority |
 
 ## Scope and rights
 
