@@ -63,6 +63,7 @@ func _run_file(path: String) -> void:
 	if case == null:
 		_load_errors.append("%s: does not extend TestCase" % path)
 		return
+	case.tree = self
 
 	var method_names: Array[String] = []
 	for method: Dictionary in (script as GDScript).get_script_method_list():

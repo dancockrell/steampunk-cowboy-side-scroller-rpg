@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/app/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://src/world/world_root.gd" id="2_world"]
+[ext_resource type="PackedScene" path="res://scenes/actors/michael/player.tscn" id="3_player"]
+[ext_resource type="PackedScene" path="res://levels/temple_clay_dead/gallery_of_vessels.tscn" id="4_room"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+starting_room = ExtResource("4_room")
+
+[node name="WorldViewportContainer" type="SubViewportContainer" parent="."]
+stretch = false
+mouse_filter = 2
+
+[node name="WorldViewport" type="SubViewport" parent="WorldViewportContainer"]
+handle_input_locally = false
+size = Vector2i(640, 360)
+render_target_update_mode = 4
+
+[node name="WorldRoot" type="Node2D" parent="WorldViewportContainer/WorldViewport"]
+script = ExtResource("2_world")
+player_scene = ExtResource("3_player")
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 10

@@ -5,6 +5,10 @@ extends RefCounted
 ## Deliberately tiny: no plugin, no addon, no external dependency, so a clean
 ## checkout can run the suite with only the pinned editor.
 
+## Set by the runner. Integration tests need a real tree to add scenes to;
+## pure-logic tests ignore it.
+var tree: SceneTree = null
+
 var failures: PackedStringArray = PackedStringArray()
 var assertion_count: int = 0
 var _current: String = ""
