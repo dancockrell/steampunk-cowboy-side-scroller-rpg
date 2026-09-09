@@ -1,0 +1,153 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
+[ext_resource type="Script" path="res://src/world/tool_target.gd" id="3_target"]
+[ext_resource type="Script" path="res://src/world/checkpoint_shrine.gd" id="5_shrine"]
+[ext_resource type="Script" path="res://src/puzzles/mechanism_gate.gd" id="6_gate"]
+[ext_resource type="Script" path="res://src/emergence/encounter.gd" id="7_encounter"]
+[ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="8_source"]
+[ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="9_trigger"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="10_exit"]
+
+[sub_resource type="RectangleShape2D" id="small_box"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="gate_box"]
+size = Vector2(32, 96)
+
+[sub_resource type="RectangleShape2D" id="trigger_box"]
+size = Vector2(48, 128)
+
+[sub_resource type="RectangleShape2D" id="entry_box"]
+size = Vector2(32, 128)
+
+[sub_resource type="Resource" id="mural_source"]
+script = ExtResource("8_source")
+id = &"procession_mural_01"
+room_id = &"procession_hall"
+source_type = &"mural"
+family_id = &"painted_procession_guard"
+trigger_id = &"procession_mural_01_trigger"
+spawn_point_id = &"procession_mural_01_spawn"
+tell_clip_id = &"mural_guard_tell"
+emerge_clip_id = &"mural_guard_emerge"
+resolved_visual_id = &"mural_guard_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"procession_mural_01_resolved"
+
+[node name="ProcessionHall" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"procession_hall"
+default_spawn_id = &"spawn_from_gallery"
+bounds = Rect2(0, 0, 1408, 360)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+platforms = Array[Rect2]([Rect2(0, 288, 480, 72), Rect2(560, 288, 848, 72), Rect2(672, 208, 128, 16), Rect2(1024, 176, 160, 16)])
+backdrop = Array[Rect2]([Rect2(160, 96, 704, 192), Rect2(1312, 32, 96, 256)])
+
+[node name="spawn_from_gallery" type="Marker2D" parent="."]
+position = Vector2(64, 288)
+
+[node name="Shrine" type="Area2D" parent="."]
+position = Vector2(128, 256)
+script = ExtResource("5_shrine")
+checkpoint_id = &"shrine_procession_entry"
+
+[node name="ShrineShape" type="CollisionShape2D" parent="Shrine"]
+shape = SubResource("small_box")
+
+[node name="GrayboxShrine" type="Polygon2D" parent="Shrine"]
+color = Color(0.35, 0.62, 0.55, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="EntryFromGallery" type="Area2D" parent="."]
+position = Vector2(16, 240)
+collision_layer = 0
+collision_mask = 2
+
+[node name="EntryShape" type="CollisionShape2D" parent="EntryFromGallery"]
+shape = SubResource("entry_box")
+
+[node name="MuralEncounter" type="Node2D" parent="."]
+position = Vector2(720, 288)
+script = ExtResource("7_encounter")
+source = SubResource("mural_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="MuralEncounter"]
+
+[node name="MuralTrigger" type="Area2D" parent="."]
+position = Vector2(600, 240)
+script = ExtResource("9_trigger")
+encounter_path = NodePath("../MuralEncounter")
+
+[node name="TriggerShape" type="CollisionShape2D" parent="MuralTrigger"]
+shape = SubResource("trigger_box")
+
+[node name="FarCounterweight" type="Area2D" parent="."]
+position = Vector2(1184, 128)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"procession_far_counterweight"
+allowed_verbs = Array[StringName]([&"long_precision_hit"])
+puzzle_id = &"procession_far_counterweight"
+reward_event_id = &"procession_far_weight_released"
+
+[node name="FarShape" type="CollisionShape2D" parent="FarCounterweight"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="FarCounterweight"]
+
+[node name="GrayboxFar" type="Polygon2D" parent="FarCounterweight"]
+color = Color(0.70, 0.52, 0.66, 1)
+polygon = PackedVector2Array(-12, -12, 12, -12, 12, 12, -12, 12)
+
+[node name="SwingAnchor" type="Area2D" parent="."]
+position = Vector2(960, 112)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"procession_swing_anchor"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"procession_swing_anchor"
+
+[node name="AnchorShape" type="CollisionShape2D" parent="SwingAnchor"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchor"]
+
+[node name="GrayboxAnchor" type="Polygon2D" parent="SwingAnchor"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="ExitGate" type="StaticBody2D" parent="."]
+position = Vector2(1280, 240)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("6_gate")
+watched_puzzle_id = &"procession_far_counterweight"
+watched_field = &"uses"
+open_offset = Vector2(0, -112)
+
+[node name="GateShape" type="CollisionShape2D" parent="ExitGate"]
+shape = SubResource("gate_box")
+
+[node name="GrayboxGate" type="Polygon2D" parent="ExitGate"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="ExitToBurialWorks" type="Area2D" parent="."]
+position = Vector2(1392, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_exit")
+next_spawn_id = &"spawn_from_procession"
+required_gate_path = NodePath("../ExitGate")
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitToBurialWorks"]
+shape = SubResource("entry_box")

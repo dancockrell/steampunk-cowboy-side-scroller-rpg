@@ -330,3 +330,86 @@ func test_a_refused_alliance_still_leaves_judgment_playable() -> void:
 	npc._offer_next_scene()
 	assert_true(main.dialogue_player.is_playing(),
 		"she still has something to say to a man who turned her down")
+
+# --- room transitions and cross-room checkpoints ----------------------------
+
+func test_the_exit_refuses_until_the_gate_is_open() -> void:
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	assert_not_null(exit_door, "the exit to the next room exists")
+	assert_false(exit_door.is_open(), "and it starts closed, gated on the same puzzle as the ExitGate")
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	assert_true(exit_door.is_open(), "opening the gate opens the exit too, from the same fact")
+
+func test_walking_through_the_open_exit_loads_the_next_room() -> void:
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+	assert_eq(main.world_root.room.room_id, &"procession_hall", "the next room is now loaded")
+	assert_almost_eq(player.global_position.x, main.world_root.room.spawn_position(&"spawn_from_gallery").x, 1.0,
+		"and Michael lands at the authored spawn named by the exit, not the room's own default")
+
+func test_leaving_the_gallery_settles_the_urn_fact_even_without_calling_it_directly() -> void:
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"urn_preserved"),
+		"a real room transition reports exit facts on its own, not only when a test calls it")
+
+func test_the_exit_will_not_fire_twice() -> void:
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+	var first_room := main.world_root.room
+	exit_door._on_body_entered(player)
+	assert_eq(main.world_root.room, first_room, "a stale exit reference cannot load the room a second time")
+
+func test_a_checkpoint_saved_in_one_room_restores_that_room_even_after_moving_on() -> void:
+	main.world_root.save_checkpoint(&"gallery_checkpoint", player.global_position)
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+	assert_eq(main.world_root.room.room_id, &"procession_hall", "moved on to the next room")
+
+	assert_true(main.world_root.reload_checkpoint(), "the checkpoint from the OLD room reloads")
+	assert_eq(main.world_root.room.room_id, &"gallery_of_vessels",
+		"and it correctly loads the room the checkpoint actually belongs to, not wherever the player currently stands")
+
+func test_cross_room_restore_does_not_report_exit_facts_for_the_room_being_undone() -> void:
+	# report_exit_facts() always applies to the room being FREED, not the one
+	# restored into, and it unconditionally emits room_completed at the end
+	# even when there is nothing to report -- which is exactly what makes it a
+	# reliable observation point regardless of what either room's fixtures
+	# happen to contain.
+	main.world_root.save_checkpoint(&"gallery_checkpoint", player.global_position)
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+
+	var procession_room := main.world_root.room
+	# A plain int in this lambda would be captured BY VALUE, so incrementing it
+	# inside the callback would never escape the closure -- the array is the
+	# established workaround for that exact GDScript trap.
+	var completions: Array[StringName] = []
+	procession_room.room_completed.connect(func(id: StringName) -> void: completions.append(id))
+	main.world_root.reload_checkpoint()
+	assert_eq(completions.size(), 0,
+		"rolling back is undoing the room being left, not leaving it, so its exit facts are never reported")
+
+func test_forward_progression_does_report_exit_facts_for_the_room_being_left() -> void:
+	# The other half of the same contract, so a sabotage that stops reporting
+	# ANY exit facts (forward or rollback) cannot hide behind the test above.
+	var completions: Array[StringName] = []
+	room.room_completed.connect(func(id: StringName) -> void: completions.append(id))
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	var exit_door := room.get_node_or_null(^"ExitToProcessionHall") as RoomExit
+	exit_door._on_body_entered(player)
+	assert_eq(completions, [&"gallery_of_vessels"] as Array[StringName],
+		"walking forward through the exit DOES report the room being left")
+
+func test_an_unknown_checkpoint_room_is_refused_rather_than_restoring_the_wrong_scene() -> void:
+	main.world_root.save_checkpoint(&"gallery_checkpoint", player.global_position)
+	main.world_root._last_checkpoint.data["room_id"] = "a_room_this_world_root_never_loaded"
+	assert_false(main.world_root.reload_checkpoint(),
+		"a checkpoint naming a room this run never saw is refused, not guessed at")
+	assert_eq(main.world_root.room.room_id, &"gallery_of_vessels", "and the current room is left untouched")

@@ -38,11 +38,35 @@ func bind_dialogue(p_dialogue_player: DialoguePlayer) -> void:
 	if room != null:
 		room.bind_dialogue(dialogue_player)
 
-func load_room(scene: PackedScene) -> void:
-	if services == null:
-		push_error("WorldRoot.load_room called before bind()")
+## Every room this WorldRoot has ever loaded, so a checkpoint saved in an
+## earlier room can be found again by its room_id alone. A checkpoint stores
+## room_id, not a scene reference: without this, restoring a checkpoint from a
+## different room than the one currently loaded silently applied that room's
+## saved state to the WRONG room's live scene tree instead of loading the
+## right one first.
+var _known_rooms: Dictionary = {}
+
+## `spawn_id` picks which marker in the NEW room Michael lands at; empty means
+## that room's own default_spawn_id. A room transition settles the facts about
+## what the player did NOT do before it goes: preserving the sacred urn is its
+## own fact, not merely the absence of a report, and it has to be recorded
+## before the room that owns it is freed, not after.
+func load_room(scene: PackedScene, spawn_id: StringName = &"") -> void:
+	if not _swap_room(scene, true):
 		return
+	var target_spawn := spawn_id if spawn_id != &"" else room.default_spawn_id
+	room.place_player(player, target_spawn)
+	room_loaded.emit(room.room_id)
+
+## Shared by forward progression (load_room) and checkpoint rollback, which
+## must NOT report exit facts for a room being undone rather than left.
+func _swap_room(scene: PackedScene, report_exit_facts: bool) -> bool:
+	if services == null:
+		push_error("WorldRoot._swap_room called before bind()")
+		return false
 	if room != null:
+		if report_exit_facts:
+			room.report_exit_facts()
 		room.queue_free()
 		remove_child(room)
 		room = null
@@ -50,9 +74,10 @@ func load_room(scene: PackedScene) -> void:
 	var instance := scene.instantiate()
 	room = instance as Room
 	if room == null:
-		push_error("WorldRoot.load_room: scene root is not a Room")
+		push_error("WorldRoot._swap_room: scene root is not a Room")
 		instance.queue_free()
-		return
+		return false
+	_known_rooms[room.room_id] = scene
 	add_child(room)
 	room.bind(services)
 	room.bind_world(self)
@@ -61,8 +86,7 @@ func load_room(scene: PackedScene) -> void:
 
 	_ensure_player()
 	_ensure_camera()
-	room.place_player(player, room.default_spawn_id)
-	room_loaded.emit(room.room_id)
+	return true
 
 func _ensure_player() -> void:
 	if player != null and is_instance_valid(player):
@@ -130,6 +154,20 @@ func reload_checkpoint() -> bool:
 			room.place_player(player, room.default_spawn_id)
 			player.heal_to_full()
 		return false
+
+	var checkpoint_room_id := StringName(String(_last_checkpoint.data["room_id"]))
+	if room == null or room.room_id != checkpoint_room_id:
+		var scene: PackedScene = _known_rooms.get(checkpoint_room_id)
+		if scene == null:
+			push_error("WorldRoot.reload_checkpoint: no known scene for room '%s'; the checkpoint cannot be restored"
+				% checkpoint_room_id)
+			return false
+		# Rolling back, not leaving: the room being replaced does not get its
+		# exit facts reported, or a death mid-room would wrongly credit the
+		# player with having left it in whatever state it happened to be in.
+		if not _swap_room(scene, false):
+			return false
+
 	if not services.restore(_last_checkpoint):
 		return false
 	player.restore_to_safe_idle(_last_checkpoint_position)

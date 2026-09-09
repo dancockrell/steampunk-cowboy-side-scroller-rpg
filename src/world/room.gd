@@ -49,6 +49,9 @@ func bind_world(world: WorldRoot) -> void:
 		var shrine := node as CheckpointShrine
 		if shrine != null:
 			shrine.bind_world(world)
+		var exit_door := node as RoomExit
+		if exit_door != null:
+			exit_door.bind_world(world)
 
 func bind_dialogue(dialogue_player: DialoguePlayer) -> void:
 	for node: Node in _descendants(self):

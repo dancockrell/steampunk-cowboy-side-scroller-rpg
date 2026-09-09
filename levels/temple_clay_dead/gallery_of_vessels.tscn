@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="8_source"]
 [ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="9_trigger"]
 [ext_resource type="Script" path="res://src/world/heroine_npc.gd" id="10_heroine"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="11_exit"]
+[ext_resource type="PackedScene" path="res://levels/temple_clay_dead/procession_hall.tscn" id="12_next"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
@@ -19,6 +21,9 @@ size = Vector2(32, 96)
 
 [sub_resource type="RectangleShape2D" id="trigger_box"]
 size = Vector2(48, 128)
+
+[sub_resource type="RectangleShape2D" id="exit_box"]
+size = Vector2(32, 128)
 
 [sub_resource type="Resource" id="jar_source"]
 script = ExtResource("8_source")
@@ -221,3 +226,15 @@ shape = SubResource("small_box")
 [node name="GrayboxKeeper" type="Polygon2D" parent="KeeperNpc"]
 color = Color(0.62, 0.42, 0.68, 1)
 polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)
+
+[node name="ExitToProcessionHall" type="Area2D" parent="."]
+position = Vector2(1200, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("11_exit")
+next_room = ExtResource("12_next")
+next_spawn_id = &"spawn_from_gallery"
+required_gate_path = NodePath("../ExitGate")
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitToProcessionHall"]
+shape = SubResource("exit_box")
