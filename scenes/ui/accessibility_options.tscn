@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ui/accessibility_options.gd" id="1_access"]
+
+[node name="AccessibilityOptions" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_access")
+
+[node name="Scrim" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Plate" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 96.0
+offset_top = 64.0
+offset_right = -96.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Rows" type="VBoxContainer" parent="Plate"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleLabel" type="Label" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Accessibility"
+
+[node name="AimModeButton" type="Button" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Aiming"
+
+[node name="ReducedShakeCheck" type="CheckButton" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reduced screen shake"
+
+[node name="ReducedFlashesCheck" type="CheckButton" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reduced flashes"
+
+[node name="SubtitlesCheck" type="CheckButton" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Subtitles for sound cues"
+
+[node name="TextScaleValueLabel" type="Label" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Dialogue text size"
+
+[node name="TextScaleSlider" type="HSlider" parent="Plate/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="SampleLabel" type="Label" parent="Plate/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = "She looks at the shattered urn, then at you, and says nothing for a while."
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Plate/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="RestoreDefaultsButton" type="Button" parent="Plate/Rows/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restore defaults"
+
+[node name="CloseButton" type="Button" parent="Plate/Rows/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"

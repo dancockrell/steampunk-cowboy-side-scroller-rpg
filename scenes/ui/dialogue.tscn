@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ui/dialogue.gd" id="1_dialogue"]
+
+[node name="Dialogue" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dialogue")
+
+[node name="Scrim" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PortraitSeam" type="TextureRect" parent="."]
+unique_name_in_owner = true
+texture_filter = 4
+layout_mode = 1
+anchor_right = 0.45
+anchor_bottom = 1.0
+grow_horizontal = 1
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DialogueBox" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = -300.0
+offset_right = -48.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Rows" type="VBoxContainer" parent="DialogueBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SpeakerLabel" type="Label" parent="DialogueBox/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BodyLabel" type="Label" parent="DialogueBox/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 2
+
+[node name="CaptionLabel" type="Label" parent="DialogueBox/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="ChoiceList" type="VBoxContainer" parent="DialogueBox/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AdvanceHint" type="Label" parent="DialogueBox/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
