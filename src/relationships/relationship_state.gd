@@ -12,7 +12,11 @@ enum Romance { NONE, INTERESTED, COURTING, INTIMATE, PAUSED, ENDED }
 const ARC_NAMES: Array[String] = ["unknown", "encountered", "tested", "allied"]
 const ROMANCE_NAMES: Array[String] = ["none", "interested", "courting", "intimate", "paused", "ended"]
 
-const DIMENSION_MIN := 0
+## The floor is deliberately BELOW the starting value. With a floor of 0 and a
+## start of 0, every negative judgment clamped away to nothing and she could not
+## think worse of Michael than neutral, which contradicts the pillar that she is
+## allowed to disagree. Range is a small bounded tuning proposal, not approved.
+const DIMENSION_MIN := -5
 const DIMENSION_MAX := 10
 
 var heroine_id: StringName

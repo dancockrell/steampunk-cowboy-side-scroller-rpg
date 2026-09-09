@@ -1,0 +1,163 @@
+extends TestCase
+## End-to-end through the real scene: a hit lands on a real ToolTarget, the fact
+## reaches the PuzzleBook and the Keeper, a shrine captures a checkpoint, and a
+## rollback undoes what happened after it.
+##
+## The unit tests each prove one link. This proves the chain is actually
+## connected, which is the thing they cannot tell you.
+
+var main: Main
+var room: Room
+var player: Player
+
+func before_each() -> void:
+	var packed: PackedScene = load("res://scenes/main.tscn")
+	if packed == null or tree == null:
+		return
+	main = packed.instantiate() as Main
+	tree.root.add_child(main)
+	main.boot()
+	room = main.world_root.room
+	player = main.world_root.player
+
+func after_each() -> void:
+	if main != null and is_instance_valid(main):
+		tree.root.remove_child(main)
+		main.free()
+	main = null
+	room = null
+	player = null
+
+func _target(node_name: String) -> ToolTarget:
+	return room.get_node_or_null(NodePath(node_name)) as ToolTarget
+
+func _hit(tool_id: StringName, verb: StringName) -> Hit:
+	var h := Hit.new(tool_id, verb, Vector2.ZERO)
+	h.damage = 1
+	return h
+
+func test_the_right_tool_moves_a_mechanism_and_the_wrong_one_does_not() -> void:
+	var bell := _target("Bell")
+	assert_not_null(bell, "the bell exists in the room")
+	assert_false(bell.receive(_hit(&"shotgun", Verbs.FORCE_HIT)),
+		"a shotgun blast does not ring a bell that asks for a precise shot")
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 0,
+		"and the refused hit did not advance the mechanism")
+	assert_true(bell.receive(_hit(&"pistol", Verbs.PRECISION_HIT)), "the pistol rings it")
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 1,
+		"and the mechanism advanced exactly once")
+
+func test_a_refused_hit_explains_itself_rather_than_doing_nothing_silently() -> void:
+	var reasons: Array[String] = []
+	var bell := _target("Bell")
+	bell.hit_rejected.connect(func(_h: Hit, reason: String) -> void: reasons.append(reason))
+	bell.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	assert_eq(reasons.size(), 1, "the refusal is reported")
+	assert_eq(reasons[0], "wrong tool", "with a reason the feedback layer can show")
+
+func test_the_reward_event_fires_once_no_matter_how_often_the_target_is_used() -> void:
+	var bell := _target("Bell")
+	bell.receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	bell.receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	bell.receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 3,
+		"the mechanism counts every use")
+	assert_true(main.services.ledger.has_consumed(&"gallery_bell_rung"), "the reward was awarded")
+	assert_false(main.services.ledger.consume(&"gallery_bell_rung"),
+		"but only once, however many times the bell is rung")
+
+func test_destroying_the_sacred_urn_is_a_fact_the_keeper_witnesses() -> void:
+	var urn := _target("SacredUrn") as SacredObject
+	assert_not_null(urn, "the sacred urn exists")
+	var lines: Array[String] = []
+	main.services.relationships.judgment_delivered.connect(
+		func(_h: StringName, _e: StringName, line: String) -> void: lines.append(line))
+
+	assert_true(urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT)), "it can be destroyed")
+	assert_true(urn.is_destroyed(), "and it records that it was")
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"urn_destroyed"), "the Keeper saw it happen")
+	assert_true(state.trust < 0, "and it cost trust, because she objects to this specifically")
+	assert_eq(lines.size(), 1, "she says something about it, exactly once")
+
+func test_preserving_the_urn_is_its_own_fact_not_merely_the_absence_of_breaking_it() -> void:
+	room.report_exit_facts()
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"urn_preserved"),
+		"leaving it standing is a positive fact she can respond to")
+	assert_true(state.trust > 0, "and it earns credit rather than nothing")
+
+func test_a_destroyed_urn_is_never_also_reported_as_preserved() -> void:
+	var urn := _target("SacredUrn") as SacredObject
+	urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	room.report_exit_facts()
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"urn_destroyed"), "she saw the destruction")
+	assert_false(state.has_witnessed(&"urn_preserved"),
+		"and the room does not also credit him with preserving it")
+
+func test_pulling_the_counterweight_opens_the_gate() -> void:
+	var gate := room.get_node_or_null(^"ExitGate") as MechanismGate
+	assert_not_null(gate, "the gate exists")
+	assert_false(gate.is_open(), "it starts closed")
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	assert_true(gate.is_open(), "pulling the counterweight opens it")
+
+func test_a_checkpoint_rolls_back_everything_that_happened_after_it() -> void:
+	main.world_root.save_checkpoint(&"test_checkpoint", player.global_position)
+	var urn := _target("SacredUrn") as SacredObject
+	urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	_target("Bell").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	assert_true(urn.is_destroyed(), "the urn was destroyed after the checkpoint")
+
+	assert_true(main.world_root.reload_checkpoint(), "the checkpoint reloads")
+	assert_false(urn.is_destroyed(), "and the urn is standing again")
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 0,
+		"the bell is back to untouched")
+	assert_false(main.services.ledger.has_consumed(&"urn_destroyed"),
+		"and the fact itself was rolled back, not left recorded against him")
+
+func test_a_reloaded_room_puts_the_gate_back_where_the_save_says() -> void:
+	main.world_root.save_checkpoint(&"test_checkpoint", player.global_position)
+	var gate := room.get_node_or_null(^"ExitGate") as MechanismGate
+	_target("Counterweight").receive(_hit(&"lasso", Verbs.PULL))
+	assert_true(gate.is_open(), "the gate opened")
+	main.world_root.reload_checkpoint()
+	assert_false(gate.is_open(), "and a rollback closes it again rather than leaving it open")
+
+func test_progress_made_before_a_checkpoint_survives_the_rollback() -> void:
+	_target("Bell").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	main.world_root.save_checkpoint(&"test_checkpoint", player.global_position)
+	_target("StonePlug").receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	main.world_root.reload_checkpoint()
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 1,
+		"work done before the checkpoint is kept")
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 0,
+		"work done after it is not")
+
+func test_the_shrine_refills_a_spent_magazine() -> void:
+	var machine := player.tools.machine
+	machine.request_switch(&"pistol")
+	machine.request_use()
+	assert_true(machine.loaded(&"pistol") < main.services.tuning.pistol_magazine, "a round was spent")
+	var shrine := room.get_node_or_null(^"Shrine") as CheckpointShrine
+	assert_not_null(shrine, "the entry shrine exists")
+	shrine._on_body_entered(player)
+	assert_eq(machine.loaded(&"pistol"), main.services.tuning.pistol_magazine,
+		"a shrine tops the tools back up, so critical ammunition cannot be exhausted for good")
+
+func test_the_shrine_captures_a_checkpoint_the_game_can_actually_reload() -> void:
+	var shrine := room.get_node_or_null(^"Shrine") as CheckpointShrine
+	shrine._on_body_entered(player)
+	assert_not_null(main.services.last_valid_snapshot, "the shrine captured a snapshot")
+	assert_eq(main.services.last_valid_snapshot.validation_error(), "", "and it is a valid one")
+	assert_true(main.world_root.reload_checkpoint(), "and the game can reload it")
+
+func test_a_mechanism_can_always_be_reset() -> void:
+	var plug := _target("StonePlug")
+	plug.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 1, "it moved")
+	plug.reset_mechanism()
+	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 0,
+		"a critical mechanism can always be returned to its start state")
+	assert_true(plug.interactive, "and it is interactive again")
