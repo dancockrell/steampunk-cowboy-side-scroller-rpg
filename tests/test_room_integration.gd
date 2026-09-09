@@ -413,3 +413,65 @@ func test_an_unknown_checkpoint_room_is_refused_rather_than_restoring_the_wrong_
 	assert_false(main.world_root.reload_checkpoint(),
 		"a checkpoint naming a room this run never saw is refused, not guessed at")
 	assert_eq(main.world_root.room.room_id, &"gallery_of_vessels", "and the current room is left untouched")
+
+# --- the three-room chain and Burial Works' preserve-or-disturb choice ------
+
+func _walk_through_gate_and_exit(gate_target_name: String, exit_node_name: String,
+		tool_id: StringName = &"lasso", verb: StringName = Verbs.PULL) -> void:
+	_target(gate_target_name).receive(_hit(tool_id, verb))
+	var exit_door := room.get_node_or_null(NodePath(exit_node_name)) as RoomExit
+	exit_door._on_body_entered(player)
+	room = main.world_root.room
+	player = main.world_root.player
+
+func test_the_full_route_connects_all_three_authored_rooms() -> void:
+	assert_eq(room.room_id, &"gallery_of_vessels", "starts in the Gallery")
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	assert_eq(room.room_id, &"procession_hall", "reaches the Procession Hall")
+	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	assert_true((room.get_node_or_null(^"ExitGate") as MechanismGate).is_open(),
+		"the rifle, not the lasso, opens the far counterweight in this room")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
+	assert_eq(room.room_id, &"burial_works", "and finally the Burial Works")
+
+func test_burial_works_has_a_pit_encounter_and_a_shotgun_plug() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	var pit := room.get_node_or_null(^"PitEncounter") as Encounter
+	assert_not_null(pit, "the burial pit encounter exists")
+	assert_true(pit.is_content_valid(), "and its authored source validates: %s" % str(pit.content_errors()))
+	assert_false(_target("StonePlug").receive(_hit(&"lasso", Verbs.PULL)),
+		"the plug asks for force, not a pull")
+	assert_true(_target("StonePlug").receive(_hit(&"shotgun", Verbs.FORCE_HIT)), "the shotgun moves it")
+
+func test_the_funerary_site_can_be_preserved_or_disturbed_and_the_keeper_notices_either_way() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	var site := _target("FunerarySite") as SacredObject
+	assert_not_null(site, "the funerary site exists")
+	room.report_exit_facts()
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"burial_identity_restored"),
+		"leaving it undisturbed is its own credited fact, same as the urn in the Gallery")
+
+func test_disturbing_the_funerary_site_is_a_distinct_fact_from_preserving_it() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	var site := _target("FunerarySite") as SacredObject
+	site.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	room.report_exit_facts()
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_true(state.has_witnessed(&"burial_identity_lost"), "disturbing it is witnessed")
+	assert_false(state.has_witnessed(&"burial_identity_restored"),
+		"and never credited as preserved in the same breath")
+	assert_true(state.trust < 0, "and it actually costs her trust, not just a recorded but neutral fact")
+
+func test_the_plug_puzzle_can_always_be_reset() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	var plug := _target("StonePlug")
+	plug.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 1, "it moved")
+	plug.reset_mechanism()
+	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 0,
+		"and can always be returned to its authored start, per docs/gameplay-pillars.md")

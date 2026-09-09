@@ -1,0 +1,148 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
+[ext_resource type="Script" path="res://src/world/tool_target.gd" id="3_target"]
+[ext_resource type="Script" path="res://src/world/sacred_object.gd" id="4_sacred"]
+[ext_resource type="Script" path="res://src/world/checkpoint_shrine.gd" id="5_shrine"]
+[ext_resource type="Script" path="res://src/puzzles/mechanism_gate.gd" id="6_gate"]
+[ext_resource type="Script" path="res://src/emergence/encounter.gd" id="7_encounter"]
+[ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="8_source"]
+[ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="9_trigger"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="10_exit"]
+
+[sub_resource type="RectangleShape2D" id="small_box"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="gate_box"]
+size = Vector2(32, 96)
+
+[sub_resource type="RectangleShape2D" id="trigger_box"]
+size = Vector2(48, 128)
+
+[sub_resource type="RectangleShape2D" id="entry_box"]
+size = Vector2(32, 128)
+
+[sub_resource type="Resource" id="pit_source"]
+script = ExtResource("8_source")
+id = &"burial_pit_01"
+room_id = &"burial_works"
+source_type = &"pit"
+family_id = &"burial_pit_assembler"
+trigger_id = &"burial_pit_01_trigger"
+spawn_point_id = &"burial_pit_01_spawn"
+tell_clip_id = &"pit_assembler_tell"
+emerge_clip_id = &"pit_assembler_emerge"
+resolved_visual_id = &"pit_assembler_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"burial_pit_01_resolved"
+
+[node name="BurialWorks" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"burial_works"
+default_spawn_id = &"spawn_from_procession"
+bounds = Rect2(0, 0, 1408, 360)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+platforms = Array[Rect2]([Rect2(0, 288, 416, 72), Rect2(544, 288, 864, 72), Rect2(640, 224, 96, 16)])
+backdrop = Array[Rect2]([Rect2(96, 96, 800, 192), Rect2(1312, 32, 96, 256)])
+
+[node name="spawn_from_procession" type="Marker2D" parent="."]
+position = Vector2(64, 288)
+
+[node name="Shrine" type="Area2D" parent="."]
+position = Vector2(128, 256)
+script = ExtResource("5_shrine")
+checkpoint_id = &"shrine_burial_entry"
+
+[node name="ShrineShape" type="CollisionShape2D" parent="Shrine"]
+shape = SubResource("small_box")
+
+[node name="GrayboxShrine" type="Polygon2D" parent="Shrine"]
+color = Color(0.35, 0.62, 0.55, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="PitEncounter" type="Node2D" parent="."]
+position = Vector2(688, 288)
+script = ExtResource("7_encounter")
+source = SubResource("pit_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="PitEncounter"]
+
+[node name="PitTrigger" type="Area2D" parent="."]
+position = Vector2(560, 240)
+script = ExtResource("9_trigger")
+encounter_path = NodePath("../PitEncounter")
+
+[node name="TriggerShape" type="CollisionShape2D" parent="PitTrigger"]
+shape = SubResource("trigger_box")
+
+[node name="StonePlug" type="Area2D" parent="."]
+position = Vector2(864, 240)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"burial_stone_plug"
+allowed_verbs = Array[StringName]([&"force_hit"])
+puzzle_id = &"burial_stone_plug"
+reward_event_id = &"burial_plug_moved"
+
+[node name="PlugShape" type="CollisionShape2D" parent="StonePlug"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="StonePlug"]
+
+[node name="GrayboxPlug" type="Polygon2D" parent="StonePlug"]
+color = Color(0.45, 0.44, 0.46, 1)
+polygon = PackedVector2Array(-16, -14, 16, -14, 16, 14, -16, 14)
+
+[node name="FunerarySite" type="Area2D" parent="."]
+position = Vector2(960, 264)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("4_sacred")
+receiver_id = &"burial_funerary_site"
+allowed_verbs = Array[StringName]([&"force_hit", &"precision_hit"])
+puzzle_id = &"burial_funerary_site"
+destroyed_event_id = &"burial_identity_lost"
+preserved_event_id = &"burial_identity_restored"
+
+[node name="SiteShape" type="CollisionShape2D" parent="FunerarySite"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="FunerarySite"]
+
+[node name="GrayboxSite" type="Polygon2D" parent="FunerarySite"]
+color = Color(0.88, 0.84, 0.72, 1)
+polygon = PackedVector2Array(-10, -16, 10, -16, 14, 16, -14, 16)
+
+[node name="ExitGate" type="StaticBody2D" parent="."]
+position = Vector2(1280, 240)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("6_gate")
+watched_puzzle_id = &"burial_stone_plug"
+watched_field = &"uses"
+open_offset = Vector2(0, -112)
+
+[node name="GateShape" type="CollisionShape2D" parent="ExitGate"]
+shape = SubResource("gate_box")
+
+[node name="GrayboxGate" type="Polygon2D" parent="ExitGate"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="ExitToShrine" type="Area2D" parent="."]
+position = Vector2(1392, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_exit")
+next_spawn_id = &"spawn_from_burial"
+required_gate_path = NodePath("../ExitGate")
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitToShrine"]
+shape = SubResource("entry_box")

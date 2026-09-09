@@ -44,6 +44,12 @@
       "fascination": 1,
       "line": "You gave the skull back to the right shoulders. It is a small correction. It is the whole of my work."
     },
+    "burial_identity_lost": {
+      "trust": -3,
+      "respect": -1,
+      "fascination": 0,
+      "line": "That grave had a name on it an hour ago. Now it has nothing, and I am the one who has to remember what I have lost track of."
+    },
     "shrine_destroyed": {
       "trust": -3,
       "respect": -2,
