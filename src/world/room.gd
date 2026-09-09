@@ -50,6 +50,12 @@ func bind_world(world: WorldRoot) -> void:
 		if shrine != null:
 			shrine.bind_world(world)
 
+func bind_dialogue(dialogue_player: DialoguePlayer) -> void:
+	for node: Node in _descendants(self):
+		var npc := node as HeroineNpc
+		if npc != null:
+			npc.bind(dialogue_player, services.relationships)
+
 func _descendants(node: Node) -> Array[Node]:
 	var found: Array[Node] = []
 	for child: Node in node.get_children():

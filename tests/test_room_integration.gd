@@ -19,6 +19,16 @@ func before_each() -> void:
 	main.boot()
 	room = main.world_root.room
 	player = main.world_root.player
+	# UI scenes' @onready lookups need NOTIFICATION_READY, which this harness
+	# withholds the same way it withholds _ready generally (see
+	# docs/validation/gameplay-checks.md). Main's own wiring is deferred with
+	# call_deferred for the same reason, so drive both by hand, mirroring
+	# tests/test_boot_smoke.gd's idiom for the identical underlying problem.
+	for ui_node: Node in [main.hud, main.dialogue, main.pause_menu]:
+		if ui_node != null:
+			ui_node.notification(Node.NOTIFICATION_READY)
+	if main.dialogue != null:
+		main.dialogue.bind(main.services)
 
 func after_each() -> void:
 	if main != null and is_instance_valid(main):
@@ -245,3 +255,78 @@ func test_recall_spends_a_charge_only_when_it_succeeds() -> void:
 	var before := recall.uses_remaining()
 	assert_false(recall.use(e), "a healthy sentinel refuses the recall")
 	assert_eq(recall.uses_remaining(), before, "and the refused attempt costs nothing")
+
+# --- Keeper dialogue in the real room, end to end --------------------------
+
+func _keeper_npc() -> HeroineNpc:
+	return room.get_node_or_null(^"KeeperNpc") as HeroineNpc
+
+func test_the_keeper_npc_exists_and_is_bound() -> void:
+	var npc := _keeper_npc()
+	assert_not_null(npc, "the Keeper stands in the Gallery of Vessels")
+	assert_not_null(npc.player, "and she is wired to the dialogue player")
+
+func test_first_interaction_plays_the_introduction() -> void:
+	var npc := _keeper_npc()
+	npc._offer_next_scene()
+	assert_true(main.dialogue_player.is_playing(), "a scene starts")
+	assert_eq(main.dialogue.speaker_text(), "The Keeper of the Clay Dead", "and it is spoken by her")
+	assert_eq(main.services.relationships.state(&"keeper_of_the_clay_dead").arc_state,
+		RelationshipState.Arc.ENCOUNTERED, "meeting her at all advances the arc")
+
+## Advances through every non-final line of the current offer, leaving it
+## sitting on the line where choices are shown, without answering it.
+func _advance_to_choices() -> void:
+	var scene := main.dialogue_player._current_scene
+	if scene == null:
+		return
+	for i in scene.lines.size() - 1:
+		main.dialogue.advanced.emit()
+
+func _finish_current_scene() -> void:
+	var e := main.dialogue_player._current_scene
+	for i in e.lines.size():
+		if main.dialogue_player.is_playing():
+			main.dialogue.advanced.emit()
+
+func test_declining_the_alliance_through_real_dialogue_is_recorded() -> void:
+	var npc := _keeper_npc()
+	npc._offer_next_scene()
+	_finish_current_scene()
+
+	main.services.relationships.witness(&"keeper_of_the_clay_dead", &"urn_preserved")
+	npc._offer_next_scene()
+	assert_true(main.dialogue_player.is_playing(), "the alliance offer opens once she has judged him")
+	_advance_to_choices()
+	assert_eq(main.dialogue.choice_ids(), [&"accept", &"defer", &"decline"],
+		"all three answers are on screen")
+
+	main.dialogue.choice_made.emit(&"decline")
+	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
+	assert_false(state.alliance_accepted, "declining through the real UI is recorded")
+	assert_true(bool(state.flag(&"alliance_refused")), "as an explicit refusal, not silence")
+
+func test_accepting_the_alliance_through_real_dialogue_reaches_the_book() -> void:
+	var npc := _keeper_npc()
+	npc._offer_next_scene()
+	_finish_current_scene()
+	main.services.relationships.witness(&"keeper_of_the_clay_dead", &"urn_preserved")
+	npc._offer_next_scene()
+	_advance_to_choices()
+	main.dialogue.choice_made.emit(&"accept")
+	assert_true(main.services.relationships.state(&"keeper_of_the_clay_dead").alliance_accepted,
+		"accepting through the real dialogue UI reaches the RelationshipBook, not just the script")
+	assert_true(main.services.relationships.state(&"keeper_of_the_clay_dead").flag(&"alliance_offer_answered"),
+		"and the offer is marked answered so it does not repeat")
+
+func test_a_refused_alliance_still_leaves_judgment_playable() -> void:
+	var npc := _keeper_npc()
+	npc._offer_next_scene()
+	_finish_current_scene()
+	main.services.relationships.witness(&"keeper_of_the_clay_dead", &"urn_preserved")
+	npc._offer_next_scene()
+	_advance_to_choices()
+	main.dialogue.choice_made.emit(&"decline")
+	npc._offer_next_scene()
+	assert_true(main.dialogue_player.is_playing(),
+		"she still has something to say to a man who turned her down")

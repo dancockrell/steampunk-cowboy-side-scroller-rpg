@@ -31,6 +31,13 @@ func bind(p_services: Services) -> void:
 	services = p_services
 	intervention = RecallToClay.new(p_services.tuning, p_services.relationships)
 
+var dialogue_player: DialoguePlayer
+
+func bind_dialogue(p_dialogue_player: DialoguePlayer) -> void:
+	dialogue_player = p_dialogue_player
+	if room != null:
+		room.bind_dialogue(dialogue_player)
+
 func load_room(scene: PackedScene) -> void:
 	if services == null:
 		push_error("WorldRoot.load_room called before bind()")
@@ -49,6 +56,8 @@ func load_room(scene: PackedScene) -> void:
 	add_child(room)
 	room.bind(services)
 	room.bind_world(self)
+	if dialogue_player != null:
+		room.bind_dialogue(dialogue_player)
 
 	_ensure_player()
 	_ensure_camera()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://src/emergence/encounter.gd" id="7_encounter"]
 [ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="8_source"]
 [ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="9_trigger"]
+[ext_resource type="Script" path="res://src/world/heroine_npc.gd" id="10_heroine"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
@@ -206,3 +207,17 @@ encounter_path = NodePath("../JarEncounter")
 
 [node name="TriggerShape" type="CollisionShape2D" parent="JarTrigger"]
 shape = SubResource("trigger_box")
+
+[node name="KeeperNpc" type="Area2D" parent="."]
+position = Vector2(224, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_heroine")
+heroine_id = &"keeper_of_the_clay_dead"
+
+[node name="KeeperShape" type="CollisionShape2D" parent="KeeperNpc"]
+shape = SubResource("small_box")
+
+[node name="GrayboxKeeper" type="Polygon2D" parent="KeeperNpc"]
+color = Color(0.62, 0.42, 0.68, 1)
+polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)

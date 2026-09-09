@@ -20,6 +20,7 @@ var ui_layer: CanvasLayer
 var hud: Hud
 var dialogue: Dialogue
 var pause_menu: PauseMenu
+var dialogue_player: DialoguePlayer
 
 var _booted: bool = false
 var _last_window_size: Vector2i = Vector2i.ZERO
@@ -126,6 +127,10 @@ func _build_ui_layer() -> void:
 		dialogue.visible = false
 		ui_layer.add_child(dialogue)
 		dialogue.call_deferred("bind", services)
+		dialogue_player = DialoguePlayer.new(dialogue, services.relationships)
+		_load_dialogue_scripts()
+		if world_root != null:
+			world_root.bind_dialogue(dialogue_player)
 
 	pause_menu = UiScenes.instantiate(UiScenes.PAUSE_MENU) as PauseMenu
 	if pause_menu != null:
@@ -154,3 +159,10 @@ func _process(_delta: float) -> void:
 	hud.set_intervention_available(bool(state.get("available", false)), String(state.get("reason", "")))
 	if Input.is_action_just_pressed(&"pause") and pause_menu != null:
 		pause_menu.toggle()
+
+## Every authored DialogueScript loads once, here, alongside the heroine
+## records it speaks for.
+func _load_dialogue_scripts() -> void:
+	var keeper_script := DialogueScript.load_from_file("res://narrative/dialogue/keeper_scenes.json")
+	if keeper_script != null:
+		dialogue_player.register(&"keeper_of_the_clay_dead", keeper_script)
