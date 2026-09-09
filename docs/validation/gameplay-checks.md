@@ -103,6 +103,37 @@ Recorded because they are the argument for running them, not for trusting them:
 - **`motion_mode` on the player collided with an existing `CharacterBody2D`
   property.** Caught by the parse check.
 
+## _ready and tree-membership are asynchronous, even in normal play
+
+Measured directly with standalone probes outside this project, not assumed:
+
+- `add_child()` does not synchronously call `_ready()` on the child, even in
+  a normally running (non-headless) engine. It fires later in the same frame,
+  after the calling function returns.
+- `is_inside_tree()` reads false immediately after `add_child()`, for the same
+  reason: tree-entry notification is deferred, not synchronous.
+- `call_deferred()` reliably runs after `_ready()`, verified against the same
+  probe.
+
+This caused a real crash, not just a headless-testing artefact: wiring code
+that wrote to a UI scene's `@onready` label immediately after `add_child()`
+hit "Invalid assignment ... on a base object of type 'Nil'" the first time it
+ran, in this project's own compositor. The fix was `call_deferred()` on the
+wiring calls, not a headless-only workaround.
+
+The consequence for this suite specifically: `tests/run_tests.gd` runs entirely
+inside `SceneTree._initialize()` and calls `quit()` before any frame is ever
+processed. So neither `_ready()` nor a deferred call ever fires inside a test,
+and `is_inside_tree()` is never true for anything the suite adds to the tree.
+Where a node's own `_ready()` must run for a test to be meaningful (UI
+`@onready` lookups), the test fires `NOTIFICATION_READY` by hand and calls the
+would-be-deferred methods directly, mirroring the same idiom as boot()/build().
+Where the property under test genuinely cannot be observed this way (whether
+`get_tree().paused` really flips), the test does not fake it — it checks the
+one true thing the harness state actually proves instead: that a menu unable
+to reach a live-iterated tree reports it accurately rather than claiming a
+success it did not earn.
+
 ## What is NOT checked
 
 Listed so a reader does not mistake silence for coverage:
