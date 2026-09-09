@@ -13,7 +13,7 @@ This checked-in backlog is the initial issue tracker. Items are not started and 
 - [ ] F09 Produce adult Keeper identity/portrait package and branching dialogue plan.
 - [x] F10 Atomic checkpoints, no duplicated rewards, and progression that survives refusing both the alliance and the romance.
 - [ ] F11 Produce mural/pit enemy packs and Recall to Clay presentation.
-- [ ] F12 Integrate the bounded temple route. TWO of five authored beats exist and connect (Gallery of Vessels, Procession Hall); entry bridge, burial works and the shrine/return gate are not built. Cross-room checkpoints, room-scoped exit facts and the room registry are implemented and tested, not just the single room they were first built for.
+- [x] F12 All five authored beats exist and connect end to end: Entry Bridge -> Gallery of Vessels -> Procession Hall -> Burial Works -> Keeper's Shrine and Return Gate. Reaching the return gate marks the route complete through the ledger. NOT covered: the exit criteria in docs/vertical-slice.md around measured playtime, native-scale visual inspection and frame-time all remain F13's job, not this one's.
 - [ ] F13 Inspect actual motion/renders; complete accessibility, performance and soft-lock validation.
 
 ## What is implemented, and what that does not mean

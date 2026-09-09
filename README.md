@@ -2,7 +2,7 @@
 
 A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
-**Stage: playable graybox slice, no admitted art.** The simulation is implemented and tested: movement, all four tools, the three emergence families, checkpoints, the relationship arc and the Keeper's intervention. It runs, and you can walk Michael through the first room.
+**Stage: the full vertical-slice route is playable, no admitted art.** All five authored beats exist and connect end to end: Entry Bridge, Gallery of Vessels, Procession Hall, Burial Works, and the Keeper's Shrine and Return Gate. Movement, all four tools, all three emergence families, checkpoints scoped correctly across rooms, the relationship arc, the Keeper's dialogue and her intervention are implemented and tested. Reaching the return gate completes the route.
 
 Everything you see is a **placeholder**. Every character, creature and prop is a flat coloured polygon. The 23 sheets in [art-source/candidates/batch-001](art-source/candidates/batch-001/README.md) are saved candidates, not admitted runtime assets, and [F01 reference recovery](docs/decisions.md) is still open. No sprite has been admitted, nothing here is approved art, and the graybox is not a style.
 
