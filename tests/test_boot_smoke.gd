@@ -105,3 +105,29 @@ func _all(node: Node) -> Array[Node]:
 		found.append(child)
 		found.append_array(_all(child))
 	return found
+
+func test_the_world_is_scaled_by_a_whole_number_only() -> void:
+	var container := main.get_node_or_null(^"WorldViewportContainer") as SubViewportContainer
+	assert_not_null(container, "the world container exists")
+	var scale := container.scale.x
+	assert_true(scale >= 1.0, "the world is never scaled below 1x")
+	assert_almost_eq(scale, floorf(scale), 0.001,
+		"a fractional scale puts uneven pixel widths on a pixel-art stage, got %f" % scale)
+	assert_almost_eq(container.scale.y, container.scale.x, 0.001, "and the scale is square")
+
+func test_the_scale_tracks_the_window_rather_than_sticking_at_its_boot_value() -> void:
+	# Regression: boot can run before the window has settled, and the world then
+	# stayed at whatever scale it was first given. Caught by rendering a frame
+	# and seeing a 640x360 image in a 1280x720 window, not by any test.
+	var container := main.get_node_or_null(^"WorldViewportContainer") as SubViewportContainer
+	container.scale = Vector2(1, 1)
+	main._last_window_size = Vector2i.ZERO
+	main._apply_integer_scale()
+	var window := main.get_window()
+	if window == null:
+		return
+	var expected := maxi(1, int(floor(minf(
+		float(window.size.x) / float(Main.WORLD_WIDTH),
+		float(window.size.y) / float(Main.WORLD_HEIGHT)))))
+	assert_eq(int(container.scale.x), expected,
+		"the scale is recomputed from the current window size, not left at its old value")

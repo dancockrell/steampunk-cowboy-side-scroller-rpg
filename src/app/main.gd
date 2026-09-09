@@ -19,6 +19,7 @@ var world_root: WorldRoot
 var ui_layer: CanvasLayer
 
 var _booted: bool = false
+var _last_window_size: Vector2i = Vector2i.ZERO
 
 func _ready() -> void:
 	boot()
@@ -50,7 +51,9 @@ func boot() -> void:
 		if starting_room != null:
 			world_root.load_room(starting_room)
 
-	get_tree().get_root().size_changed.connect(_apply_integer_scale)
+	var tree := get_tree()
+	if tree != null and tree.get_root() != null:
+		tree.get_root().size_changed.connect(_apply_integer_scale)
 	_apply_integer_scale()
 
 ## Authored records that the whole game reads. Loaded once, here, so no
@@ -63,11 +66,25 @@ func _load_authored_content() -> void:
 ## Scales the low-resolution world by a whole number only. A fractional scale
 ## puts uneven pixel widths on a pixel-art stage, which is exactly the artefact
 ## the nearest filter is there to avoid.
+## Recomputed whenever the window size actually differs from the size the
+## current scale was calculated for. The size_changed signal alone is not
+## enough: boot can run before the window has settled, and then the world stays
+## stuck at the scale it was given, which is how it silently rendered at 1x in a
+## 1280x720 window during a capture.
+func _process(_delta: float) -> void:
+	var window := get_window()
+	if window != null and window.size != _last_window_size:
+		_apply_integer_scale()
+
 func _apply_integer_scale() -> void:
 	var container := get_node_or_null(^"WorldViewportContainer") as SubViewportContainer
 	if container == null:
 		return
-	var window_size := Vector2(get_window().size)
+	var window := get_window()
+	if window == null:
+		return
+	_last_window_size = window.size
+	var window_size := Vector2(window.size)
 	var scale := maxi(1, int(floor(minf(
 		window_size.x / float(WORLD_WIDTH),
 		window_size.y / float(WORLD_HEIGHT)))))
