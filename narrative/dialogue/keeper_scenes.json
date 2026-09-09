@@ -1,0 +1,70 @@
+{
+  "schema_note": "Authored dialogue scenes for the slice patron. Consumed by src/relationships/dialogue_script.gd. Presentation (portrait, layout, text scale) belongs to the UI layer; nothing here describes how it looks. Working role only: final name, face and voice remain unapproved pending F01.",
+  "schema_version": 1,
+  "speaker_id": "keeper_of_the_clay_dead",
+  "scenes": {
+    "keeper_intro": {
+      "requires": {},
+      "lines": [
+        "You are the first living thing to come through that door in a long while, and you did it without breaking my bridge. That is already unusual.",
+        "I am the Keeper of the Clay Dead. Everything in these rooms was somebody. Some of them have forgotten it. That is the problem I have."
+      ],
+      "choices": []
+    },
+    "keeper_judgment": {
+      "requires": {},
+      "lines": [
+        "Before we go further, I want you to know I have been watching how you move through my house."
+      ],
+      "choices": []
+    },
+    "keeper_alliance_offer": {
+      "requires": {"arc_state_at_least": "tested"},
+      "lines": [
+        "The guardians here were raised to protect these dead. They have started eating them instead. Names first. It is slow and it is thorough and I cannot stop it from where I stand.",
+        "You can. I am asking you to be my champion in this, and I am telling you plainly that I am asking because you are useful to me, not because you are owed it."
+      ],
+      "choices": [
+        {
+          "id": "accept",
+          "text": "Say yes. Take the work.",
+          "response": "Then we understand each other. Take this: when one of them is nearly finished, I can call it back into its jar. Once or twice. Do not waste it showing off."
+        },
+        {
+          "id": "defer",
+          "text": "Ask for time to think.",
+          "response": "Sensible. I have waited four hundred years; I can wait through your afternoon. The offer does not expire, and neither does the way out."
+        },
+        {
+          "id": "decline",
+          "text": "Refuse. This is not your fight.",
+          "response": "No, then. I will not pretend I am not disappointed, and I will not hold the door shut over it. Go the long way if you like. It is still a way."
+        }
+      ]
+    },
+    "keeper_romance_offer": {
+      "requires": {"alliance_accepted": true, "trust_at_least": 4},
+      "lines": [
+        "You have been careful with them. Not gentle, you are not a gentle man, but careful, which is rarer and worth more.",
+        "I find that I would like you to stay a while after this is finished. I am aware of what I am, and of what that would mean, and I am asking anyway. You may say no to me. People forget that they can."
+      ],
+      "choices": [
+        {
+          "id": "accept",
+          "text": "Say that you would like to stay.",
+          "response": "Good. Then that is settled, and we will speak about it properly when there is not a procession coming apart in the next hall."
+        },
+        {
+          "id": "defer",
+          "text": "Say not yet.",
+          "response": "Not yet is an answer I can hold. Ask me again when you know, and do not let it change how you work."
+        },
+        {
+          "id": "decline",
+          "text": "Say no, plainly.",
+          "response": "Then no it is, and I will not raise it again. You are still my champion, if you still want the job. The two were never the same question."
+        }
+      ]
+    }
+  }
+}
