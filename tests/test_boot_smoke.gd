@@ -71,7 +71,7 @@ func test_the_portrait_layer_is_separate_from_the_pixel_world() -> void:
 func test_the_starting_room_loads_with_its_authored_id() -> void:
 	assert_not_null(main.world_root, "WorldRoot exists")
 	assert_not_null(main.world_root.room, "a room was loaded at boot")
-	assert_eq(main.world_root.room.room_id, &"gallery_of_vessels", "it is the authored first room")
+	assert_eq(main.world_root.room.room_id, &"entry_bridge", "it is the authored first room")
 
 func test_michael_exists_and_stands_at_the_authored_spawn() -> void:
 	var player := main.world_root.player
@@ -82,15 +82,23 @@ func test_michael_exists_and_stands_at_the_authored_spawn() -> void:
 	assert_eq(player.tools.machine.equipped_id, &"lasso", "the identity tool is equipped first")
 
 func test_the_graybox_terrain_built_real_collision() -> void:
-	var terrain := main.world_root.room.get_node_or_null(^"Terrain")
+	var terrain := main.world_root.room.get_node_or_null(^"Terrain") as GrayboxTerrain
 	assert_not_null(terrain, "the room has a terrain node")
 	var bodies := 0
 	for child: Node in terrain.get_children():
 		if child is StaticBody2D:
 			bodies += 1
-	assert_true(bodies >= 4, "every authored platform produced a collision body, got %d" % bodies)
+	# The expected count comes from the room's OWN authored platform list
+	# rather than a number calibrated to whichever room happened to be first
+	# when this test was written -- the starting room has since changed once
+	# already (the entry bridge now precedes the Gallery) and a hardcoded
+	# floor would have silently stopped meaning anything the moment it did.
+	assert_eq(bodies, terrain.platforms.size(),
+		"every authored platform produced exactly one collision body, got %d for %d platforms"
+			% [bodies, terrain.platforms.size()])
+	assert_true(terrain.platforms.size() >= 1, "the starting room has at least one platform to stand on")
 
-func test_every_tool_target_in_the_room_declares_at_least_one_verb() -> void:
+func test_every_tool_target_in_the_starting_room_declares_at_least_one_verb() -> void:
 	var checked := 0
 	for node: Node in _all(main.world_root.room):
 		var target := node as ToolTarget
@@ -103,21 +111,40 @@ func test_every_tool_target_in_the_room_declares_at_least_one_verb() -> void:
 			assert_true(Verbs.is_known(verb),
 				"target '%s' uses a known verb, not an invented one: %s" % [target.receiver_id, verb])
 	# The denominator: if the room stopped containing targets this test would
-	# otherwise pass by checking nothing at all.
-	assert_true(checked >= 5, "the room contains its authored tool targets, found %d" % checked)
+	# otherwise pass by checking nothing at all. The entry bridge teaches only
+	# the lasso (swing + counterweight) per docs/vertical-slice.md, so the
+	# floor here is small on purpose -- the full five-verb sweep is below.
+	assert_true(checked >= 2, "the starting room contains its authored tool targets, found %d" % checked)
 
-func test_the_four_tools_each_have_a_target_in_the_first_room() -> void:
+## docs/vertical-slice.md spreads verb teaching across beats rather than
+## cramming every tool into room one: the bridge teaches the lasso, the
+## gallery adds the pistol, the procession hall the rifle, burial works the
+## shotgun. This sweeps every authored room in the route, not just the first,
+## which is the honest scope for "every tool has a use somewhere on the route".
+const _ROOM_SCENES: Array[String] = [
+	"res://levels/temple_clay_dead/entry_bridge.tscn",
+	"res://levels/temple_clay_dead/gallery_of_vessels.tscn",
+	"res://levels/temple_clay_dead/procession_hall.tscn",
+	"res://levels/temple_clay_dead/burial_works.tscn",
+]
+
+func test_the_four_tools_each_have_a_target_somewhere_on_the_route() -> void:
 	var verbs_present: Array[StringName] = []
-	for node: Node in _all(main.world_root.room):
-		var target := node as ToolTarget
-		if target == null:
-			continue
-		for verb: StringName in target.allowed_verbs:
-			if not verbs_present.has(verb):
-				verbs_present.append(verb)
+	for scene_path: String in _ROOM_SCENES:
+		var packed: PackedScene = load(scene_path)
+		assert_not_null(packed, "room scene %s loads" % scene_path)
+		var instance := packed.instantiate()
+		for node: Node in _all(instance):
+			var target := node as ToolTarget
+			if target == null:
+				continue
+			for verb: StringName in target.allowed_verbs:
+				if not verbs_present.has(verb):
+					verbs_present.append(verb)
+		instance.free()
 	for verb: StringName in [Verbs.PRECISION_HIT, Verbs.FORCE_HIT, Verbs.LONG_PRECISION_HIT, Verbs.PULL, Verbs.SWING]:
 		assert_true(verbs_present.has(verb),
-			"the room gives verb '%s' something to act on, so every tool has a use here" % verb)
+			"the route gives verb '%s' something to act on somewhere" % verb)
 
 func _all(node: Node) -> Array[Node]:
 	var found: Array[Node] = []

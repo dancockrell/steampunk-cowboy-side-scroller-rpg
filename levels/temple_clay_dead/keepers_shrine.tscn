@@ -1,0 +1,102 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
+[ext_resource type="Script" path="res://src/world/checkpoint_shrine.gd" id="3_shrine"]
+[ext_resource type="Script" path="res://src/emergence/encounter.gd" id="4_encounter"]
+[ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="5_source"]
+[ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="6_trigger"]
+[ext_resource type="Script" path="res://src/world/heroine_npc.gd" id="7_heroine"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="8_exit"]
+
+[sub_resource type="RectangleShape2D" id="small_box"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="trigger_box"]
+size = Vector2(48, 128)
+
+[sub_resource type="Resource" id="final_sentinel_source"]
+script = ExtResource("5_source")
+id = &"keeper_shrine_sentinel_01"
+room_id = &"keepers_shrine"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"keeper_shrine_sentinel_01_trigger"
+spawn_point_id = &"keeper_shrine_sentinel_01_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"keeper_shrine_sentinel_01_resolved"
+
+[node name="KeepersShrine" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"keepers_shrine"
+default_spawn_id = &"spawn_from_burial"
+bounds = Rect2(0, 0, 1024, 360)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+platforms = Array[Rect2]([Rect2(0, 288, 1024, 72)])
+backdrop = Array[Rect2]([Rect2(96, 64, 832, 224)])
+
+[node name="spawn_from_burial" type="Marker2D" parent="."]
+position = Vector2(64, 288)
+
+[node name="MajorShrine" type="Area2D" parent="."]
+position = Vector2(128, 256)
+script = ExtResource("3_shrine")
+checkpoint_id = &"shrine_keeper_final"
+
+[node name="MajorShrineShape" type="CollisionShape2D" parent="MajorShrine"]
+shape = SubResource("small_box")
+
+[node name="GrayboxMajorShrine" type="Polygon2D" parent="MajorShrine"]
+color = Color(0.42, 0.7, 0.62, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="KeeperNpc" type="Area2D" parent="."]
+position = Vector2(256, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_heroine")
+heroine_id = &"keeper_of_the_clay_dead"
+
+[node name="KeeperShape" type="CollisionShape2D" parent="KeeperNpc"]
+shape = SubResource("small_box")
+
+[node name="GrayboxKeeper" type="Polygon2D" parent="KeeperNpc"]
+color = Color(0.62, 0.42, 0.68, 1)
+polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)
+
+[node name="FinalSentinelEncounter" type="Node2D" parent="."]
+position = Vector2(560, 288)
+script = ExtResource("4_encounter")
+source = SubResource("final_sentinel_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="FinalSentinelEncounter"]
+
+[node name="FinalSentinelTrigger" type="Area2D" parent="."]
+position = Vector2(440, 240)
+script = ExtResource("6_trigger")
+encounter_path = NodePath("../FinalSentinelEncounter")
+
+[node name="TriggerShape" type="CollisionShape2D" parent="FinalSentinelTrigger"]
+shape = SubResource("trigger_box")
+
+[node name="ReturnGate" type="Area2D" parent="."]
+position = Vector2(960, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("8_exit")
+marks_route_complete = true
+
+[node name="ReturnGateShape" type="CollisionShape2D" parent="ReturnGate"]
+shape = SubResource("small_box")
+
+[node name="GrayboxReturnGate" type="Polygon2D" parent="ReturnGate"]
+color = Color(0.85, 0.75, 0.4, 1)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)

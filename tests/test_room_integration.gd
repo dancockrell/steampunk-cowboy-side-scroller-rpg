@@ -17,6 +17,15 @@ func before_each() -> void:
 	main = packed.instantiate() as Main
 	tree.root.add_child(main)
 	main.boot()
+	# main.tscn's starting room is the entry bridge (beat 1). This whole file
+	# was written against the Gallery as the starting point before that beat
+	# existed, and re-deriving every one of those tests against the bridge
+	# would prove nothing new about them -- so walk through the bridge once,
+	# here, and leave the rest of the file testing what it already tested.
+	# The bridge gets its own dedicated tests below instead.
+	var bridge := main.world_root.room
+	(bridge.get_node_or_null(^"Counterweight") as ToolTarget).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO))
+	(bridge.get_node_or_null(^"ExitToGallery") as RoomExit)._on_body_entered(main.world_root.player)
 	room = main.world_root.room
 	player = main.world_root.player
 	# UI scenes' @onready lookups need NOTIFICATION_READY, which this harness
@@ -475,3 +484,131 @@ func test_the_plug_puzzle_can_always_be_reset() -> void:
 	plug.reset_mechanism()
 	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 0,
 		"and can always be returned to its authored start, per docs/gameplay-pillars.md")
+
+# --- entry bridge (beat 1), tested against its own fresh boot -------------
+
+func _fresh_bridge() -> Dictionary:
+	var packed: PackedScene = load("res://scenes/main.tscn")
+	var fresh := packed.instantiate() as Main
+	tree.root.add_child(fresh)
+	fresh.boot()
+	return {"main": fresh, "room": fresh.world_root.room, "player": fresh.world_root.player}
+
+func test_the_entry_bridge_is_the_true_starting_room() -> void:
+	var ctx := _fresh_bridge()
+	assert_eq((ctx["room"] as Room).room_id, &"entry_bridge",
+		"the route now starts before the Gallery, at the broken bridge")
+	(ctx["main"] as Main).free()
+
+func test_the_bridge_gap_requires_the_swing_not_a_bare_jump() -> void:
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var anchor := bridge.get_node_or_null(^"SwingAnchor") as ToolTarget
+	assert_not_null(anchor, "the swing anchor over the gap exists")
+	assert_true(anchor.allowed_verbs.has(Verbs.SWING), "and it accepts the lasso swing specifically")
+	assert_false(anchor.allowed_verbs.has(Verbs.PULL), "not a plain pull, so it teaches swing, not tug")
+	(ctx["main"] as Main).free()
+
+func test_crossing_the_bridge_reaches_the_gallery_at_its_own_entry_marker() -> void:
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var main_ref := ctx["main"] as Main
+	(bridge.get_node_or_null(^"Counterweight") as ToolTarget).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO))
+	(bridge.get_node_or_null(^"ExitToGallery") as RoomExit)._on_body_entered(ctx["player"])
+	assert_eq(main_ref.world_root.room.room_id, &"gallery_of_vessels", "the bridge leads into the Gallery")
+	main_ref.free()
+
+# --- the full five-beat route ----------------------------------------------
+
+func test_the_full_route_connects_all_five_authored_rooms() -> void:
+	assert_eq(room.room_id, &"gallery_of_vessels", "starts in the Gallery, having already crossed the bridge")
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	assert_eq(room.room_id, &"procession_hall", "reaches the Procession Hall")
+	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	assert_true((room.get_node_or_null(^"ExitGate") as MechanismGate).is_open(),
+		"the rifle, not the lasso, opens the far counterweight in this room")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	assert_eq(room.room_id, &"burial_works", "reaches the Burial Works")
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	assert_eq(room.room_id, &"keepers_shrine", "and finally the Keeper's Shrine and return gate")
+
+func test_the_keepers_shrine_has_its_own_major_checkpoint() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	var shrine := room.get_node_or_null(^"MajorShrine") as CheckpointShrine
+	assert_not_null(shrine, "the final room has its own checkpoint")
+	shrine._on_body_entered(player)
+	assert_not_null(main.services.last_valid_snapshot, "and it actually saves")
+	assert_eq(String(main.services.last_valid_snapshot.data["room_id"]), "keepers_shrine",
+		"a checkpoint at the final shrine is scoped to that room, same as every other shrine")
+
+func test_recall_to_clay_is_demonstrable_in_the_final_room() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+
+	var e := room.get_node_or_null(^"FinalSentinelEncounter") as Encounter
+	assert_not_null(e, "the final room has an encounter to demonstrate the intervention on")
+	e.set_target_position(Vector2(300, 288))
+	e.trigger()
+	var elapsed := 0.0
+	while e.phase() != EncounterBook.Phase.ACTIVE and elapsed < 12.0:
+		e.advance(1.0 / 60.0)
+		elapsed += 1.0 / 60.0
+	assert_eq(e.phase(), EncounterBook.Phase.ACTIVE, "the sentinel is up")
+
+	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", true)
+	var actor := e.actor()
+	while actor.health() > 1:
+		actor.hurtbox().receive(Hit.new(&"pistol", Verbs.PRECISION_HIT, Vector2.ZERO))
+
+	assert_true(main.world_root.intervention.use(e), "the intervention actually works here, in the real final room")
+	assert_eq(e.result(), Encounter.RESULT_RECALLED, "recalled, not defeated")
+
+func test_reaching_the_return_gate_marks_the_route_complete_exactly_once() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+
+	assert_false(main.world_root.is_route_complete(), "not complete until the gate is actually reached")
+	var completions: Array[bool] = []
+	main.world_root.route_completed.connect(func() -> void: completions.append(true))
+	var gate := room.get_node_or_null(^"ReturnGate") as RoomExit
+	assert_not_null(gate, "the return gate exists")
+	gate._on_body_entered(player)
+	assert_true(main.world_root.is_route_complete(), "reaching it marks the route complete")
+	assert_eq(completions.size(), 1, "the signal fires once")
+	gate._on_body_entered(player)
+	assert_eq(completions.size(), 1, "and a stale exit reference cannot re-fire it a second time")
+
+func test_mark_route_complete_is_idempotent_on_its_own_not_only_via_the_exits_own_guard() -> void:
+	# RoomExit's own _fired flag would ALSO stop a second call from reaching
+	# WorldRoot, so calling it through the gate twice (as above) cannot tell
+	# apart "the ledger-based guard in WorldRoot works" from "RoomExit's
+	# one-shot flag happened to catch it first". Calling the canonical method
+	# directly, twice, isolates the guard that actually matters -- the same
+	# once-and-only-once contract every reward and judgment in this game
+	# already goes through the ledger for.
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	var completions: Array[bool] = []
+	main.world_root.route_completed.connect(func() -> void: completions.append(true))
+	main.world_root.mark_route_complete()
+	main.world_root.mark_route_complete()
+	main.world_root.mark_route_complete()
+	assert_eq(completions.size(), 1, "the canonical entry point is idempotent on its own")
+
+func test_the_return_gate_is_never_blocked_by_a_refused_alliance_or_romance() -> void:
+	# docs/gameplay-pillars.md: "An optional romance refusal must not block the
+	# temple's exit." Declining both, explicitly, and reaching the gate anyway.
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", false)
+	main.services.relationships.resolve_romance_offer(&"keeper_of_the_clay_dead", &"decline")
+	var gate := room.get_node_or_null(^"ReturnGate") as RoomExit
+	gate._on_body_entered(player)
+	assert_true(main.world_root.is_route_complete(),
+		"refusing her twice over still lets the player finish the route")

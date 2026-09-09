@@ -8,6 +8,9 @@ extends Node2D
 signal room_loaded(room_id: StringName)
 signal checkpoint_reached(checkpoint_id: StringName)
 signal player_defeated()
+signal route_completed()
+
+const ROUTE_COMPLETE_EVENT_ID := &"vertical_slice_route_completed"
 
 @export var player_scene: PackedScene
 ## Room bounds are fixed per room (decision D10), so the camera never wanders
@@ -30,6 +33,18 @@ var _last_checkpoint_position: Vector2 = Vector2.ZERO
 func bind(p_services: Services) -> void:
 	services = p_services
 	intervention = RecallToClay.new(p_services.tuning, p_services.relationships)
+
+## The final return gate calls this instead of loading a next room. Idempotent
+## through the ledger, so reaching it twice (a checkpoint reload after
+## crossing it) cannot re-fire whatever this eventually triggers.
+func is_route_complete() -> bool:
+	return services != null and services.ledger.has_consumed(ROUTE_COMPLETE_EVENT_ID)
+
+func mark_route_complete() -> void:
+	if services == null:
+		return
+	if services.ledger.consume(ROUTE_COMPLETE_EVENT_ID):
+		route_completed.emit()
 
 var dialogue_player: DialoguePlayer
 

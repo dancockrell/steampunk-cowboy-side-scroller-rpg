@@ -11,6 +11,10 @@ extends Area2D
 ## Optional. When set, the exit only admits the player once this gate reports
 ## open, so the exit and the puzzle that unlocks it can never disagree.
 @export var required_gate_path: NodePath
+## The final beat's return gate has no next room to load: reaching it marks
+## the authored route complete instead. Mutually exclusive with next_room,
+## and enforced as such rather than one silently overriding the other.
+@export var marks_route_complete: bool = false
 
 var _world: WorldRoot
 var _fired: bool = false
@@ -36,6 +40,14 @@ func _on_body_entered(body: Node2D) -> void:
 	if _fired or _world == null or body is not Player:
 		return
 	if not is_open():
+		return
+	if marks_route_complete and next_room != null:
+		push_error("RoomExit '%s' names both next_room and marks_route_complete; ambiguous authoring, refusing to guess"
+			% name)
+		return
+	if marks_route_complete:
+		_fired = true
+		_world.mark_route_complete()
 		return
 	if next_room == null:
 		push_error("RoomExit '%s' has no next_room assigned" % name)

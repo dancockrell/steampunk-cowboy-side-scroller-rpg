@@ -1,0 +1,96 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
+[ext_resource type="Script" path="res://src/world/tool_target.gd" id="3_target"]
+[ext_resource type="Script" path="res://src/puzzles/mechanism_gate.gd" id="4_gate"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="5_exit"]
+[ext_resource type="PackedScene" path="res://levels/temple_clay_dead/gallery_of_vessels.tscn" id="6_next"]
+
+[sub_resource type="RectangleShape2D" id="small_box"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="gate_box"]
+size = Vector2(32, 96)
+
+[sub_resource type="RectangleShape2D" id="exit_box"]
+size = Vector2(32, 128)
+
+[node name="EntryBridge" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"entry_bridge"
+default_spawn_id = &"spawn_entry"
+bounds = Rect2(0, 0, 960, 360)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+platforms = Array[Rect2]([Rect2(0, 288, 320, 72), Rect2(640, 288, 320, 72)])
+backdrop = Array[Rect2]([Rect2(64, 64, 832, 192)])
+
+[node name="spawn_entry" type="Marker2D" parent="."]
+position = Vector2(64, 288)
+
+[node name="SwingAnchor" type="Area2D" parent="."]
+position = Vector2(480, 128)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"bridge_swing_anchor"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"bridge_swing_anchor"
+
+[node name="AnchorShape" type="CollisionShape2D" parent="SwingAnchor"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchor"]
+
+[node name="GrayboxAnchor" type="Polygon2D" parent="SwingAnchor"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="Counterweight" type="Area2D" parent="."]
+position = Vector2(800, 240)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"bridge_counterweight"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"bridge_counterweight"
+reward_event_id = &"bridge_counterweight_pulled"
+
+[node name="WeightShape" type="CollisionShape2D" parent="Counterweight"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Counterweight"]
+
+[node name="GrayboxWeight" type="Polygon2D" parent="Counterweight"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="ExitGate" type="StaticBody2D" parent="."]
+position = Vector2(896, 240)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("4_gate")
+watched_puzzle_id = &"bridge_counterweight"
+watched_field = &"uses"
+open_offset = Vector2(0, -112)
+
+[node name="GateShape" type="CollisionShape2D" parent="ExitGate"]
+shape = SubResource("gate_box")
+
+[node name="GrayboxGate" type="Polygon2D" parent="ExitGate"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="ExitToGallery" type="Area2D" parent="."]
+position = Vector2(928, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("5_exit")
+next_room = ExtResource("6_next")
+next_spawn_id = &"spawn_entry"
+required_gate_path = NodePath("../ExitGate")
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitToGallery"]
+shape = SubResource("exit_box")
