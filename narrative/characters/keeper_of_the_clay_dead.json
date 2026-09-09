@@ -1,0 +1,66 @@
+{
+  "schema_note": "Heroine record. Fields defined in docs/data-contracts.md. Working role only: final name, face, costume and iconography remain unapproved pending F01 (docs/production/keeper-art-brief.md).",
+  "id": "keeper_of_the_clay_dead",
+  "adult": true,
+  "display_name": "The Keeper of the Clay Dead",
+  "domain": "Remembrance, funerary vessels, and the dignity of imperfect remains.",
+  "agenda": "Stop the temple's guardians from consuming the identities they were raised to protect.",
+  "boundaries": [
+    "Will not bless an act she considers desecration, whatever it accomplishes.",
+    "Does not trade intimacy for cooperation, and says so plainly if asked.",
+    "Will withdraw rather than argue twice about the same broken thing."
+  ],
+  "portrait_set_id": "keeper_portraits_v001",
+  "manifestation_set_id": "keeper_manifestation_v001",
+  "intervention_id": "recall_to_clay",
+  "offer_scene_ids": {
+    "introduction": "keeper_intro",
+    "judgment": "keeper_judgment",
+    "alliance": "keeper_alliance_offer",
+    "romance": "keeper_romance_offer"
+  },
+  "judgment_rules": {
+    "urn_preserved": {
+      "trust": 2,
+      "respect": 1,
+      "fascination": 0,
+      "line": "You moved the stone and left the urn standing. Most men your size do not notice the difference between an obstacle and a person."
+    },
+    "urn_destroyed": {
+      "trust": -2,
+      "respect": -1,
+      "fascination": 0,
+      "line": "That jar held someone. She had a name this morning, and you have made her a draught of dust."
+    },
+    "supplicant_protected": {
+      "trust": 2,
+      "respect": 2,
+      "fascination": 1,
+      "line": "You stood between it and the thing that wanted it, and you did not first ask what it was worth. I saw that."
+    },
+    "burial_identity_restored": {
+      "trust": 1,
+      "respect": 3,
+      "fascination": 1,
+      "line": "You gave the skull back to the right shoulders. It is a small correction. It is the whole of my work."
+    },
+    "shrine_destroyed": {
+      "trust": -3,
+      "respect": -2,
+      "fascination": 1,
+      "line": "You solved it. I will not pretend you did not. But you solved it through my altar, and I am allowed to be angry and impressed at once."
+    },
+    "sentinel_spared_by_recall": {
+      "trust": 1,
+      "respect": 1,
+      "fascination": 2,
+      "line": "You sent it home instead of finishing it. Very few of my champions have ever thought to try."
+    },
+    "bridge_crossed_without_breaking": {
+      "trust": 0,
+      "respect": 2,
+      "fascination": 2,
+      "line": "A rope, a counterweight and some nerve. You did not need to break one thing of mine to get in here. Noted."
+    }
+  }
+}
