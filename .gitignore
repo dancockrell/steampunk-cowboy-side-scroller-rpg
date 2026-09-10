@@ -14,3 +14,4 @@ Thumbs.db
 work/
 *.pfx
 *.key
+__pycache__/
