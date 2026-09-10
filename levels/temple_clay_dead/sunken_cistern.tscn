@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3]
+[gd_scene load_steps=36 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -117,6 +117,21 @@ resolved_visual_id = &"ceramic_sentinel_resolved"
 interrupt_rule = &"to_staggered_active"
 blocked_spawn_policy = &"wait"
 reward_event_id = &"z4e_jar_resolved"
+
+[sub_resource type="Resource" id="src_z4k_jar"]
+script = ExtResource("7_source")
+id = &"z4k_jar"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"z4k_jar_trigger"
+spawn_point_id = &"z4k_jar_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"z4k_jar_resolved"
 
 [sub_resource type="Resource" id="src_z5c_pit"]
 script = ExtResource("7_source")
@@ -282,6 +297,21 @@ resolved_visual_id = &"burial_pit_assembler_resolved"
 interrupt_rule = &"to_staggered_active"
 blocked_spawn_policy = &"wait"
 reward_event_id = &"z9k_pit_resolved"
+
+[sub_resource type="Resource" id="src_z9m_jar"]
+script = ExtResource("7_source")
+id = &"z9m_jar"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"z9m_jar_trigger"
+spawn_point_id = &"z9m_jar_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"z9m_jar_resolved"
 
 [node name="SunkenCistern" type="Node2D"]
 script = ExtResource("1_room")
@@ -1740,6 +1770,23 @@ shape = SubResource("anchor_box")
 [node name="Graybox" type="Polygon2D" parent="A_z4j_1"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Enc_z4k_jar" type="Node2D" parent="."]
+position = Vector2(2100, 1650)
+script = ExtResource("6_encounter")
+source = SubResource("src_z4k_jar")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_z4k_jar"]
+
+[node name="Trig_z4k_jar" type="Area2D" parent="."]
+position = Vector2(1960, 1530)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_z4k_jar")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_z4k_jar"]
+shape = SubResource("trigger_box")
 
 [node name="Door_z5a" type="StaticBody2D" parent="."]
 position = Vector2(2280, 2236)
@@ -3304,6 +3351,23 @@ shape = SubResource("anchor_box")
 [node name="Graybox" type="Polygon2D" parent="A_z9l_1"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Enc_z9m_jar" type="Node2D" parent="."]
+position = Vector2(3180, 2600)
+script = ExtResource("6_encounter")
+source = SubResource("src_z9m_jar")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_z9m_jar"]
+
+[node name="Trig_z9m_jar" type="Area2D" parent="."]
+position = Vector2(2980, 2520)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_z9m_jar")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_z9m_jar"]
+shape = SubResource("trigger_box")
 
 [node name="Door_z10a" type="StaticBody2D" parent="."]
 position = Vector2(660, 1856)

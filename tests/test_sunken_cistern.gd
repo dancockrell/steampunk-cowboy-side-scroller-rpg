@@ -61,10 +61,13 @@ func test_the_level_is_authored_as_beats_not_filled_with_furniture() -> void:
 		var id := String(b.get("id", ""))
 		assert_false(ids.has(id), "beat id '%s' is used once" % id)
 		ids.append(id)
-		# An intent that is not a sentence is a label, and a label is what
-		# furniture has instead of a reason to exist.
-		assert_true(intent.length() >= 30,
-			"beat '%s' states what it is for: '%s'" % [id, intent])
+		# A one-liner is a caption. A beat has to say what the player sees,
+		# what they will try, what it costs and what the better play is, and
+		# that does not fit in a sentence -- so the floor is a paragraph.
+		assert_true(intent.length() >= 240,
+			"beat '%s' is designed, not captioned (%d chars): '%s'" % [id, intent.length(), intent])
+		assert_true(intent.count(". ") >= 2,
+			"beat '%s' is more than one sentence long" % id)
 
 func test_every_beat_is_inside_the_level() -> void:
 	var bounds := room.camera_bounds()
