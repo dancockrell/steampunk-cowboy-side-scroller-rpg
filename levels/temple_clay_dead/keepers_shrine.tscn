@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -8,12 +8,32 @@
 [ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="6_trigger"]
 [ext_resource type="Script" path="res://src/world/heroine_npc.gd" id="7_heroine"]
 [ext_resource type="Script" path="res://src/world/room_exit.gd" id="8_exit"]
+[ext_resource type="Script" path="res://src/world/tool_target.gd" id="9_target"]
+[ext_resource type="Script" path="res://src/world/depth_crossing.gd" id="10_crossing"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
 
 [sub_resource type="RectangleShape2D" id="trigger_box"]
 size = Vector2(48, 128)
+
+[sub_resource type="RectangleShape2D" id="crossing_box"]
+size = Vector2(32, 96)
+
+[sub_resource type="Resource" id="warmup_sentinel_source"]
+script = ExtResource("5_source")
+id = &"keeper_shrine_sentinel_00"
+room_id = &"keepers_shrine"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"keeper_shrine_sentinel_00_trigger"
+spawn_point_id = &"keeper_shrine_sentinel_00_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"keeper_shrine_sentinel_00_resolved"
 
 [sub_resource type="Resource" id="final_sentinel_source"]
 script = ExtResource("5_source")
@@ -34,12 +54,18 @@ reward_event_id = &"keeper_shrine_sentinel_01_resolved"
 script = ExtResource("1_room")
 room_id = &"keepers_shrine"
 default_spawn_id = &"spawn_from_burial"
-bounds = Rect2(0, 0, 1024, 360)
+bounds = Rect2(0, 0, 2200, 640)
 
 [node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_terrain")
-platforms = Array[Rect2]([Rect2(0, 288, 1024, 72)])
-backdrop = Array[Rect2]([Rect2(96, 64, 832, 224)])
+platforms = Array[Rect2]([Rect2(0, 288, 480, 72), Rect2(640, 288, 760, 72), Rect2(1560, 288, 640, 72), Rect2(950, 140, 220, 16)])
+backdrop = Array[Rect2]([Rect2(96, 32, 2008, 320), Rect2(2104, 32, 96, 256)])
+
+[node name="MidVaultTerrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+depth_layer = 1
+platforms = Array[Rect2]([Rect2(760, 400, 300, 40)])
+backdrop = Array[Rect2]([Rect2(736, 300, 348, 160)])
 
 [node name="spawn_from_burial" type="Marker2D" parent="."]
 position = Vector2(64, 288)
@@ -70,8 +96,145 @@ shape = SubResource("small_box")
 color = Color(0.62, 0.42, 0.68, 1)
 polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)
 
+[node name="FirstSentinelEncounter" type="Node2D" parent="."]
+position = Vector2(380, 288)
+script = ExtResource("4_encounter")
+source = SubResource("warmup_sentinel_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="FirstSentinelEncounter"]
+
+[node name="FirstSentinelTrigger" type="Area2D" parent="."]
+position = Vector2(300, 240)
+script = ExtResource("6_trigger")
+encounter_path = NodePath("../FirstSentinelEncounter")
+
+[node name="FirstTriggerShape" type="CollisionShape2D" parent="FirstSentinelTrigger"]
+shape = SubResource("trigger_box")
+
+[node name="SwingAnchorGap1" type="Area2D" parent="."]
+position = Vector2(560, 140)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("9_target")
+receiver_id = &"keeper_shrine_swing_anchor_gap1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"keeper_shrine_swing_anchor_gap1"
+
+[node name="Gap1AnchorShape" type="CollisionShape2D" parent="SwingAnchorGap1"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchorGap1"]
+
+[node name="GrayboxGap1Anchor" type="Polygon2D" parent="SwingAnchorGap1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="CrossingToMid" type="Area2D" parent="."]
+position = Vector2(700, 220)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_crossing")
+target_layer = 1
+
+[node name="CrossingToMidShape" type="CollisionShape2D" parent="CrossingToMid"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToMid" type="Polygon2D" parent="CrossingToMid"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="CrossingToNear" type="Area2D" parent="."]
+position = Vector2(900, 340)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_crossing")
+target_layer = 0
+
+[node name="CrossingToNearShape" type="CollisionShape2D" parent="CrossingToNear"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToNear" type="Polygon2D" parent="CrossingToNear"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="VaultCache" type="Area2D" parent="."]
+position = Vector2(860, 360)
+collision_mask = 0
+script = ExtResource("9_target")
+depth_layer = 1
+receiver_id = &"keeper_shrine_vault_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"keeper_shrine_vault_cache"
+reward_event_id = &"keeper_shrine_vault_cache_found"
+
+[node name="VaultCacheShape" type="CollisionShape2D" parent="VaultCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="VaultCache"]
+
+[node name="GrayboxVaultCache" type="Polygon2D" parent="VaultCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
+
+[node name="SwingAnchorMezzanine" type="Area2D" parent="."]
+position = Vector2(900, 100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("9_target")
+receiver_id = &"keeper_shrine_swing_anchor_mezzanine"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"keeper_shrine_swing_anchor_mezzanine"
+
+[node name="MezzanineAnchorShape" type="CollisionShape2D" parent="SwingAnchorMezzanine"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchorMezzanine"]
+
+[node name="GrayboxMezzanineAnchor" type="Polygon2D" parent="SwingAnchorMezzanine"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="MezzanineCache" type="Area2D" parent="."]
+position = Vector2(1080, 128)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("9_target")
+receiver_id = &"keeper_shrine_mezzanine_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"keeper_shrine_mezzanine_cache"
+reward_event_id = &"keeper_shrine_mezzanine_cache_found"
+
+[node name="MezzanineCacheShape" type="CollisionShape2D" parent="MezzanineCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="MezzanineCache"]
+
+[node name="GrayboxMezzanineCache" type="Polygon2D" parent="MezzanineCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
+
+[node name="SwingAnchorGap2" type="Area2D" parent="."]
+position = Vector2(1480, 140)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("9_target")
+receiver_id = &"keeper_shrine_swing_anchor_gap2"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"keeper_shrine_swing_anchor_gap2"
+
+[node name="Gap2AnchorShape" type="CollisionShape2D" parent="SwingAnchorGap2"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchorGap2"]
+
+[node name="GrayboxGap2Anchor" type="Polygon2D" parent="SwingAnchorGap2"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
 [node name="FinalSentinelEncounter" type="Node2D" parent="."]
-position = Vector2(560, 288)
+position = Vector2(1760, 288)
 script = ExtResource("4_encounter")
 source = SubResource("final_sentinel_source")
 spawn_point_path = NodePath("SpawnPoint")
@@ -80,7 +243,7 @@ source_allowed_verbs = Array[StringName]([&"force_hit"])
 [node name="SpawnPoint" type="Marker2D" parent="FinalSentinelEncounter"]
 
 [node name="FinalSentinelTrigger" type="Area2D" parent="."]
-position = Vector2(440, 240)
+position = Vector2(1620, 240)
 script = ExtResource("6_trigger")
 encounter_path = NodePath("../FinalSentinelEncounter")
 
@@ -88,7 +251,7 @@ encounter_path = NodePath("../FinalSentinelEncounter")
 shape = SubResource("trigger_box")
 
 [node name="ReturnGate" type="Area2D" parent="."]
-position = Vector2(960, 240)
+position = Vector2(2140, 240)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("8_exit")
