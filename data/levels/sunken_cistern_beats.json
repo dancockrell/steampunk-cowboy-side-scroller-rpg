@@ -1,0 +1,614 @@
+[
+ {
+  "id": "z1a",
+  "x": 0,
+  "y": 620,
+  "intent": "You land on a wide safe ledge and the level is simply visible below you"
+ },
+ {
+  "id": "z1b",
+  "x": 700,
+  "y": 540,
+  "intent": "A ledge just out of jumping range: the first thing the rope is for"
+ },
+ {
+  "id": "z1c",
+  "x": 1100,
+  "y": 700,
+  "intent": "A cache in plain sight one swing further out, so the reward reads as earned"
+ },
+ {
+  "id": "z1d",
+  "x": 430,
+  "y": 300,
+  "intent": "The roof walkway is overhead and lit; you cannot reach it yet and you know it"
+ },
+ {
+  "id": "z1e",
+  "x": 240,
+  "y": 860,
+  "intent": "Two shelves below the entry, so down is obviously an option too"
+ },
+ {
+  "id": "z1f",
+  "x": 1240,
+  "y": 430,
+  "intent": "One anchor hangs over the shaft mouth: the whole level is one swing away"
+ },
+ {
+  "id": "z2a",
+  "x": 120,
+  "y": 1000,
+  "intent": "Three jars on a shelf and no way to tell which is a sentinel"
+ },
+ {
+  "id": "z2b",
+  "x": 300,
+  "y": 940,
+  "intent": "The chime that answers the question, if you shoot it before you touch anything"
+ },
+ {
+  "id": "z2c",
+  "x": 0,
+  "y": 1180,
+  "intent": "A side shelf under the gallery: the cautious way past the jars"
+ },
+ {
+  "id": "z2d",
+  "x": 300,
+  "y": 1320,
+  "intent": "A cache directly beneath the live jar, so the greedy line is the dangerous one"
+ },
+ {
+  "id": "z2e",
+  "x": 640,
+  "y": 1160,
+  "intent": "A lone anchor out over nothing, the reward for reading the room"
+ },
+ {
+  "id": "z2f",
+  "x": 90,
+  "y": 1640,
+  "intent": "A mural on the back wall of a narrow shelf: no room to back away from it"
+ },
+ {
+  "id": "z2g",
+  "x": 640,
+  "y": 1500,
+  "intent": "The shelf you land on if you flee the mural, deliberately just within one swing"
+ },
+ {
+  "id": "z2h",
+  "x": 380,
+  "y": 1900,
+  "intent": "A wide gallery floor, the first place in the west it is safe to stand and think"
+ },
+ {
+  "id": "z2i",
+  "x": 560,
+  "y": 2060,
+  "intent": "A ledge over the drop with a vent under it: the shortcut costs health"
+ },
+ {
+  "id": "z2j",
+  "x": 140,
+  "y": 2200,
+  "intent": "Two jars flanking the only route down, one of them alive"
+ },
+ {
+  "id": "z2k",
+  "x": 420,
+  "y": 2460,
+  "intent": "The bar that opens the kiln door, all the way across the level from it"
+ },
+ {
+  "id": "z2l",
+  "x": 120,
+  "y": 2380,
+  "intent": "One more shelf so the descent is a choice of lines, not a ladder"
+ },
+ {
+  "id": "z3a",
+  "x": 60,
+  "y": 1150,
+  "intent": "An anchor with nothing under it: your first swing that must land"
+ },
+ {
+  "id": "z3b",
+  "x": 60,
+  "y": 1470,
+  "intent": "A rope line staggered so the swing arcs are not a straight fall"
+ },
+ {
+  "id": "z3c",
+  "x": 60,
+  "y": 1790,
+  "intent": "The same again lower, tightening as the wall closes in"
+ },
+ {
+  "id": "z3d",
+  "x": 60,
+  "y": 2100,
+  "intent": "The last rope line above the water, wide enough to recover a bad swing"
+ },
+ {
+  "id": "z3e",
+  "x": 200,
+  "y": 2320,
+  "intent": "Broken shelves you can chain if you would rather climb than swing"
+ },
+ {
+  "id": "z3f",
+  "x": 820,
+  "y": 1300,
+  "intent": "A slab in mid-air with a cache on it, only reachable mid-swing"
+ },
+ {
+  "id": "z3g",
+  "x": 900,
+  "y": 1700,
+  "intent": "An anchor placed so the obvious swing carries you over the vent, not into it"
+ },
+ {
+  "id": "z3h",
+  "x": 760,
+  "y": 2000,
+  "intent": "A ledge that looks like a rest and has a mural on it"
+ },
+ {
+  "id": "z3i",
+  "x": 1000,
+  "y": 2300,
+  "intent": "Stepping stones over the water gap, small enough to make you commit"
+ },
+ {
+  "id": "z3j",
+  "x": 420,
+  "y": 2620,
+  "intent": "The west waterline: shards in the shallows punish a missed landing"
+ },
+ {
+  "id": "z3k",
+  "x": 1180,
+  "y": 1900,
+  "intent": "A high anchor that lets a confident player skip the whole descent"
+ },
+ {
+  "id": "z3l",
+  "x": 1300,
+  "y": 2450,
+  "intent": "Where that skip lands you, right next to something that was waiting"
+ },
+ {
+  "id": "z4a",
+  "x": 1460,
+  "y": 900,
+  "intent": "The west lip of the shaft: the first place you can look straight down it"
+ },
+ {
+  "id": "z4b",
+  "x": 2390,
+  "y": 900,
+  "intent": "The east lip, visibly the same height, so the shaft reads as a crossing too"
+ },
+ {
+  "id": "z4c",
+  "x": 1580,
+  "y": 620,
+  "intent": "Anchors up the middle of the shaft: it is a way UP as much as down"
+ },
+ {
+  "id": "z4d",
+  "x": 1880,
+  "y": 1220,
+  "intent": "An island in the middle of the shaft with the grate pin above it"
+ },
+ {
+  "id": "z4e",
+  "x": 2020,
+  "y": 1176,
+  "intent": "A jar sits ON the island: the pin shot is taken from a compromised place"
+ },
+ {
+  "id": "z4f",
+  "x": 1620,
+  "y": 1000,
+  "intent": "Ledges down the shaft's west wall for the careful route"
+ },
+ {
+  "id": "z4g",
+  "x": 2200,
+  "y": 1000,
+  "intent": "And the east wall, offset, so the two routes cannot be taken at once"
+ },
+ {
+  "id": "z4h",
+  "x": 1460,
+  "y": 1500,
+  "intent": "Mid-shaft lip with a vent on the wall at exactly swing height"
+ },
+ {
+  "id": "z4i",
+  "x": 2390,
+  "y": 1500,
+  "intent": "Its opposite number, so the vent is passed on one side or the other"
+ },
+ {
+  "id": "z4j",
+  "x": 1760,
+  "y": 1820,
+  "intent": "A slab low in the shaft holding a cache, in the vents' reach"
+ },
+ {
+  "id": "z5a",
+  "x": 2280,
+  "y": 2236,
+  "intent": "The grate: shot open from the island far above, and you saw it happen"
+ },
+ {
+  "id": "z5b",
+  "x": 2160,
+  "y": 2380,
+  "intent": "The slab under the grate, the only soft landing in the shaft's bottom"
+ },
+ {
+  "id": "z5c",
+  "x": 2280,
+  "y": 2336,
+  "intent": "An assembler waits under the grate for whoever opens it"
+ },
+ {
+  "id": "z5d",
+  "x": 1460,
+  "y": 2100,
+  "intent": "The last lip before the water, and an anchor to bail out with"
+ },
+ {
+  "id": "z5e",
+  "x": 2390,
+  "y": 2100,
+  "intent": "Its twin, because a bail-out with one option is not a decision"
+ },
+ {
+  "id": "z5f",
+  "x": 1600,
+  "y": 2160,
+  "intent": "Rope line strung above the water so a fall down the shaft is survivable"
+ },
+ {
+  "id": "z5g",
+  "x": 1820,
+  "y": 1776,
+  "intent": "A cache tucked behind the shaft wall, visible only on the way down"
+ },
+ {
+  "id": "z5h",
+  "x": 2600,
+  "y": 2560,
+  "intent": "The rope line continues east over the water toward the shrine"
+ },
+ {
+  "id": "z6a",
+  "x": 1300,
+  "y": 300,
+  "intent": "The first roof walkway, reachable only by a long swing from the entry side"
+ },
+ {
+  "id": "z6b",
+  "x": 1480,
+  "y": 356,
+  "intent": "The latch that opens the roof hatch, shot across the gap from here"
+ },
+ {
+  "id": "z6c",
+  "x": 2200,
+  "y": 240,
+  "intent": "The widest roof slab, and the only flat run up here"
+ },
+ {
+  "id": "z6d",
+  "x": 2740,
+  "y": 396,
+  "intent": "The roof hatch itself, opened from a walkway you had to reach first"
+ },
+ {
+  "id": "z6e",
+  "x": 2420,
+  "y": 196,
+  "intent": "The best cache in the level, on the roof, behind everything"
+ },
+ {
+  "id": "z6f",
+  "x": 3200,
+  "y": 320,
+  "intent": "Roof continues east, so the hatch is not the only thing up here"
+ },
+ {
+  "id": "z6g",
+  "x": 4100,
+  "y": 420,
+  "intent": "The last roof slab, overlooking the kiln stack"
+ },
+ {
+  "id": "z6h",
+  "x": 1720,
+  "y": 180,
+  "intent": "The roof anchor chain: four swings, no floor, one mistake is the whole drop"
+ },
+ {
+  "id": "z7a",
+  "x": 2760,
+  "y": 760,
+  "intent": "A broad kiln floor, hot at one end"
+ },
+ {
+  "id": "z7b",
+  "x": 3040,
+  "y": 976,
+  "intent": "A mural where the only standing room is beside a vent"
+ },
+ {
+  "id": "z7c",
+  "x": 2940,
+  "y": 1256,
+  "intent": "A vent directly below a narrow ledge: staggered things fall into it"
+ },
+ {
+  "id": "z7d",
+  "x": 3320,
+  "y": 1020,
+  "intent": "A shelf between two heats, wide enough to fight on and no wider"
+ },
+ {
+  "id": "z7e",
+  "x": 2880,
+  "y": 1300,
+  "intent": "Kiln mouths in a rising line, the first place the route IS the hazard"
+ },
+ {
+  "id": "z7f",
+  "x": 3460,
+  "y": 1560,
+  "intent": "The widest kiln tier, with a jar at the far end you will meet on the way back"
+ },
+ {
+  "id": "z7g",
+  "x": 3620,
+  "y": 1516,
+  "intent": "A vent between you and that jar, which is the point"
+ },
+ {
+  "id": "z7h",
+  "x": 2960,
+  "y": 1840,
+  "intent": "A lower tier, cooler, where you can see the whole stack you just crossed"
+ },
+ {
+  "id": "z7i",
+  "x": 3560,
+  "y": 2120,
+  "intent": "The bottom of the stack, and an assembler between you and the east wall"
+ },
+ {
+  "id": "z7j",
+  "x": 4200,
+  "y": 900,
+  "intent": "The east high shelf with a jar guarding a cache"
+ },
+ {
+  "id": "z7k",
+  "x": 4560,
+  "y": 1240,
+  "intent": "A shelf you reach by rope only, holding nothing: a lesson about greed"
+ },
+ {
+  "id": "z7l",
+  "x": 4700,
+  "y": 1196,
+  "intent": "The mural on that empty shelf, which is what it was really holding"
+ },
+ {
+  "id": "z7m",
+  "x": 4260,
+  "y": 1560,
+  "intent": "A shelf under the empty one, so fleeing downward is possible"
+ },
+ {
+  "id": "z7n",
+  "x": 4620,
+  "y": 1880,
+  "intent": "Low east shelf, with the kiln cache behind a vent"
+ },
+ {
+  "id": "z8a",
+  "x": 3600,
+  "y": 2076,
+  "intent": "The winch that opens the west vault, an entire level away from the vault"
+ },
+ {
+  "id": "z8b",
+  "x": 3520,
+  "y": 2120,
+  "intent": "A mural directly behind the winch: you pull it with your back turned"
+ },
+ {
+  "id": "z8c",
+  "x": 4180,
+  "y": 2200,
+  "intent": "The tier the winch fight spills onto"
+ },
+ {
+  "id": "z8d",
+  "x": 4160,
+  "y": 2356,
+  "intent": "The kiln door, opened by a bar back in the west galleries"
+ },
+ {
+  "id": "z8e",
+  "x": 4420,
+  "y": 2560,
+  "intent": "Past the kiln door: a shrine, because the deep east is a long way from anywhere"
+ },
+ {
+  "id": "z8f",
+  "x": 4620,
+  "y": 2400,
+  "intent": "Rope out over the deep east water"
+ },
+ {
+  "id": "z8g",
+  "x": 3980,
+  "y": 2620,
+  "intent": "Shards under the east rope line, so a missed swing over the water still costs you"
+ },
+ {
+  "id": "z8h",
+  "x": 4600,
+  "y": 2676,
+  "intent": "An assembler in the last stretch of water before the way out"
+ },
+ {
+  "id": "z8i",
+  "x": 4340,
+  "y": 856,
+  "intent": "A jar on the high east shelf, positioned to emerge behind you at the cache"
+ },
+ {
+  "id": "z8j",
+  "x": 4780,
+  "y": 1560,
+  "intent": "One anchor at the far east edge so the wall is never a dead end"
+ },
+ {
+  "id": "z8k",
+  "x": 4880,
+  "y": 2000,
+  "intent": "And the corner, which would otherwise be the one place you could strand yourself"
+ },
+ {
+  "id": "z8l",
+  "x": 4980,
+  "y": 2640,
+  "intent": "The way on to Burial Works, at the deep east end"
+ },
+ {
+  "id": "z9a",
+  "x": 2600,
+  "y": 2720,
+  "intent": "The cistern floor proper, broken so the water is always near"
+ },
+ {
+  "id": "z9b",
+  "x": 2660,
+  "y": 2676,
+  "intent": "A supplicant on a slab above the water, still holding her token"
+ },
+ {
+  "id": "z9c",
+  "x": 2900,
+  "y": 2676,
+  "intent": "An assembler between you and her, closer to her than to you"
+ },
+ {
+  "id": "z9d",
+  "x": 2740,
+  "y": 2634,
+  "intent": "The shrine beside her, so you can save and try again"
+ },
+ {
+  "id": "z9e",
+  "x": 2760,
+  "y": 2676,
+  "intent": "The offering cache at her feet: taking it is not the same as protecting her"
+ },
+ {
+  "id": "z9f",
+  "x": 2480,
+  "y": 2560,
+  "intent": "The anchor you would naturally rope to cross -- it is over HER slab"
+ },
+ {
+  "id": "z9g",
+  "x": 0,
+  "y": 2720,
+  "intent": "West floor, with the first water gap immediately after it"
+ },
+ {
+  "id": "z9h",
+  "x": 900,
+  "y": 2720,
+  "intent": "A floor island with shards on both approaches"
+ },
+ {
+  "id": "z9i",
+  "x": 1560,
+  "y": 2720,
+  "intent": "Another island, smaller, so crossing the floor is its own traversal problem"
+ },
+ {
+  "id": "z9j",
+  "x": 2120,
+  "y": 2720,
+  "intent": "The narrowest island, right under the shaft, where falls land"
+ },
+ {
+  "id": "z9k",
+  "x": 3400,
+  "y": 2720,
+  "intent": "East floor begins, with an assembler already up"
+ },
+ {
+  "id": "z9l",
+  "x": 4420,
+  "y": 2720,
+  "intent": "The last floor run to the exit, deliberately clear: you have earned it"
+ },
+ {
+  "id": "z10a",
+  "x": 660,
+  "y": 1856,
+  "intent": "The west vault door, opened by the winch across the level"
+ },
+ {
+  "id": "z10b",
+  "x": 180,
+  "y": 1856,
+  "intent": "The vault opens on a cache and nothing else, so the winch was worth crossing the level for"
+ },
+ {
+  "id": "z10c",
+  "x": 3980,
+  "y": 2660,
+  "intent": "An island shelf so the east water is crossable without the rope"
+ },
+ {
+  "id": "z10d",
+  "x": 1300,
+  "y": 1000,
+  "intent": "Rope between the west wing and the shaft, so the two halves are one place"
+ },
+ {
+  "id": "z10e",
+  "x": 2560,
+  "y": 620,
+  "intent": "Rope between the shaft and the kiln stack, same reason"
+ },
+ {
+  "id": "z10f",
+  "x": 2700,
+  "y": 1120,
+  "intent": "And lower, so the crossing is possible at more than one height"
+ },
+ {
+  "id": "z10g",
+  "x": 2760,
+  "y": 2120,
+  "intent": "The lowest crossing between the two halves, taken at water level where a fall is short"
+ },
+ {
+  "id": "z10h",
+  "x": 1120,
+  "y": 620,
+  "intent": "Rope back up to the entry, so the level is never one-way"
+ }
+]

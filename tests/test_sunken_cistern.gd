@@ -40,6 +40,54 @@ func _anchors() -> Array[Vector2]:
 			out.append(target.global_position)
 	return out
 
+func _beats() -> Array:
+	var f := FileAccess.open("res://data/levels/sunken_cistern_beats.json", FileAccess.READ)
+	assert_not_null(f, "the beat sheet ships with the level")
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	return parsed as Array
+
+func test_the_level_is_authored_as_beats_not_filled_with_furniture() -> void:
+	# The rule this level is built under: nothing exists in it unless it belongs
+	# to a named beat with a written intent. The first version of this level was
+	# 123 platforms and 129 anchors emitted by `while` loops -- big, and telling
+	# about eight stories. Counting beats is the check that stops that returning.
+	var beats := _beats()
+	assert_true(beats.size() >= 100,
+		"the level is authored as at least a hundred situations, found %d" % beats.size())
+	var ids: Array = []
+	for beat: Variant in beats:
+		var b: Dictionary = beat
+		var intent := String(b.get("intent", ""))
+		var id := String(b.get("id", ""))
+		assert_false(ids.has(id), "beat id '%s' is used once" % id)
+		ids.append(id)
+		# An intent that is not a sentence is a label, and a label is what
+		# furniture has instead of a reason to exist.
+		assert_true(intent.length() >= 30,
+			"beat '%s' states what it is for: '%s'" % [id, intent])
+
+func test_every_beat_is_inside_the_level() -> void:
+	var bounds := room.camera_bounds()
+	for beat: Variant in _beats():
+		var b: Dictionary = beat
+		var at := Vector2(float(b["x"]), float(b["y"]))
+		assert_true(bounds.has_point(at),
+			"beat '%s' is placed inside the room at %s" % [String(b["id"]), str(at)])
+
+func test_beats_are_spread_through_the_space_rather_than_clumped() -> void:
+	# 102 beats stacked in one corner would pass a count and fail the point.
+	# Every quarter of the map has to carry real content.
+	var bounds := room.camera_bounds()
+	var quadrant := [0, 0, 0, 0]
+	for beat: Variant in _beats():
+		var b: Dictionary = beat
+		var right := float(b["x"]) > bounds.size.x * 0.5
+		var low := float(b["y"]) > bounds.size.y * 0.5
+		quadrant[(1 if right else 0) + (2 if low else 0)] += 1
+	for i in 4:
+		assert_true(quadrant[i] >= 10,
+			"quadrant %d holds real content, not filler (%d beats)" % [i, quadrant[i]])
+
 func test_the_cistern_is_a_space_not_a_corridor() -> void:
 	var bounds := room.camera_bounds()
 	assert_true(bounds.size.x >= 5000.0, "wide enough to be a place: %d px" % int(bounds.size.x))
