@@ -99,10 +99,31 @@ func _swap_room(scene: PackedScene, report_exit_facts: bool) -> bool:
 	room.bind_world(self)
 	if dialogue_player != null:
 		room.bind_dialogue(dialogue_player)
+	for encounter: Encounter in room.encounters():
+		encounter.spawn_ownership_transferred.connect(_on_enemy_spawned)
 
 	_ensure_player()
 	_ensure_camera()
 	return true
+
+## Wired once per spawned actor rather than polled every frame: attack_window_
+## opened/closed already bracket the STRIKE state exactly, so this is the
+## single moment a strike can land, checked once, not a per-frame poll that
+## would have to invent its own once-per-strike bookkeeping to avoid hitting
+## the player every frame the window happens to stay open.
+func _on_enemy_spawned(actor: EnemyActor) -> void:
+	actor.attack_window_opened.connect(_on_enemy_attack_window_opened.bind(actor))
+
+func _on_enemy_attack_window_opened(actor: EnemyActor) -> void:
+	if player == null or not actor.can_damage():
+		return
+	# Checked against the REAL player position, not actor.distance_to_target().
+	# The tracked target is Room.update_target()'s job to keep in sync with the
+	# player every frame, and normally does -- but the damage decision has to
+	# be a fact about the player actually being there, not an inference through
+	# a second piece of state that merely usually agrees with it.
+	if actor.global_position.distance_to(player.global_position) <= actor.attack_range_px:
+		player.take_damage(actor.strike_damage, actor.global_position)
 
 func _ensure_player() -> void:
 	if player != null and is_instance_valid(player):

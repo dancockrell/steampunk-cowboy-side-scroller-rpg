@@ -226,6 +226,80 @@ func test_re_triggering_does_not_produce_a_second_creature() -> void:
 	e.advance(1.0 / 60.0)
 	assert_eq(e.actor_count(), 1, "one encounter can never own two actors")
 
+func test_a_striking_enemy_actually_damages_the_real_player() -> void:
+	# The gap this closes: EnemyActor.can_damage() and attack_window_opened
+	# already existed, correctly bracketing the STRIKE state, but nothing in
+	# the game ever called player.take_damage() from them -- a fully
+	# implemented, fully tested attack state machine wired to nothing. This
+	# drives a real encounter, with the real player standing in its attack
+	# range, all the way to a real strike, through WorldRoot exactly as the
+	# running game does (not by calling take_damage directly).
+	var e := _encounter()
+	# 480 stays outside min_spawn_clearance_px (44px) of the jar at x=640, so
+	# the spawn is not blocked.
+	e.set_target_position(Vector2(480, 288))
+	e.trigger()
+	assert_true(_advance_to_active(), "the sentinel reaches active")
+
+	var actor := e.actor()
+	# EnemyActor.apply_motion() (move_and_slide) is the ONE part of this class
+	# deliberately not exercisable in this harness -- no real physics frame
+	# ever runs here, documented already in enemy_actor.gd and in
+	# tests/emergence/test_enemy_families.gd. _pursue() only sets velocity; it
+	# never moves global_position without a real frame to apply it in. So the
+	# real player is brought to the actor rather than waiting for a pursuit
+	# this harness structurally cannot run, and Room.update_target()'s real
+	# per-frame sync (tested separately, unaffected here) is exactly what
+	# would have kept them together during an actual pursuit.
+	player.global_position = actor.global_position + Vector2(20, 0)
+	e.set_target_position(player.global_position)
+	assert_true(actor.distance_to_target() <= actor.attack_range_px,
+		"the real player is genuinely within the actor's own attack range")
+
+	var health_before := player.health
+	var strikes: Array[bool] = []
+	actor.attack_window_opened.connect(func() -> void: strikes.append(true))
+	var elapsed := 0.0
+	while strikes.is_empty() and elapsed < 3.0:
+		e.advance(1.0 / 60.0)
+		elapsed += 1.0 / 60.0
+	assert_true(strikes.size() > 0, "the actor actually reached a strike within 5 simulated seconds")
+	assert_eq(player.health, health_before - actor.strike_damage,
+		"and the real player's health actually dropped by the actor's own strike_damage")
+
+func test_a_strike_outside_attack_range_does_not_damage_the_player() -> void:
+	# The same mechanism must not fire just because SOME encounter somewhere
+	# reached STRIKE; range is checked against the real distance, not assumed.
+	var e := _encounter()
+	# 480 stays outside min_spawn_clearance_px (44px) of the jar at x=640, so
+	# the spawn is not blocked.
+	e.set_target_position(Vector2(480, 288))
+	e.trigger()
+	assert_true(_advance_to_active(), "the sentinel reaches active")
+	var actor := e.actor()
+	# The tracked target sits right next to where the actor actually spawned,
+	# so ITS OWN problem of reaching strike range is solved without relying
+	# on the pursuit movement this harness cannot run (see the positive test's
+	# comment for why). The REAL player stays far away and is never brought
+	# anywhere near either point -- this is the contrast that proves range is
+	# checked against the real player position, not merely against whether
+	# SOME strike happened somewhere in the room.
+	e.set_target_position(actor.global_position + Vector2(20, 0))
+	player.global_position = Vector2(0, 288)
+	assert_true(player.global_position.distance_to(actor.global_position) > actor.attack_range_px,
+		"the real player is standing somewhere else entirely")
+
+	var health_before := player.health
+	var elapsed := 0.0
+	var strikes: Array[bool] = []
+	actor.attack_window_opened.connect(func() -> void: strikes.append(true))
+	while strikes.is_empty() and elapsed < 3.0:
+		e.advance(1.0 / 60.0)
+		elapsed += 1.0 / 60.0
+	assert_true(strikes.size() > 0, "the actor still strikes (it is in range of its OWN tracked target)")
+	assert_eq(player.health, health_before,
+		"but the real, distant player takes no damage from a strike that never reached him")
+
 func test_recall_actually_runs_end_to_end_and_the_keeper_notices() -> void:
 	var e := _encounter()
 	# Well outside min_spawn_clearance_px of the jar at x=640: the encounter

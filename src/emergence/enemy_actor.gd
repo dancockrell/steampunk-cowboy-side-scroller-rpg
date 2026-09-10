@@ -49,6 +49,12 @@ var settle_s: float = 0.42
 var stagger_s: float = 0.80
 var hitstun_s: float = 0.12
 var gravity: float = 1400.0
+## Applied to the player exactly once per strike, by whoever checks
+## can_damage() -- this actor deliberately has no reference to the player to
+## apply it directly (docs/architecture/engine-decision.md ownership table:
+## the encounter controller owns spawn/result, not combat resolution against
+## a player it was never given).
+var strike_damage: int = 1
 
 var _health: int = 3
 var _state: State = State.SETTLING
