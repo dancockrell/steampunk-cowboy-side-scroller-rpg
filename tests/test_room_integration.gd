@@ -603,6 +603,89 @@ func _walk_through_gate_and_exit(gate_target_name: String, exit_node_name: Strin
 	room = main.world_root.room
 	player = main.world_root.player
 
+# --- the expanded Procession Hall: second mural, vault, mezzanine ----------
+
+func _in_procession_hall() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	assert_eq(room.room_id, &"procession_hall", "reached the Procession Hall")
+
+func test_the_procession_hall_is_genuinely_bigger_than_it_was() -> void:
+	_in_procession_hall()
+	assert_true(room.camera_bounds().size.x >= 2300.0,
+		"the hall is now a real expanse, not the original 1408px corridor")
+	assert_true(room.camera_bounds().size.y > Main.WORLD_HEIGHT,
+		"and tall enough for the camera to actually pan vertically")
+
+func test_the_procession_hall_has_two_independent_mural_encounters() -> void:
+	_in_procession_hall()
+	var first := room.get_node_or_null(^"MuralEncounter") as Encounter
+	var second := room.get_node_or_null(^"SecondMuralEncounter") as Encounter
+	assert_not_null(first, "the original mural guard still exists")
+	assert_not_null(second, "a second, independent mural guard was added")
+	assert_ne(first.source.id, second.source.id,
+		"two distinct encounters with their own stable IDs, not one duplicated")
+	assert_true(first.is_content_valid() and second.is_content_valid(),
+		"both authored sources validate independently")
+
+func test_the_procession_hall_mezzanine_holds_a_real_reward() -> void:
+	_in_procession_hall()
+	var anchor := _target("SwingAnchorMezzanine")
+	assert_not_null(anchor, "the mezzanine swing anchor exists")
+	assert_true(anchor.allowed_verbs.has(Verbs.SWING), "and it accepts a swing")
+	var cache := _target("MezzanineCache")
+	assert_true(cache.receive(_hit(&"lasso", Verbs.PULL)), "the mezzanine reward is genuinely pullable")
+	assert_true(main.services.ledger.has_consumed(&"procession_mezzanine_cache_found"),
+		"awarded through the same once-only ledger path as every other reward")
+
+func test_the_procession_hall_mid_depth_vault_is_reachable() -> void:
+	_in_procession_hall()
+	var to_mid := room.get_node_or_null(^"CrossingToMid") as DepthCrossing
+	assert_not_null(to_mid, "the vault archway exists")
+	to_mid._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.MID, "crossing works here too")
+
+	var cache := room.get_node_or_null(^"VaultCache") as ToolTarget
+	assert_eq(cache.collision_layer, Depth.target_bit(Depth.Layer.MID),
+		"the vault cache has no hardcoded fallback layer, same discipline as every other vault")
+	var mid_hit := Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)
+	mid_hit.depth_layer = Depth.Layer.MID
+	assert_true(cache.receive(mid_hit), "and it is genuinely reachable once on the same plane")
+
+	var to_near := room.get_node_or_null(^"CrossingToNear") as DepthCrossing
+	to_near._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.NEAR, "and the far archway returns to near")
+
+func test_every_procession_hall_floor_gap_wide_enough_to_need_a_swing_has_an_anchor() -> void:
+	# Reads the room's own authored terrain rather than repeating coordinates
+	# as literals -- the exact trap a sabotage caught in the Gallery's first
+	# version of this same idea.
+	_in_procession_hall()
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	var floor_platforms: Array[Rect2] = []
+	for rect: Rect2 in terrain.platforms:
+		if absf(rect.position.y - 288.0) < 1.0:
+			floor_platforms.append(rect)
+	floor_platforms.sort_custom(func(a: Rect2, b: Rect2) -> bool: return a.position.x < b.position.x)
+	assert_true(floor_platforms.size() >= 3, "the main floor is authored in at least 3 segments")
+	var real_gaps := 0
+	for i in floor_platforms.size() - 1:
+		var gap_px: float = floor_platforms[i + 1].position.x - floor_platforms[i].end.x
+		if gap_px > 87.5:
+			real_gaps += 1
+	assert_true(real_gaps >= 1, "at least one floor gap genuinely exceeds max jump distance")
+	assert_not_null(_target("SwingAnchorGap2"), "and the new gap's anchor exists to bridge it")
+
+func test_every_procession_hall_puzzle_id_is_actually_unique() -> void:
+	_in_procession_hall()
+	var seen: Array[StringName] = []
+	for node: Node in _all(room):
+		var target := node as ToolTarget
+		if target == null or target.puzzle_id == &"":
+			continue
+		assert_false(seen.has(target.puzzle_id),
+			"puzzle_id '%s' is not reused by a second target" % target.puzzle_id)
+		seen.append(target.puzzle_id)
+
 func test_the_full_route_connects_all_three_authored_rooms() -> void:
 	assert_eq(room.room_id, &"gallery_of_vessels", "starts in the Gallery")
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
