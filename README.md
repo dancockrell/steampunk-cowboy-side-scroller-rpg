@@ -41,7 +41,7 @@ bash tools/check-gdscript.sh    # every .gd file parses
 
 `tools/gate.sh` reports three states, not two: passed, failed, and NOT CHECKED. A run that skipped something never prints "all passed".
 
-To play it, open `project.godot` and press F5. `scenes/main.tscn` is the main scene. A/D move, Space jumps, 1-4 select lasso/pistol/shotgun/rifle, left mouse uses the equipped tool, right mouse releases the rope, E interacts, R reloads, Q calls the intervention, Escape pauses.
+To play it, open `project.godot` and press F5. `scenes/main.tscn` is the main scene. Move with A/D or the arrow keys, jump with Space, W or Up, 1-4 select lasso/pistol/shotgun/rifle, left mouse uses the equipped tool, right mouse releases the rope, E interacts, R reloads, Q calls the intervention, Escape pauses.
 
 **The checks in this repository have not been run on the pinned 4.4.1 editor**, which is not installed on the machine they were run on. They ran on 4.7.2 against a throwaway copy so the pin was not silently upgraded, and every run prints the version it used. See [gameplay checks](docs/validation/gameplay-checks.md) for what is verified, what each instrument cannot catch, and what is not checked at all.
 

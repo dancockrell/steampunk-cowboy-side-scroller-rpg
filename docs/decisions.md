@@ -20,6 +20,7 @@ Updated 2026-09-09. Accepted means explicit user direction; selected means a set
 | D14 | Selected | Nodes get explicit idempotent boot()/build()/bind() entry points rather than relying on _ready, which does not fire in a headless --script run and hid two silent initialisation failures. |
 | D15 | Corrected | Relationship dimensions clamp to [-5, 10], not [0, 10]. A floor equal to the starting value silently discarded every negative judgment. |
 | D16 | Selected | Enum-valued authored fields are StringNames rather than engine enums, because an enum export cannot hold an unrecognised value and the "unknown rule fails validation" contract would be unenforceable. |
+| D17 | Revised | Move/jump bindings extended beyond the original "A/D, Space" proposal to also accept arrow keys and W/Up. A/D-only and Space-only excluded whichever convention a player did not happen to use first; both of the common PC schemes are now bound at once, not a swap of one for the other. |
 
 ## Future decisions in order
 

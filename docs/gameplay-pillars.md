@@ -12,7 +12,7 @@
 
 | Action | Keyboard/mouse | Gamepad |
 | --- | --- | --- |
-| Move / jump | A/D, Space | Left stick, south face |
+| Move / jump | A/D or arrow keys, Space/W/Up | Left stick, south face |
 | Aim / use equipped tool | Mouse, left click | Right stick, right trigger |
 | Tool select | 1–4 | D-pad |
 | Lasso release / cancel | Right click | Left trigger |
