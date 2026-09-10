@@ -8,6 +8,7 @@ extends Node2D
 signal room_loaded(room_id: StringName)
 signal checkpoint_reached(checkpoint_id: StringName)
 signal player_defeated()
+signal player_fell()
 signal route_completed()
 
 const ROUTE_COMPLETE_EVENT_ID := &"vertical_slice_route_completed"
@@ -123,10 +124,27 @@ func _ensure_camera() -> void:
 	camera.position_smoothing_enabled = false
 	add_child(camera)
 
+## A room with unbounded camera (bounds.size == ZERO) has no floor to fall
+## through by construction here, so it deliberately opts out rather than
+## guessing at a threshold for a room that never declared one.
+func _has_fallen_out_of_bounds() -> bool:
+	var bounds := room.camera_bounds()
+	if bounds.size == Vector2.ZERO:
+		return false
+	return player.global_position.y > bounds.end.y + services.tuning.fall_death_margin_px
+
 func _process(delta: float) -> void:
 	if intervention != null:
 		intervention.step(delta)
 	if player == null or camera == null or room == null:
+		return
+	if _has_fallen_out_of_bounds():
+		# Same recovery path as defeat, not a separate one: docs/gameplay-
+		# pillars.md names falling and defeat together for a reason, and a
+		# missed swing over a gap must be exactly as recoverable as dying to
+		# an enemy, not a silent, permanent loss of control.
+		player_fell.emit()
+		reload_checkpoint()
 		return
 	room.update_target(player.global_position)
 	if Input.is_action_just_pressed(&"intervention"):

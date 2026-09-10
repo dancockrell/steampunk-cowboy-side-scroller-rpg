@@ -134,20 +134,71 @@ one true thing the harness state actually proves instead: that a menu unable
 to reach a live-iterated tree reports it accurately rather than claiming a
 success it did not earn.
 
+## Frame-time measurement (F13)
+
+Measured, not assumed, and re-runnable. Requires a real window (confirmed
+directly: `--headless` returns a null texture from `get_texture()` here, so
+it cannot capture render cost), which is why this one measurement opens a
+window rather than running through `tools/*.sh`. Everything else in this
+project — the whole test suite, the parse check, ordinary iteration — runs
+`--headless` and opens nothing:
+
+```
+"$GODOT_BIN" --path <copy> --resolution 1280x720 --disable-vsync --script res://perf_probe.gd
+```
+
+**Declared test machine:** Intel Core i7-13700KF, NVIDIA GeForce RTX 4070
+(12 GB), confirmed via `Get-CimInstance Win32_Processor` and `nvidia-smi`
+directly rather than trusted from memory (WMI's own `AdapterRAM` is known to
+misreport VRAM on this GPU; `nvidia-smi` is the correct instrument).
+
+**Result, 240 frames with vsync disabled, walking Entry Bridge into the
+Gallery and triggering the ceramic sentinel partway through** (so the number
+reflects a scene actually doing something, not an idle boot screen):
+
+```
+avg_fps=1508  avg=663us  p50=505us  p95=683us  worst=28.6ms (frame 0, one-time boot cost)
+```
+
+**First attempt at this measurement was contaminated by its own instrument**:
+adding a `print()` inside the per-frame timing loop to hunt for a spike added
+roughly 15ms of stdout-flush cost to *every subsequent frame* in that run,
+which read as a sustained performance problem and was not one — restoring the
+version without the print collapsed it back to the number above. Recorded
+because it is the argument for treating a suspicious number as a property of
+the probe before it is a property of the game (section 1 of the working
+agreements: "suspect the instrument before the target").
+
+**What this number does and does not prove.** At a 60 fps target the budget
+is 16.6 ms/frame; simulation cost here is under 1 ms, roughly 25x headroom.
+That is real evidence the SIMULATION — movement, tools, emergence state
+machines, the relationship book, UI binding — is cheap enough not to be the
+bottleneck. It proves nothing about the finished game's performance, because
+there is no admitted art: no sprite batches, no VFX, no shader cost, no
+particle systems. A frame that is 663 microseconds of graybox polygons says
+nothing about a frame with painted temple layers and animated portraits. The
+plain-language version: the code is not the risk; the eventual fill rate is,
+and that cannot be measured until there is something to fill.
+
 ## What is NOT checked
 
 Listed so a reader does not mistake silence for coverage:
 
 - **Nothing has been run on the pinned 4.4.1 editor.** See above.
-- **No input-feel or frame-time measurement.** The tuning numbers in
-  `src/core/tuning.gd` are hypotheses. `docs/vertical-slice.md` asks for a
-  measured 60 fps on a declared machine; that measurement has not been taken.
-- **No visual review at native scale.** One frame of the graybox room has been
-  rendered and inspected, which confirms the compositor produces a picture and
-  the room lays out. It is not an art review, and there is no admitted art to
-  review.
+- **No input FEEL measurement.** Frame time is now measured (above); whether
+  coyote time, jump buffering and the movement numbers in `src/core/tuning.gd`
+  feel right to a human is a playtesting question, not a code one, and still
+  has not been taken.
+- **No visual review at native scale.** Several frames have been rendered and
+  inspected across every room and the compositor, which confirms the pipeline
+  produces a picture and every room lays out. It is not an art review, and
+  there is no admitted art to review.
 - **Gamepad bindings are declared in `project.godot` and have not been exercised
   on a physical controller.**
 - **No accessibility verification beyond the settings round-tripping.** Reduced
   shake, subtitle scaling and toggle aiming are implemented as settings; whether
-  they are sufficient has not been reviewed with anyone.
+  they are sufficient has not been reviewed with anyone. Also recorded in
+  `src/ui/accessibility_options.gd`: `aim_mode`, `reduced_shake` and
+  `reduced_flashes` are stored and announced but nothing outside `src/ui`
+  currently reads them, because nothing outside `src/ui` exists to consume
+  them yet (no camera shake or flash effect has been built at all).

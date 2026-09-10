@@ -26,6 +26,11 @@ extends Resource
 @export var hurt_stun_s: float = 0.35
 @export var invulnerable_s: float = 0.9
 @export var knockback_speed: float = 140.0
+## Distance below a room's authored bounds before falling counts as a death.
+## docs/gameplay-pillars.md: "Falling/defeat returns to the latest checkpoint
+## snapshot." A missed lasso swing over a gap has to be recoverable, not a
+## silent, permanent loss of control.
+@export var fall_death_margin_px: float = 96.0
 
 @export_group("Lasso")
 @export var lasso_range_px: float = 190.0

@@ -612,3 +612,68 @@ func test_the_return_gate_is_never_blocked_by_a_refused_alliance_or_romance() ->
 	gate._on_body_entered(player)
 	assert_true(main.world_root.is_route_complete(),
 		"refusing her twice over still lets the player finish the route")
+
+# --- soft-lock audit (F13): falling recovers exactly like defeat -----------
+
+func test_falling_below_the_room_recovers_to_the_last_checkpoint() -> void:
+	# The actual failure this guards: missing the Entry Bridge's lasso swing
+	# and dropping straight through the 320px gap with nothing underneath.
+	main.world_root.save_checkpoint(&"test_fall_checkpoint", player.global_position)
+	var checkpoint_position := player.global_position
+	player.global_position = Vector2(480, room.camera_bounds().end.y + 500.0)
+	main.world_root._process(1.0 / 60.0)
+	assert_almost_eq(player.global_position.distance_to(checkpoint_position), 0.0, 4.0,
+		"falling out of the room returns Michael to the checkpoint, not left falling forever")
+
+func test_falling_with_no_checkpoint_yet_returns_to_the_rooms_authored_start() -> void:
+	# Falling in the very first room, before any shrine has been reached.
+	player.global_position = Vector2(480, room.camera_bounds().end.y + 500.0)
+	main.world_root._last_checkpoint = null
+	main.world_root._process(1.0 / 60.0)
+	var spawn := room.spawn_position(room.default_spawn_id)
+	assert_almost_eq(player.global_position.distance_to(spawn), 0.0, 4.0,
+		"with nothing saved yet, falling returns to the room's own authored start")
+
+func test_falling_emits_its_own_signal_distinct_from_defeat() -> void:
+	var falls: Array[bool] = []
+	var defeats: Array[bool] = []
+	main.world_root.player_fell.connect(func() -> void: falls.append(true))
+	main.world_root.player_defeated.connect(func() -> void: defeats.append(true))
+	player.global_position = Vector2(480, room.camera_bounds().end.y + 500.0)
+	main.world_root._process(1.0 / 60.0)
+	assert_eq(falls.size(), 1, "falling is reported")
+	assert_eq(defeats.size(), 0, "and it is not misreported as a combat defeat")
+
+func test_standing_comfortably_above_the_floor_never_triggers_a_fall() -> void:
+	# The margin has to be generous enough that ordinary jumping near a
+	# platform edge is never mistaken for falling out of the world.
+	var floor_y := room.camera_bounds().end.y
+	player.global_position = Vector2(480, floor_y - 20.0)
+	main.world_root._process(1.0 / 60.0)
+	assert_almost_eq(player.global_position.y, floor_y - 20.0, 0.5,
+		"standing on the ground is never treated as falling out of bounds")
+
+func test_a_room_with_no_authored_bounds_has_no_fall_detection() -> void:
+	# An unbounded room (camera_bounds().size == ZERO) never declared a floor
+	# to fall through, so this deliberately opts out rather than guessing.
+	room.bounds = Rect2()
+	var far_below := Vector2(480, 10000.0)
+	player.global_position = far_below
+	main.world_root._process(1.0 / 60.0)
+	assert_almost_eq(player.global_position.distance_to(far_below), 0.0, 0.5,
+		"an unbounded room cannot fire a fall it never defined")
+
+func test_missing_the_entry_bridge_swing_and_falling_into_the_gap_is_recoverable() -> void:
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var bridge_player := ctx["player"] as Player
+	var bridge_main := ctx["main"] as Main
+	# The exact scenario this whole mechanism exists for: stand at the gap's
+	# edge, miss the swing, and drop straight through with nothing below.
+	bridge_player.global_position = Vector2(340, 288)
+	bridge_player.global_position.y = bridge.camera_bounds().end.y + 200.0
+	bridge_main.world_root._process(1.0 / 60.0)
+	var spawn := bridge.spawn_position(bridge.default_spawn_id)
+	assert_almost_eq(bridge_player.global_position.distance_to(spawn), 0.0, 4.0,
+		"a missed swing over the actual authored gap recovers to the bridge's own start, not a permanent fall")
+	bridge_main.free()
