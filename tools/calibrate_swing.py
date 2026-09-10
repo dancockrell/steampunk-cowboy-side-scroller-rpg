@@ -46,8 +46,8 @@ ROOM = "res://levels/temple_clay_dead/sunken_cistern.tscn"
 # envelope measured here describes the move the bot will actually attempt.
 RUN_FRAMES = 20          # ~40px of run-up: enough to reach run_speed (150px/s)
 AIR_FRAMES = 4           # airborne before the rope goes out
-FLIGHT_FRAMES = 100      # after release, long enough to land from any arc
-MAX_RIDE = 110           # give up on an auto release after this many frames
+FLIGHT_FRAMES = 55       # after release, long enough to land from any arc
+MAX_RIDE = 70            # give up on an auto release after this many frames
 HOLDS = ("auto", "auto", "auto", 12, 20, 30, 42, 60)
 
 
@@ -226,6 +226,17 @@ def summarise(samples):
                      pct([q["dy"] for q in g], 0.5), min(q["dy"] for q in g)))
 
 
+def _write(path, level, samples, partial=False):
+    with open(path, "w") as f:
+        json.dump({
+            "setup": {"run_frames": RUN_FRAMES, "air_frames": AIR_FRAMES,
+                      "flight_frames": FLIGHT_FRAMES, "holds": list(HOLDS),
+                      "partial": partial},
+            "tuning": level["tuning"],
+            "samples": samples,
+        }, f, indent=1)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--trials", type=int, default=600)
@@ -260,9 +271,14 @@ def main():
         s = one_trial(g, start, random.choice(near), random.choice(HOLDS), reach)
         if s is not None:
             samples.append(s)
-        if (n + 1) % 100 == 0:
+        if (n + 1) % 50 == 0:
             print("  %d/%d trials, %d samples, %.0fs"
                   % (n + 1, args.trials, len(samples), time.time() - t0))
+            # Checkpoint. A long measurement that saves only at the end loses
+            # everything to a timeout, and this one did: 300 trials and 189
+            # usable samples went in the bin because the file was written last.
+            if len(samples) >= 40:
+                _write(args.out, level, samples, partial=True)
 
     print("attempted %d of %d draws (%d had no anchor in reach), %d usable samples in %.0fs"
           % (attempted, args.trials, args.trials - attempted, len(samples), time.time() - t0))
@@ -273,13 +289,7 @@ def main():
                          "The harness, not the rope, is what this measured." % (len(samples), args.trials))
     summarise(samples)
 
-    with open(args.out, "w") as f:
-        json.dump({
-            "setup": {"run_frames": RUN_FRAMES, "air_frames": AIR_FRAMES,
-                      "flight_frames": FLIGHT_FRAMES, "holds": list(HOLDS)},
-            "tuning": level["tuning"],
-            "samples": samples,
-        }, f, indent=1)
+    _write(args.out, level, samples)
     print("  wrote %s (%d samples)" % (args.out, len(samples)))
     # Deliberately does NOT quit the server: calibration is something you run
     # repeatedly against one long-lived window, and playbot.py runs next.
