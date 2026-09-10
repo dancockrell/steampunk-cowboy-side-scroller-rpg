@@ -134,6 +134,48 @@ one true thing the harness state actually proves instead: that a menu unable
 to reach a live-iterated tree reports it accurately rather than claiming a
 success it did not earn.
 
+**That gap is now closed for the property that actually matters, by a
+different instrument.** `--headless --quit-after N` runs the REAL main loop —
+unlike `--script` mode, it processes real frames, so `_ready()`, deferred
+calls and `get_tree().paused` all behave as they would in normal play, while
+staying fully headless (no window opens). `tools/verify_pause_freezes_
+simulation.gd` uses this to boot the actual game, walk into a room, trigger a
+real emergence encounter, open the pause menu exactly as a player would
+(`pause_menu.toggle()`, not a direct write to `get_tree().paused`), and hold
+paused across a window the encounter's own timeline (measured first, not
+guessed) would otherwise have crossed a phase transition in:
+
+```
+"$GODOT_BIN" --headless --path <throwaway copy> --quit-after 290 \
+  --script res://tools/verify_pause_freezes_simulation.gd
+```
+
+**Verified true**, docs/gameplay-pillars.md's "Pause stops combat, emergence
+timers and aiming": the player's real position and the encounter's real phase
+both stayed frozen for 120 straight frames spanning a transition that
+happened at frame 142 unpaused, and both resumed correctly after unpausing.
+
+**The first version of this measurement was worthless and said so only after
+being sabotaged.** The original pause window (frames 60-140) sat entirely
+inside one phase with no transition anywhere near it — every prior manual run
+had reported "frozen" whether or not pause did anything, because nothing was
+changing in that window regardless. Confirmed by tracing the real unpaused
+timeline first (tell -> awakening at frame 142, not the ~900ms the tuning
+value alone would suggest, since blocked-spawn retries and clearance checks
+extend it) and rebuilding the window around an actual transition.
+
+Two sabotages against the corrected script, each in a separate throwaway copy
+and confirmed absent from this repository afterward (`git status`): setting
+`Encounter.process_mode = ALWAYS` at `bind()` time reddened
+`phase_frozen_while_paused` and only that field, ending mid-emergence at
+`final_phase=emerging` instead of stopping at `tell`; setting
+`Player.process_mode = ALWAYS` at `bind()` time reddened
+`position_frozen_while_paused` and only that field. The unmodified script
+against a clean copy exits 0. A sabotage applied inside a node's own
+`_process()` (rather than at `bind()`) does nothing once that node is already
+frozen, because the line that would un-freeze it never runs again — the
+sabotage has to land before the freeze, not inside the frozen code.
+
 ## Frame-time measurement (F13)
 
 Measured, not assumed, and re-runnable. Requires a real window (confirmed
