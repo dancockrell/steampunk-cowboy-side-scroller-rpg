@@ -27,6 +27,12 @@ func bind(p_services: Services) -> void:
 		var terrain := node as GrayboxTerrain
 		if terrain != null:
 			terrain.build()
+		# Every HitReceiver physics layer comes from its authored depth, set
+		# once here rather than hardcoded per .tscn node, so a receiver on a
+		# plane the player is not on genuinely cannot be targeted.
+		var receiver := node as HitReceiver
+		if receiver != null:
+			receiver.collision_layer = Depth.target_bit(receiver.depth_layer)
 		var target := node as ToolTarget
 		if target != null:
 			target.bind(services.puzzles, services.ledger)

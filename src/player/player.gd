@@ -12,6 +12,7 @@ signal health_changed(current: int, maximum: int)
 signal defeated()
 signal hurt(from_direction: Vector2)
 signal facing_changed(facing: int)
+signal depth_changed(layer: Depth.Layer)
 
 enum TraversalMode { GROUNDED, SWINGING }
 
@@ -31,6 +32,10 @@ var tools: ToolController
 var facing: int = 1
 var health: int = 5
 var traversal_mode: TraversalMode = TraversalMode.GROUNDED
+## Which of the room's up-to-three parallel planes Michael is standing on
+## (src/world/depth.gd). Terrain and props on any other plane are genuinely
+## not there: this drives the physics collision_mask, not just a visual cue.
+var current_depth: Depth.Layer = Depth.Layer.NEAR
 
 var _invulnerable_s: float = 0.0
 var _hurt_stun_s: float = 0.0
@@ -47,7 +52,17 @@ func bind(p_services: Services) -> void:
 	if tools != null:
 		tools.bind(p_services, self)
 	_sprite = get_node_or_null(^"Sprite") as AnimatedSprite2D
+	collision_mask = Depth.terrain_bit(current_depth)
 	health_changed.emit(health, tuning.max_health)
+
+## Crosses Michael onto a different depth plane. Idempotent: crossing to the
+## plane already standing on is a no-op rather than a spurious signal.
+func set_depth(layer: Depth.Layer) -> void:
+	if layer == current_depth:
+		return
+	current_depth = layer
+	collision_mask = Depth.terrain_bit(layer)
+	depth_changed.emit(layer)
 
 ## Dialogue in a safe shrine must not leave Michael taking unseen damage, so a
 ## conversation disables input rather than leaving the controller live.
@@ -182,6 +197,9 @@ func restore_to_safe_idle(at_position: Vector2) -> void:
 	_hurt_stun_s = 0.0
 	if tools != null:
 		tools.cancel_all()
+	# A fresh room, a checkpoint reload or a spawn always starts on the near
+	# plane: depth state does not leak between rooms or across a reload.
+	set_depth(Depth.Layer.NEAR)
 
 func heal_to_full() -> void:
 	health = tuning.max_health

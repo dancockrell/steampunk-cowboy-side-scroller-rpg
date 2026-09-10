@@ -21,9 +21,15 @@ const TOOL_ACTIONS := {
 	&"tool_rifle": &"rifle",
 }
 
-## Physics layer 4, "tool_target". Set in project.godot.
-const TARGET_LAYER := 1 << 3
-const TERRAIN_LAYER := 1 << 0
+## Depth-aware: every query below reads the CURRENT plane's bits from
+## src/world/depth.gd at query time rather than a fixed constant, so a tool
+## used while standing on the mid or far plane only ever reaches receivers
+## and terrain on that same plane.
+func _current_target_layer() -> int:
+	return Depth.target_bit(player.current_depth if player != null else Depth.Layer.NEAR)
+
+func _current_terrain_layer() -> int:
+	return Depth.terrain_bit(player.current_depth if player != null else Depth.Layer.NEAR)
 
 var services: Services
 var player: Player
@@ -103,6 +109,7 @@ func _on_committed(tool_id: StringName, definition: ToolDefinition) -> void:
 func _commit_firearm(definition: ToolDefinition) -> void:
 	var direction := aim_direction()
 	var hit := Hit.new(definition.id, definition.verb, global_position)
+	hit.depth_layer = player.current_depth if player != null else Depth.Layer.NEAR
 	hit.direction = direction
 	hit.damage = definition.damage
 	hit.force = definition.force
@@ -129,7 +136,7 @@ func _query_receiver(direction: Vector2, definition: ToolDefinition) -> HitRecei
 	for ray: Vector2 in rays:
 		var query := PhysicsRayQueryParameters2D.create(
 			global_position, global_position + ray * definition.range_px,
-			TARGET_LAYER | TERRAIN_LAYER)
+			_current_target_layer() | _current_terrain_layer())
 		query.collide_with_areas = true
 		query.collide_with_bodies = true
 		if player != null:
@@ -145,6 +152,7 @@ func _query_receiver(direction: Vector2, definition: ToolDefinition) -> HitRecei
 func _commit_lasso(definition: ToolDefinition) -> void:
 	var anchor := _find_lasso_anchor(definition)
 	var hit := Hit.new(definition.id, Verbs.PULL, global_position)
+	hit.depth_layer = player.current_depth if player != null else Depth.Layer.NEAR
 	if anchor == null:
 		# A miss finishes with an intelligible recovery, not a snap to an
 		# impossible held rope.
@@ -175,7 +183,7 @@ func _find_lasso_anchor(definition: ToolDefinition) -> HitReceiver:
 	circle.radius = definition.range_px
 	query.shape = circle
 	query.transform = Transform2D(0.0, global_position)
-	query.collision_mask = TARGET_LAYER
+	query.collision_mask = _current_target_layer()
 	query.collide_with_areas = true
 	query.collide_with_bodies = false
 
@@ -198,7 +206,7 @@ func _find_lasso_anchor(definition: ToolDefinition) -> HitReceiver:
 	return best
 
 func _blocked(space: PhysicsDirectSpaceState2D, point: Vector2) -> bool:
-	var ray := PhysicsRayQueryParameters2D.create(global_position, point, TERRAIN_LAYER)
+	var ray := PhysicsRayQueryParameters2D.create(global_position, point, _current_terrain_layer())
 	ray.collide_with_areas = false
 	if player != null:
 		ray.exclude = [player.get_rid()]

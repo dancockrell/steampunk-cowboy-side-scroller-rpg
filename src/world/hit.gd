@@ -15,6 +15,12 @@ var damage: int = 1
 ## Stable ID for anything this hit is allowed to award exactly once. Empty means
 ## the hit awards nothing persistent.
 var event_id: StringName = &""
+## Which of the room's depth planes (src/world/depth.gd) the tool was used
+## from. Carried on the Hit itself, not read separately from the player, so
+## HitReceiver.receive() can enforce depth the same way it already enforces
+## the verb -- as a property of the interaction, checked in one place that no
+## subclass or direct caller can bypass.
+var depth_layer: Depth.Layer = Depth.Layer.NEAR
 
 func _init(p_tool_id: StringName = &"", p_verb: StringName = &"", p_origin: Vector2 = Vector2.ZERO) -> void:
 	tool_id = p_tool_id

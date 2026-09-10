@@ -1,16 +1,20 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
 [ext_resource type="Script" path="res://src/world/tool_target.gd" id="3_target"]
 [ext_resource type="Script" path="res://src/world/room_exit.gd" id="5_exit"]
 [ext_resource type="PackedScene" path="res://levels/temple_clay_dead/gallery_of_vessels.tscn" id="6_next"]
+[ext_resource type="Script" path="res://src/world/depth_crossing.gd" id="7_crossing"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
 
 [sub_resource type="RectangleShape2D" id="exit_box"]
 size = Vector2(32, 128)
+
+[sub_resource type="RectangleShape2D" id="crossing_box"]
+size = Vector2(32, 96)
 
 [node name="EntryBridge" type="Node2D"]
 script = ExtResource("1_room")
@@ -98,6 +102,59 @@ shape = SubResource("small_box")
 [node name="GrayboxAnchorC" type="Polygon2D" parent="SwingAnchorC"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="MidTerrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+depth_layer = 1
+platforms = Array[Rect2]([Rect2(120, 340, 420, 40)])
+backdrop = Array[Rect2]([Rect2(96, 240, 480, 160)])
+
+[node name="CrossingToMid" type="Area2D" parent="."]
+position = Vector2(150, 220)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_crossing")
+target_layer = 1
+
+[node name="CrossingToMidShape" type="CollisionShape2D" parent="CrossingToMid"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToMid" type="Polygon2D" parent="CrossingToMid"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="HiddenCache" type="Area2D" parent="."]
+position = Vector2(300, 300)
+collision_mask = 0
+script = ExtResource("3_target")
+depth_layer = 1
+receiver_id = &"bridge_hidden_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"bridge_hidden_cache"
+reward_event_id = &"bridge_hidden_cache_found"
+
+[node name="HiddenCacheShape" type="CollisionShape2D" parent="HiddenCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="HiddenCache"]
+
+[node name="GrayboxHiddenCache" type="Polygon2D" parent="HiddenCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
+
+[node name="CrossingToNear" type="Area2D" parent="."]
+position = Vector2(500, 300)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_crossing")
+target_layer = 0
+
+[node name="CrossingToNearShape" type="CollisionShape2D" parent="CrossingToNear"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToNear" type="Polygon2D" parent="CrossingToNear"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
 
 [node name="ExitToGallery" type="Area2D" parent="."]
 position = Vector2(1216, 240)

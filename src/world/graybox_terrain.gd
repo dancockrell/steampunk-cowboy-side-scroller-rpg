@@ -17,6 +17,11 @@ const PLACEHOLDER_EDGE := Color(0.34, 0.27, 0.21, 1.0)
 ## Drawn behind the player without collision, for reading depth in graybox.
 @export var backdrop: Array[Rect2] = []
 @export var backdrop_color: Color = Color(0.10, 0.08, 0.08, 1.0)
+## Which of the room's up-to-three parallel planes this terrain belongs to
+## (src/world/depth.gd). A room with only one GrayboxTerrain, left at the
+## default NEAR, behaves exactly as it always has: this is additive, not a
+## breaking change to any room authored before the depth system existed.
+@export var depth_layer: Depth.Layer = Depth.Layer.NEAR
 
 var _built: bool = false
 
@@ -29,6 +34,11 @@ func build() -> void:
 	if _built:
 		return
 	_built = true
+	# Colour only, deliberately not node scale: scaling this node would also
+	# scale its StaticBody2D children's collision shapes in world space,
+	# desyncing where a platform LOOKS like it is from where the player can
+	# actually stand on it. The depth cue stays purely visual.
+	modulate = Depth.modulate_for(depth_layer)
 	for rect: Rect2 in backdrop:
 		_add_block(rect, backdrop_color, false)
 	for rect: Rect2 in platforms:
@@ -59,7 +69,7 @@ func _add_block(rect: Rect2, color: Color, solid: bool) -> void:
 
 	var body := StaticBody2D.new()
 	body.name = "GrayboxCollision"
-	body.collision_layer = 1
+	body.collision_layer = Depth.terrain_bit(depth_layer)
 	body.collision_mask = 0
 	var shape := CollisionShape2D.new()
 	var box := RectangleShape2D.new()

@@ -6,7 +6,7 @@ Planning target: one polished 20–30 minute first-play route. Duration and room
 
 | Beat | Target time | Purpose and content |
 | --- | --- | --- |
-| Entry and broken bridge | 3–4 min | Read temple silhouette; move/jump; a chained sequence of lasso swings across a genuine vertical chasm, plus a side counterweight that teaches pull without gating the crossing |
+| Entry and broken bridge | 3–4 min | Read temple silhouette; move/jump; a chained sequence of lasso swings across a genuine vertical chasm; an optional 2.5D depth-layer alcove reached through an archway, offering an alternate route and a hidden reward; a side counterweight that teaches pull without gating the crossing |
 | Gallery of vessels | 4–5 min | Teach ceramic tell; pistol bell interaction; first respectful/destructive choice |
 | Procession hall | 4–5 min | Mural guard; rifle far counterweight; combine precision and lasso |
 | Burial works | 4–6 min | Pit assembler; shotgun plug; preserve or disturb funerary objects; resettable puzzle |

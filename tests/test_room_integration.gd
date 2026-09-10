@@ -581,6 +581,118 @@ func test_the_bridge_still_teaches_the_pull_verb_without_gating_the_exit_on_it()
 	assert_true(exit_door.is_open(), "and the exit is never gated on having pulled it")
 	(ctx["main"] as Main).free()
 
+# --- 2.5D depth layers, tested against the real bridge room ----------------
+
+func test_the_bridge_has_a_genuine_mid_depth_alternate_path() -> void:
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var bridge_player := ctx["player"] as Player
+	assert_eq(bridge_player.current_depth, Depth.Layer.NEAR, "Michael starts on the near plane")
+
+	var to_mid := bridge.get_node_or_null(^"CrossingToMid") as DepthCrossing
+	assert_not_null(to_mid, "the archway into the mid plane exists")
+	to_mid._on_body_entered(bridge_player)
+	assert_eq(bridge_player.current_depth, Depth.Layer.MID, "walking through it crosses Michael to the mid plane")
+
+	var mid_terrain := bridge.get_node_or_null(^"MidTerrain") as GrayboxTerrain
+	assert_not_null(mid_terrain, "the mid-plane walkway exists")
+	assert_eq(mid_terrain.depth_layer, Depth.Layer.MID, "and it is authored on that plane, not near by mistake")
+
+	var to_near := bridge.get_node_or_null(^"CrossingToNear") as DepthCrossing
+	to_near._on_body_entered(bridge_player)
+	assert_eq(bridge_player.current_depth, Depth.Layer.NEAR, "and the far archway crosses back")
+	(ctx["main"] as Main).free()
+
+func test_a_receiver_on_a_different_plane_cannot_actually_be_targeted() -> void:
+	# The property that makes this a real mechanic and not a visual trick: a
+	# near-plane anchor is physically unreachable while standing on mid,
+	# proven through the actual physics query the game uses, not a flag.
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var bridge_player := ctx["player"] as Player
+	var anchor_a := bridge.get_node_or_null(^"SwingAnchorA") as ToolTarget
+	assert_eq(anchor_a.collision_layer, Depth.target_bit(Depth.Layer.NEAR),
+		"the near-plane anchor's physics layer was actually set from its authored depth")
+
+	bridge_player.set_depth(Depth.Layer.MID)
+	var tools := bridge_player.tools
+	var space := tools.get_world_2d().direct_space_state
+	var query := PhysicsShapeQueryParameters2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = 1000.0
+	query.shape = circle
+	query.transform = Transform2D(0.0, bridge_player.global_position)
+	query.collision_mask = tools._current_target_layer()
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+	var hits := space.intersect_shape(query, 32)
+	for result: Dictionary in hits:
+		assert_ne(result["collider"], anchor_a,
+			"the near-plane anchor must never appear in a mid-plane query, at any range")
+	(ctx["main"] as Main).free()
+
+func test_the_hidden_cache_only_has_a_working_physics_layer_because_room_bind_set_it() -> void:
+	# HiddenCache deliberately has NO collision_layer hardcoded in the .tscn
+	# (Godot's Area2D default is layer 1, the TERRAIN bit -- wrong for a tool
+	# target). If Room.bind() ever stops applying the depth bit, this is the
+	# node that actually catches it, unlike a near-plane node whose hardcoded
+	# fallback happens to already equal the near bit by coincidence.
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var cache := bridge.get_node_or_null(^"HiddenCache") as ToolTarget
+	assert_not_null(cache, "the hidden cache exists")
+	assert_eq(cache.collision_layer, Depth.target_bit(Depth.Layer.MID),
+		"its physics layer came from Room.bind() reading its authored depth_layer, not a hardcoded default")
+	(ctx["main"] as Main).free()
+
+func test_the_hidden_cache_is_reachable_on_mid_and_unreachable_on_near() -> void:
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var bridge_player := ctx["player"] as Player
+	var cache := bridge.get_node_or_null(^"HiddenCache") as ToolTarget
+	# Each hit is stamped with the depth it was actually thrown from, matching
+	# what ToolController does at commit time -- a raw Hit() with no explicit
+	# depth_layer defaults to NEAR regardless of where the player stands, so
+	# this cannot be shared across the two calls below.
+	var near_hit := Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)
+	near_hit.depth_layer = Depth.Layer.NEAR
+
+	assert_true(bridge_player.current_depth == Depth.Layer.NEAR, "starts on near")
+	assert_false(cache.receive(near_hit), "a near-plane Michael cannot pull a mid-plane cache")
+	assert_eq(int(bridge.services.puzzles.get_field(&"bridge_hidden_cache", &"uses", 0)), 0,
+		"and nothing about the mechanism advanced")
+
+	bridge_player.set_depth(Depth.Layer.MID)
+	var mid_hit := Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)
+	mid_hit.depth_layer = Depth.Layer.MID
+	assert_true(cache.receive(mid_hit), "once on the same plane, the same cache is genuinely reachable")
+	assert_eq(int(bridge.services.puzzles.get_field(&"bridge_hidden_cache", &"uses", 0)), 1,
+		"and the mechanism actually advances")
+	(ctx["main"] as Main).free()
+
+func test_crossing_to_the_plane_already_standing_on_is_a_silent_no_op() -> void:
+	var ctx := _fresh_bridge()
+	var bridge_player := ctx["player"] as Player
+	var crossings: Array[Depth.Layer] = []
+	bridge_player.depth_changed.connect(func(layer: Depth.Layer) -> void: crossings.append(layer))
+	bridge_player.set_depth(Depth.Layer.NEAR)
+	assert_eq(crossings.size(), 0, "already on that plane, so nothing changes and nothing fires")
+	(ctx["main"] as Main).free()
+
+func test_a_room_transition_always_resets_depth_to_near() -> void:
+	# Depth state must not leak from one room into the next, or a player
+	# could arrive in the Gallery already standing on a plane that room
+	# never authored a mid/far version of.
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var bridge_player := ctx["player"] as Player
+	var bridge_main := ctx["main"] as Main
+	bridge_player.set_depth(Depth.Layer.MID)
+	(bridge.get_node_or_null(^"ExitToGallery") as RoomExit)._on_body_entered(bridge_player)
+	assert_eq(bridge_main.world_root.player.current_depth, Depth.Layer.NEAR,
+		"arriving in the next room resets to the near plane")
+	bridge_main.free()
+
 # --- the full five-beat route ----------------------------------------------
 
 func test_the_full_route_connects_all_five_authored_rooms() -> void:

@@ -18,6 +18,12 @@ signal hit_rejected(hit: Hit, reason: String)
 ## When false the receiver is present but no longer interactive, e.g. an anchor
 ## that has already broken. It still explains itself rather than ignoring input.
 @export var interactive: bool = true
+## Which of the room's parallel depth planes (src/world/depth.gd) this
+## receiver belongs to. Room.bind() sets the matching physics layer bit from
+## this at bind time, so the .tscn never has to hardcode a raw layer number:
+## a receiver on a plane the player is not currently standing on genuinely
+## cannot be targeted, the same way a wall genuinely cannot be walked through.
+@export var depth_layer: Depth.Layer = Depth.Layer.NEAR
 
 func accepts(verb: StringName) -> bool:
 	return interactive and allowed_verbs.has(verb)
@@ -31,6 +37,9 @@ func receive(hit: Hit) -> bool:
 		return false
 	if not interactive:
 		hit_rejected.emit(hit, "inert")
+		return false
+	if hit.depth_layer != depth_layer:
+		hit_rejected.emit(hit, "wrong plane")
 		return false
 	if not allowed_verbs.has(hit.verb):
 		hit_rejected.emit(hit, "wrong tool")

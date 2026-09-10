@@ -106,6 +106,10 @@ dialogue_advance={
 2d_physics/layer_4="tool_target"
 2d_physics/layer_5="hazard"
 2d_physics/layer_6="player_hitbox"
+2d_physics/layer_7="depth_mid_terrain"
+2d_physics/layer_8="depth_far_terrain"
+2d_physics/layer_9="depth_mid_target"
+2d_physics/layer_10="depth_far_target"
 
 [physics]
 common/physics_ticks_per_second=60
