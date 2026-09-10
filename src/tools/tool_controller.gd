@@ -14,6 +14,15 @@ signal rope_released()
 signal equipped_changed(tool_id: StringName)
 signal ammo_changed(tool_id: StringName, loaded: int, capacity: int)
 
+## Shape queries return a bounded number of hits. 32 was not enough for a room
+## with 146 anchors in it; this is high enough that the cap is a safety net
+## rather than a filter, and the query warns when it is reached.
+const MAX_ANCHOR_CANDIDATES := 256
+## How much facing the wrong way costs an anchor when the rope picks a target.
+## 0 is pure nearest-wins, which cannot select a puzzle target in a dense
+## anchor field; large values turn the rope into an aim test, which D18 forbids.
+const ANCHOR_FACING_BIAS := 0.9
+
 const TOOL_ACTIONS := {
 	&"tool_lasso": &"lasso",
 	&"tool_pistol": &"pistol",
@@ -172,6 +181,13 @@ func _commit_lasso(definition: ToolDefinition) -> void:
 			player.begin_swing(anchor.interaction_point())
 		rope_attached.emit(anchor)
 
+## What the rope prefers, as pure arithmetic so it can be asserted without a
+## physics world: cheaper is better, distance is the base cost, and facing away
+## multiplies it. `alignment` is the dot product of the aim and the direction to
+## the candidate, so 1 is straight ahead and -1 is directly behind.
+static func anchor_score(distance: float, alignment: float) -> float:
+	return distance * (1.0 + (1.0 - alignment) * ANCHOR_FACING_BIAS)
+
 ## Nearest eligible anchor with clear line of sight. Line of sight is required so
 ## the rope cannot attach through a wall.
 func _find_lasso_anchor(definition: ToolDefinition) -> HitReceiver:
@@ -185,9 +201,15 @@ func _find_lasso_anchor(definition: ToolDefinition) -> HitReceiver:
 	query.collide_with_areas = true
 	query.collide_with_bodies = false
 
+	# The cap matters. The Sunken Cistern seeds 146 anchors, and a shape query
+	# truncated at 32 results silently omits candidates -- so the winch a player
+	# is standing in front of can be absent from the list entirely, and the miss
+	# is indistinguishable from there being nothing there.
 	var best: HitReceiver = null
-	var best_distance := INF
-	for result: Dictionary in space.intersect_shape(query, 32):
+	var best_score := INF
+	var aim := aim_direction()
+	var considered := 0
+	for result: Dictionary in space.intersect_shape(query, MAX_ANCHOR_CANDIDATES):
 		var receiver := result["collider"] as HitReceiver
 		if receiver == null:
 			continue
@@ -195,12 +217,25 @@ func _find_lasso_anchor(definition: ToolDefinition) -> HitReceiver:
 			continue
 		var point := receiver.interaction_point()
 		var distance := global_position.distance_to(point)
-		if distance >= best_distance or distance > definition.range_px:
+		if distance > definition.range_px:
 			continue
 		if _blocked(space, point):
 			continue
-		best = receiver
-		best_distance = distance
+		considered += 1
+		# Nearest-wins alone cannot express intent. With anchors this dense a
+		# puzzle target is almost never the closest thing, so a player facing a
+		# winch roped a swing anchor behind their shoulder instead and the
+		# mechanism simply never moved. Distance still decides between similar
+		# candidates -- D18 asks for the rope to stay organic rather than an aim
+		# test -- but something in front of Michael beats something behind him.
+		var toward := (point - global_position).normalized()
+		var score := anchor_score(distance, aim.dot(toward))
+		if score < best_score:
+			best = receiver
+			best_score = score
+	if considered >= MAX_ANCHOR_CANDIDATES:
+		push_warning("ToolController: anchor query hit its %d-result cap; a target may have been dropped"
+			% MAX_ANCHOR_CANDIDATES)
 	return best
 
 func _blocked(space: PhysicsDirectSpaceState2D, point: Vector2) -> bool:

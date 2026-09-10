@@ -171,8 +171,14 @@ func _state() -> Dictionary:
 			"id": String(e.source.id), "family": String(e.source.family_id),
 			"phase": e.phase(), "at": [e.global_position.x, e.global_position.y],
 		})
+	var gates: Array = []
+	for node: Node in _all(room):
+		var gate := node as MechanismGate
+		if gate != null:
+			gates.append({"puzzle": String(gate.watched_puzzle_id), "open": gate.is_open()})
 	return {
 		"ok": true,
+		"gates": gates,
 		"pos": [p.global_position.x, p.global_position.y],
 		"vel": [p.velocity.x, p.velocity.y],
 		"health": p.health,
@@ -197,7 +203,16 @@ func _level() -> Dictionary:
 		if t != null and t.allowed_verbs.has(&"swing"):
 			anchors.append([t.global_position.x, t.global_position.y])
 		elif t != null:
-			caches.append([t.global_position.x, t.global_position.y, String(t.puzzle_id)])
+			# The verb matters: the bot has two tools and a target that wants a
+			# rope cannot be opened with a bullet. Without this it had to guess,
+			# and a wrong guess is refused silently by ToolTarget.receive.
+			var verbs: Array = []
+			for v: StringName in t.allowed_verbs:
+				verbs.append(String(v))
+			caches.append({
+				"at": [t.global_position.x, t.global_position.y],
+				"puzzle": String(t.puzzle_id), "verbs": verbs,
+			})
 		var h := node as Hazard
 		if h != null:
 			hazards.append([h.global_position.x, h.global_position.y])

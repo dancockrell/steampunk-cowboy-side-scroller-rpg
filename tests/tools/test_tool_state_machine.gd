@@ -231,3 +231,29 @@ func test_replenish_restores_every_magazine() -> void:
 func test_switching_to_an_unknown_tool_is_refused() -> void:
 	assert_false(machine.request_switch(&"dynamite"), "an undefined tool cannot be equipped")
 	assert_eq(machine.equipped_id, &"pistol", "and the equipped tool is unchanged")
+
+# --- what the rope chooses to grab ------------------------------------------
+
+func test_the_rope_prefers_what_michael_is_facing_over_what_is_merely_closest() -> void:
+	# The Sunken Cistern seeds 146 swing anchors. With pure nearest-wins a
+	# player standing in front of a winch roped an anchor behind their shoulder
+	# instead, so the mechanism never moved and the level's four gates could not
+	# be opened at all. Distance still decides between similar candidates --
+	# D18 forbids turning the rope into an aim test -- but ahead beats behind.
+	var ahead := ToolController.anchor_score(120.0, 1.0)
+	var behind := ToolController.anchor_score(80.0, -1.0)
+	assert_true(ahead < behind,
+		"a target 120px ahead beats one 80px behind (%.0f vs %.0f)" % [ahead, behind])
+
+func test_facing_bias_does_not_beat_a_large_difference_in_distance() -> void:
+	# The other half of the same rule: the rope stays organic. Something very
+	# close and slightly off-axis must still win, or every swing becomes a
+	# precision check.
+	var near_off_axis := ToolController.anchor_score(40.0, 0.0)
+	var far_ahead := ToolController.anchor_score(300.0, 1.0)
+	assert_true(near_off_axis < far_ahead,
+		"40px to the side still beats 300px dead ahead (%.0f vs %.0f)" % [near_off_axis, far_ahead])
+
+func test_two_candidates_dead_ahead_are_decided_by_distance_alone() -> void:
+	assert_true(ToolController.anchor_score(100.0, 1.0) < ToolController.anchor_score(140.0, 1.0),
+		"with nothing to separate them on facing, nearer wins")

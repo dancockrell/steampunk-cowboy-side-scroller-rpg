@@ -124,6 +124,10 @@ class Nav:
         # walkway off the y=1900 ledge, and every run before the server started
         # reporting doors ended standing against it, unable to move, with the
         # bot blaming the physics for a puzzle nobody had told it about.
+        self.switches = {}
+        for t in level.get("targets", []):
+            if isinstance(t, dict):
+                self.switches[t["puzzle"]] = (tuple(t["at"]), list(t.get("verbs", [])))
         self.shut = [tuple(d["rect"]) for d in level.get("doors", [])
                      if not d.get("open")]
         self.locked_by = sorted({d.get("puzzle", "?") for d in level.get("doors", [])
@@ -507,6 +511,48 @@ class Bot:
             self._act({"cmd": "act", "n": 7, "press": press})
         return True
 
+    def unlock(self, puzzle_id):
+        """Go to the switch that opens a door, and actually operate it.
+
+        This is the capability the bot was missing entirely. It knew doors were
+        shut -- it routed around them and complained about them -- but nothing
+        in walk/jump/drop/swing can open one, so 35% of the level stayed behind
+        gates that had working switches the whole time.
+
+        It drives the real ToolController: equip, face the switch, press
+        tool_use. ToolController.aim_direction falls back to Michael's facing
+        when there is no mouse, which headless always is, so facing IS aiming
+        and a bot that stands the wrong way misses.
+        """
+        entry = self.nav.switches.get(puzzle_id)
+        if entry is None:
+            return {"puzzle": puzzle_id, "opened": False, "why": "no switch exists"}
+        at, verbs = entry
+        tool = "tool_lasso" if "pull" in verbs else "tool_pistol"
+        reach = self.nav.reach if tool == "tool_lasso" else 220.0
+
+        leg = self.run_leg("switch for %s" % puzzle_id, at, budget_s=55.0)
+        st = self.g.state()
+        p = tuple(st["pos"])
+        if math.dist(p, at) > reach:
+            return {"puzzle": puzzle_id, "opened": False,
+                    "why": "could not get within reach (%d px away)" % math.dist(p, at)}
+
+        press = ["move_right"] if at[0] > p[0] else ["move_left"]
+        self._act({"cmd": "act", "n": 3, "press": [tool]})
+        for _ in range(8):
+            # A nudge toward the switch first, so facing is right, then the use.
+            self._act({"cmd": "act", "n": 2, "press": press})
+            self._act({"cmd": "act", "n": 3, "press": press + ["tool_use"]})
+            self._act({"cmd": "act", "n": 6, "press": []})
+            st = self.g.state()
+            for gate in st.get("gates", []):
+                if gate["puzzle"] == puzzle_id and gate["open"]:
+                    return {"puzzle": puzzle_id, "opened": True,
+                            "why": "opened with %s" % tool.replace("tool_", "")}
+        return {"puzzle": puzzle_id, "opened": False,
+                "why": "in reach with %s but it never opened" % tool.replace("tool_", "")}
+
     def _replan(self, p, target, goal):
         """Re-plan to the goal, or failing that to the best place still open.
 
@@ -876,6 +922,25 @@ def main():
         100.0 * len(nav.reachable(start)) / len(nav.nodes)))
 
     bot = Bot(g, nav, shots, trace=args.trace)
+
+    # Unlock first. Every shut door in this level has a working switch
+    # somewhere else on the map, and the bot could not operate one, so it spent
+    # every previous run routing around puzzles it was capable of solving.
+    unlocks = []
+    if nav.locked_by:
+        print("unlocking %d gates before the route: %s" % (
+            len(nav.locked_by), ", ".join(nav.locked_by)))
+        for puzzle in nav.locked_by:
+            u = bot.unlock(puzzle)
+            unlocks.append(u)
+            print("  %-26s %s  (%s)" % (
+                puzzle, "OPENED" if u["opened"] else "shut  ", u["why"]))
+        level = g.send(cmd="level")
+        nav = Nav(level, swing_samples=nav.samples if hasattr(nav, "samples") else None)
+        bot.nav = nav
+        print("  graph rebuilt with the opened doors: %d nodes, %d edges" % (
+            len(nav.nodes), sum(len(v) for v in nav.edges.values())))
+
     legs = []
     for label, goal in GOALS:
         r = bot.run_leg(label, goal)
@@ -890,7 +955,8 @@ def main():
     report = {
         "graph": {"nodes": len(nav.nodes), "edges": sum(len(v) for v in nav.edges.values())},
         "legs": legs, "cells": len(bot.cells), "damage": bot.damage,
-        "blocked_edges": bot.blocked_edges, "complaints": complaints,
+        "blocked_edges": bot.blocked_edges, "unlocks": unlocks,
+        "complaints": complaints,
         "path": bot.path,
     }
     with open(os.path.join(args.out, "complaints.json"), "w") as f:
