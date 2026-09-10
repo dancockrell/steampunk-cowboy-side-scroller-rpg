@@ -321,7 +321,7 @@ bounds = Rect2(0, 0, 5120, 2880)
 
 [node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_terrain")
-platforms = Array[Rect2]([Rect2(0, 620, 620, 26), Rect2(700, 540, 300, 26), Rect2(1100, 700, 260, 26), Rect2(1300, 300, 420, 26), Rect2(240, 860, 130, 26), Rect2(570, 900, 120, 26), Rect2(120, 1000, 420, 26), Rect2(0, 1180, 180, 26), Rect2(300, 1320, 360, 26), Rect2(90, 1640, 300, 26), Rect2(640, 1500, 220, 26), Rect2(380, 1900, 420, 26), Rect2(560, 2060, 200, 26), Rect2(140, 2200, 340, 26), Rect2(420, 2460, 300, 26), Rect2(120, 2380, 120, 26), Rect2(200, 2320, 120, 26), Rect2(460, 2260, 110, 26), Rect2(720, 2350, 120, 26), Rect2(820, 1300, 140, 26), Rect2(760, 2000, 180, 26), Rect2(1000, 2300, 90, 26), Rect2(1200, 2260, 90, 26), Rect2(1400, 2320, 90, 26), Rect2(1300, 2450, 200, 26), Rect2(1460, 900, 150, 26), Rect2(2390, 900, 150, 26), Rect2(1880, 1220, 260, 26), Rect2(1620, 1000, 100, 26), Rect2(1860, 1120, 100, 26), Rect2(1680, 1260, 110, 26), Rect2(2200, 1000, 100, 26), Rect2(2020, 1140, 100, 26), Rect2(2240, 1280, 110, 26), Rect2(1460, 1500, 150, 26), Rect2(2390, 1500, 150, 26), Rect2(1760, 1820, 200, 26), Rect2(2160, 2380, 240, 26), Rect2(1460, 2100, 150, 26), Rect2(2390, 2100, 150, 26), Rect2(1300, 300, 420, 26), Rect2(2200, 240, 520, 26), Rect2(3200, 320, 460, 26), Rect2(4100, 420, 400, 26), Rect2(2760, 760, 460, 26), Rect2(2920, 1020, 380, 26), Rect2(2880, 1196, 200, 26), Rect2(3320, 1020, 380, 26), Rect2(2880, 1300, 360, 26), Rect2(3460, 1560, 420, 26), Rect2(2960, 1840, 380, 26), Rect2(3560, 2120, 340, 26), Rect2(4200, 900, 420, 26), Rect2(4560, 1240, 360, 26), Rect2(4260, 1560, 300, 26), Rect2(4620, 1880, 340, 26), Rect2(4180, 2200, 380, 26), Rect2(2600, 2720, 640, 26), Rect2(0, 2720, 760, 26), Rect2(900, 2720, 520, 26), Rect2(1560, 2720, 380, 26), Rect2(2120, 2720, 300, 26), Rect2(3400, 2720, 420, 26), Rect2(4420, 2720, 700, 26), Rect2(120, 1900, 320, 26), Rect2(3980, 2660, 300, 26)])
+platforms = Array[Rect2]([Rect2(0, 620, 620, 26), Rect2(700, 540, 300, 26), Rect2(1100, 700, 260, 26), Rect2(240, 860, 130, 26), Rect2(570, 900, 120, 26), Rect2(120, 1000, 420, 26), Rect2(0, 1180, 180, 26), Rect2(300, 1320, 360, 26), Rect2(90, 1640, 300, 26), Rect2(640, 1500, 220, 26), Rect2(380, 1900, 420, 26), Rect2(560, 2060, 200, 26), Rect2(140, 2200, 340, 26), Rect2(420, 2460, 300, 26), Rect2(120, 2380, 120, 26), Rect2(200, 2320, 120, 26), Rect2(350, 2264, 110, 26), Rect2(500, 2312, 120, 26), Rect2(820, 1300, 140, 26), Rect2(760, 2000, 180, 26), Rect2(1000, 2300, 90, 26), Rect2(1160, 2260, 90, 26), Rect2(1320, 2320, 90, 26), Rect2(1300, 2450, 200, 26), Rect2(1460, 900, 150, 26), Rect2(2390, 900, 150, 26), Rect2(1880, 1220, 260, 26), Rect2(1620, 1000, 100, 26), Rect2(1860, 1120, 100, 26), Rect2(1680, 1260, 110, 26), Rect2(2200, 1000, 100, 26), Rect2(2020, 1140, 100, 26), Rect2(2240, 1280, 110, 26), Rect2(1460, 1500, 150, 26), Rect2(2390, 1500, 150, 26), Rect2(1760, 1820, 200, 26), Rect2(2160, 2380, 240, 26), Rect2(1460, 2100, 150, 26), Rect2(2390, 2100, 150, 26), Rect2(1300, 300, 420, 26), Rect2(2200, 240, 520, 26), Rect2(3200, 320, 460, 26), Rect2(4100, 420, 400, 26), Rect2(2760, 760, 460, 26), Rect2(2920, 1020, 380, 26), Rect2(2880, 1196, 200, 26), Rect2(3320, 1020, 380, 26), Rect2(2880, 1300, 360, 26), Rect2(3460, 1560, 420, 26), Rect2(2960, 1840, 380, 26), Rect2(3560, 2120, 340, 26), Rect2(4200, 900, 420, 26), Rect2(4560, 1240, 360, 26), Rect2(4260, 1560, 300, 26), Rect2(4620, 1880, 340, 26), Rect2(4180, 2200, 380, 26), Rect2(2600, 2720, 640, 26), Rect2(0, 2720, 760, 26), Rect2(900, 2720, 520, 26), Rect2(1560, 2720, 380, 26), Rect2(2120, 2720, 300, 26), Rect2(3400, 2720, 420, 26), Rect2(4420, 2720, 700, 26), Rect2(120, 1900, 320, 26), Rect2(3980, 2660, 300, 26), Rect2(1040, 520, 60, 26), Rect2(1112, 464, 60, 26), Rect2(1184, 408, 60, 26), Rect2(1256, 352, 60, 26), Rect2(2780, 250, 60, 26), Rect2(2852, 264, 60, 26), Rect2(2924, 278, 60, 26), Rect2(2996, 292, 60, 26), Rect2(3068, 306, 60, 26), Rect2(3140, 320, 60, 26), Rect2(3720, 336, 60, 26), Rect2(3792, 352, 60, 26), Rect2(3864, 368, 60, 26), Rect2(3936, 384, 60, 26), Rect2(4008, 400, 60, 26), Rect2(860, 1876, 60, 26), Rect2(932, 1820, 60, 26), Rect2(860, 1764, 60, 26), Rect2(932, 1708, 60, 26), Rect2(860, 1652, 60, 26), Rect2(932, 1596, 60, 26), Rect2(1560, 1454, 60, 26), Rect2(1632, 1398, 60, 26), Rect2(1560, 1342, 60, 26), Rect2(1632, 1286, 60, 26), Rect2(1560, 1230, 60, 26), Rect2(1632, 1174, 60, 26), Rect2(1560, 1118, 60, 26), Rect2(1632, 1062, 60, 26), Rect2(3176, 1812, 60, 26), Rect2(3248, 1756, 60, 26), Rect2(3176, 1700, 60, 26), Rect2(3248, 1644, 60, 26), Rect2(3176, 1588, 60, 26), Rect2(3248, 1532, 60, 26), Rect2(3176, 1476, 60, 26), Rect2(3248, 1420, 60, 26), Rect2(3176, 1364, 60, 26), Rect2(3248, 1308, 60, 26), Rect2(4040, 2604, 60, 26), Rect2(4112, 2548, 60, 26), Rect2(4040, 2492, 60, 26), Rect2(4112, 2436, 60, 26), Rect2(4040, 2380, 60, 26), Rect2(4112, 2324, 60, 26), Rect2(4040, 2268, 60, 26), Rect2(4112, 2212, 60, 26), Rect2(472, 1264, 60, 26), Rect2(544, 1208, 60, 26), Rect2(472, 1152, 60, 26), Rect2(544, 1096, 60, 26), Rect2(472, 1040, 60, 26), Rect2(544, 984, 60, 26), Rect2(472, 928, 60, 26), Rect2(544, 872, 60, 26), Rect2(472, 816, 60, 26), Rect2(3396, 1552, 60, 26), Rect2(3468, 1496, 60, 26), Rect2(3396, 1440, 60, 26), Rect2(3468, 1384, 60, 26), Rect2(3396, 1328, 60, 26), Rect2(3468, 1272, 60, 26), Rect2(3396, 1216, 60, 26), Rect2(3468, 1160, 60, 26), Rect2(3396, 1104, 60, 26), Rect2(3468, 1048, 60, 26), Rect2(700, 2546, 60, 26), Rect2(772, 2490, 60, 26), Rect2(700, 2434, 60, 26), Rect2(772, 2378, 60, 26), Rect2(700, 2322, 60, 26), Rect2(772, 2266, 60, 26), Rect2(700, 2210, 60, 26), Rect2(772, 2154, 60, 26), Rect2(700, 2098, 60, 26), Rect2(772, 2042, 60, 26)])
 backdrop = Array[Rect2]([Rect2(64, 64, 4992, 2680)])
 
 [node name="spawn_entry" type="Marker2D" parent="."]
@@ -3689,6 +3689,240 @@ shape = SubResource("anchor_box")
 [node name="InteractionPoint" type="Marker2D" parent="A_z10h_1"]
 
 [node name="Graybox" type="Polygon2D" parent="A_z10h_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11b_0" type="Area2D" parent="."]
+position = Vector2(2900, 120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11b_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11b_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11b_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11b_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11b_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11b_1" type="Area2D" parent="."]
+position = Vector2(3080, 140)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11b_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11b_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11b_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11b_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11b_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11c_0" type="Area2D" parent="."]
+position = Vector2(3860, 230)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11c_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11c_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11c_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11c_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11c_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11c_1" type="Area2D" parent="."]
+position = Vector2(4040, 260)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11c_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11c_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11c_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11c_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11c_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11d_0" type="Area2D" parent="."]
+position = Vector2(800, 1736)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11d_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11d_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11d_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11d_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11d_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11d_1" type="Area2D" parent="."]
+position = Vector2(1000, 1576)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11d_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11d_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11d_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11d_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11d_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11e_0" type="Area2D" parent="."]
+position = Vector2(1480, 1244)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11e_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11e_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11e_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11e_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11e_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11e_1" type="Area2D" parent="."]
+position = Vector2(1700, 1244)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11e_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11e_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11e_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11e_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11e_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11f_0" type="Area2D" parent="."]
+position = Vector2(3136, 1552)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11f_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11f_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11f_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11f_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11f_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11f_1" type="Area2D" parent="."]
+position = Vector2(3296, 1432)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11f_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11f_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11f_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11f_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11f_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11g_0" type="Area2D" parent="."]
+position = Vector2(4090, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11g_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11g_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11g_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11g_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11g_0"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11g_1" type="Area2D" parent="."]
+position = Vector2(4180, 2280)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11g_1"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11g_1"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11g_1"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11g_1"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11g_1"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="A_z11j_0" type="Area2D" parent="."]
+position = Vector2(860, 2286)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"a_z11j_0"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"a_z11j_0"
+
+[node name="Shape" type="CollisionShape2D" parent="A_z11j_0"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="A_z11j_0"]
+
+[node name="Graybox" type="Polygon2D" parent="A_z11j_0"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 

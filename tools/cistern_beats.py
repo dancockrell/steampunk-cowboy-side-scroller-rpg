@@ -55,9 +55,11 @@ def author(beat, FLOOR_Y):
         promise: the best rewards in the cistern are up there, and getting to
         them is a problem to solve later from somewhere else. An unreachable
         thing you can see is worth more than a locked door, because the player
-        invents the route themselves.
+        invents the route themselves. The walkway itself is z6a's slab; this
+        beat owns only the anchor at its lip, so the two are one piece of
+        geometry rather than two copies of it.
         """,
-        ("ledge", 870, 0, 420), ("anchor", 1080, -120))
+        ("anchor", 1080, -120))
 
     beat("z1e", 240, 860, """
         Two shelves step down below the entry ledge, close enough to drop to
@@ -264,7 +266,7 @@ def author(beat, FLOOR_Y):
         who is bad at swinging should still be able to see the whole cistern --
         they should just take longer, and miss the caches that need the rope.
         """,
-        ("ledge", 0, 0, 120), ("ledge", 260, -60, 110), ("ledge", 520, 30, 120),
+        ("ledge", 0, 0, 120), ("ledge", 150, -56, 110), ("ledge", 300, -8, 120),
         ("anchor", 130, -170), ("anchor", 420, -200))
 
     beat("z3f", 820, 1300, """
@@ -309,7 +311,7 @@ def author(beat, FLOOR_Y):
         also serve as recovery ground for anyone who misses the swing, so the
         two routes catch each other rather than competing.
         """,
-        ("ledge", 0, 0, 90), ("ledge", 200, -40, 90), ("ledge", 400, 20, 90),
+        ("ledge", 0, 0, 90), ("ledge", 160, -40, 90), ("ledge", 320, 20, 90),
         ("anchor", 200, -200))
 
     beat("z3j", 420, 2620, """
@@ -1193,3 +1195,149 @@ def author(beat, FLOOR_Y):
         rather than a detour.
         """,
         ("anchor", 0, 0), ("anchor", 0, -240))
+
+    # ============================== Z11  THE SCAFFOLD (jumpable step runs)
+    beat("z11a", 1040, 520, """
+        A run of broken scaffold boards steps up from the shelf east of the
+        entry to the lip of the roof walkway, each board close enough above the
+        last that Michael can jump it without touching the rope. Until now the
+        roof has been a promise seen from the entry and reachable only by a long
+        swing, which meant a player with no rope skill could look at it and
+        never stand on it. The boards do not make the swing pointless: taking
+        them costs four separate jumps and a walk, where the rope crosses the
+        same distance in one arc. This is the level's traversal contract stated
+        as geometry -- jumping is always available and always slower.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 144, -112, 60),
+        ("ledge", 216, -168, 60))
+
+    beat("z11b", 2780, 250, """
+        The roof walkway is not one slab but a run of planks laid across the
+        gap between the wide vantage slab and the eastern walkway, sagging a
+        little further with each one. Each plank is a short hop from the last,
+        so a player who came up here at all can simply walk east, which is what
+        the eastern roof beats have always assumed and what the geometry never
+        actually allowed. Two anchors overhead let a confident player cross the
+        whole span in one arc instead of six hops. The planks are the floor of
+        the roof: they make the top of the level a place you can be rather than
+        a set of islands you can only reach by rope.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, 14, 60), ("ledge", 144, 28, 60),
+        ("ledge", 216, 42, 60), ("ledge", 288, 56, 60), ("ledge", 360, 70, 60),
+        ("anchor", 120, -130), ("anchor", 300, -110))
+
+    beat("z11c", 3720, 336, """
+        The planking continues past the eastern walkway and steps gently down
+        toward the last roof slab above the kiln stack, each board a little
+        lower than the one before. Walking it is free and takes about ten
+        seconds; the two anchors above it turn the same distance into a single
+        swing for anyone who would rather. It matters that the descent is
+        gradual rather than a drop, because the slab at the end of it is the
+        entrance to the most consequential shortcut in the cistern, and a
+        player should arrive there having chosen to walk east rather than
+        having fallen east.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, 16, 60), ("ledge", 144, 32, 60),
+        ("ledge", 216, 48, 60), ("ledge", 288, 64, 60),
+        ("anchor", 140, -106), ("anchor", 320, -76))
+
+    beat("z11d", 860, 1876, """
+        A collapsed pillar in the west galleries has left its drum sections
+        stacked and offset, alternating left and right up the wall like a
+        spiral stair with the middle missing. Each drum is one jump above the
+        last, so the galleries can be climbed back up without a single throw of
+        the rope -- slowly, six jumps at a time, where the anchors beside it do
+        the same climb in two. It is placed on the natural fail-back route from
+        the mural shelf, because the player who most needs a rope-free way up
+        is the one who has just been knocked off something.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("anchor", -60, -140), ("anchor", 140, -300))
+
+    beat("z11e", 1560, 1454, """
+        The same collapse repeated on the shaft's western wall, where the
+        stepped ledges are three hundred pixels apart and a player without the
+        rope simply could not climb the middle of the level. Eight offset drums
+        close that spacing to a jump each, so the shaft becomes a staircase for
+        anyone patient enough to take it one drum at a time. The vents are on
+        the east wall and the drums are on the west, which means the slow route
+        is also the safe one and the fast route is still the rope.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60),
+        ("anchor", -80, -210), ("anchor", 140, -210))
+
+    beat("z11f", 3176, 1812, """
+        Kiln bricks fallen out of the stack's inner wall make a climbable
+        column between the lowest cool tier and the shelf that threads the kiln
+        mouths, alternating side to side for ten courses. The stack was built
+        to be fought upward through and until now it could only be climbed by
+        rope, which meant a player who lost the rope's rhythm lost the zone.
+        The bricks are hot ground in a hot zone and they are slow, so taking
+        them keeps Michael beside the vents for longer than a swing would --
+        the free route costs time in the one place where time is expensive.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60), ("ledge", 0, -448, 60),
+        ("ledge", 72, -504, 60),
+        ("anchor", -40, -260), ("anchor", 120, -380))
+
+    beat("z11g", 4040, 2604, """
+        A ladder of broken tier-edges climbs out of the eastern water onto the
+        wide tier above, offset course by course so that each is a jump rather
+        than a haul. Without it the eastern floor is a place the player can
+        arrive at by falling and leave only by rope, which is the worst
+        arrangement in a level whose floor is where failure lands. It is
+        deliberately at the end of the level rather than the beginning: by now
+        the player knows the rope, and this is not a lesson but an insurance
+        policy for the run where the rope has stopped going right.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60),
+        ("anchor", 50, -204), ("anchor", 140, -324))
+
+    beat("z11h", 472, 1264, """
+        Shelving pulled off the gallery wall has fallen in a staggered heap
+        that reaches from the cache shelf below the jars all the way up to the
+        stepped ledges under the entry. It is the west wing's spine for anyone
+        not using the rope: nine short jumps and the whole gallery is a loop
+        rather than a one-way descent. Because it lands beside the jar shelf it
+        also gives a player who fled the sentinels a way back to them on their
+        own terms, which turns the gallery's one fight into something that can
+        be come at twice.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60), ("ledge", 0, -448, 60))
+
+    beat("z11i", 3396, 1552, """
+        Broken firebrick courses climb the inside of the kiln stack from the
+        wide tier up to the safe shelf between the heats, ten of them, offset
+        so each is a single jump. The stack was designed to be fought upward
+        through and its shelves are a rope's length apart, which made the whole
+        zone unavailable to a player having a bad night with the lasso. These
+        make the climb possible on foot and slow enough that anything already
+        awake on the tiers gets time to meet him halfway.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60), ("ledge", 0, -448, 60),
+        ("ledge", 72, -504, 60))
+
+    beat("z11j", 700, 2546, """
+        Fallen masonry stacked against the west wall climbs out of the shallows
+        to the wide ledge halfway up the descent, so the bottom of the west
+        wing is not a place a failed swing strands you in. Ten jumps is a long
+        way to come back up and it is always available, which is exactly the
+        trade this level makes everywhere: the rope is two swings and a nerve,
+        the stone is a minute and no risk. The single anchor beside it is there
+        so the climb can be abandoned halfway rather than only completed.
+        """,
+        ("ledge", 0, 0, 60), ("ledge", 72, -56, 60), ("ledge", 0, -112, 60),
+        ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
+        ("ledge", 0, -336, 60), ("ledge", 72, -392, 60), ("ledge", 0, -448, 60),
+        ("ledge", 72, -504, 60), ("anchor", 160, -260))

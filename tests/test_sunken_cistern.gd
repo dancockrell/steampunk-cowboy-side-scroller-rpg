@@ -140,6 +140,114 @@ func test_you_can_leave_most_surfaces_in_more_than_one_direction() -> void:
 	assert_true(ratio >= 0.75,
 		"at least three quarters of surfaces offer a choice of anchor (%.0f%%)" % (ratio * 100.0))
 
+## Michael's jump, derived from the tuning resource rather than copied out of
+## it: rise is v^2/2g, and reach is run speed times the time up plus the time
+## back down under the heavier fall gravity. Copying the numbers as literals
+## would make this test agree with a tuning change it never saw.
+func _jump_budget() -> Vector2:
+	var t := Tuning.new()
+	var rise := (t.jump_velocity * t.jump_velocity) / (2.0 * t.gravity)
+	var up := absf(t.jump_velocity) / t.gravity
+	var down := sqrt(2.0 * rise / (t.gravity * t.fall_gravity_multiplier))
+	return Vector2(t.run_speed * (up + down), rise)
+
+func _gap(a: Rect2, b: Rect2) -> float:
+	return maxf(0.0, maxf(a.position.x - b.end.x, b.position.x - a.end.x))
+
+func test_climbing_by_jumping_is_a_real_option_not_decoration() -> void:
+	# A nav-graph pass over this level found 91% of its connections were rope
+	# swings: shelves sat ~300px apart, so a player who could not swing could
+	# not move. The rope is meant to be the fast, expressive route, not the
+	# only one. This asserts the slow route exists: from most surfaces there is
+	# somewhere higher within one jump.
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	assert_not_null(terrain, "the terrain exists")
+	var budget := _jump_budget()
+	assert_true(budget.x > 60.0 and budget.y > 40.0,
+		"the jump budget is a real distance (%.0f px across, %.0f px up)" % [budget.x, budget.y])
+	assert_true(terrain.platforms.size() >= 100,
+		"the level still has its surfaces, found %d" % terrain.platforms.size())
+	var climbable := 0
+	for a: Rect2 in terrain.platforms:
+		for b: Rect2 in terrain.platforms:
+			if a == b:
+				continue
+			var rise := a.position.y - b.position.y
+			if rise > 0.0 and rise <= budget.y and _gap(a, b) <= budget.x:
+				climbable += 1
+				break
+	var ratio := float(climbable) / float(terrain.platforms.size())
+	assert_true(ratio >= 0.5,
+		"at least half the surfaces can be climbed out of by jumping (%d of %d, %.0f%%)"
+			% [climbable, terrain.platforms.size(), ratio * 100.0])
+
+func test_no_surface_is_cut_off_from_the_entry() -> void:
+	# 19% of this level used to be unreachable from the spawn -- whole roof
+	# walkways and the high eastern shelves, visible and impossible. The graph
+	# below is deliberately conservative about what Michael can do (jump within
+	# budget, drop straight down, or swing to something under an anchor within
+	# rope length) so a pass here is not resting on a generous model.
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	var plats: Array[Rect2] = terrain.platforms
+	var anchors := _anchors()
+	var reach: float = Tuning.new().lasso_range_px
+	var budget := _jump_budget()
+
+	var links: Array[PackedInt32Array] = []
+	for i in plats.size():
+		links.append(PackedInt32Array())
+	for i in plats.size():
+		var a: Rect2 = plats[i]
+		for j in plats.size():
+			if i == j:
+				continue
+			var b: Rect2 = plats[j]
+			var rise := a.position.y - b.position.y
+			if rise <= budget.y and rise > -400.0 and _gap(a, b) <= budget.x:
+				links[i].append(j)                      # jump across or down
+			elif rise < 0.0 and _gap(a, b) <= 0.0:
+				links[i].append(j)                      # drop off the edge
+		for anchor: Vector2 in anchors:
+			var near := Vector2(clampf(anchor.x, a.position.x, a.end.x), a.position.y)
+			var rope := anchor.distance_to(near)
+			if rope > reach:
+				continue
+			for j in plats.size():
+				if i == j:
+					continue
+				var b: Rect2 = plats[j]
+				if b.position.y <= anchor.y:
+					continue
+				if absf(clampf(anchor.x, b.position.x, b.end.x) - anchor.x) <= rope \
+						and b.position.y - anchor.y <= rope + 40.0:
+					links[i].append(j)
+
+	var start := -1
+	var spawn := (room.get_node_or_null(^"spawn_entry") as Marker2D).global_position
+	var best := INF
+	for i in plats.size():
+		var top := Vector2(clampf(spawn.x, plats[i].position.x, plats[i].end.x), plats[i].position.y)
+		var d := top.distance_to(spawn)
+		if d < best:
+			best = d
+			start = i
+	assert_true(start >= 0 and best < 200.0, "the entry spawn stands on a real surface")
+
+	var seen := {start: true}
+	var stack: Array[int] = [start]
+	while not stack.is_empty():
+		for j: int in links[stack.pop_back()]:
+			if not seen.has(j):
+				seen[j] = true
+				stack.append(j)
+	var missed: Array[String] = []
+	for i in plats.size():
+		if not seen.has(i):
+			missed.append("(%d,%d)" % [int(plats[i].position.x), int(plats[i].position.y)])
+	assert_eq(missed.size(), 0,
+		"every surface is reachable from the entry; %d of %d are not: %s"
+			% [missed.size(), plats.size(), ", ".join(missed)])
+
 func test_all_three_creature_families_live_here() -> void:
 	var families: Array[StringName] = []
 	for encounter: Encounter in room.encounters():

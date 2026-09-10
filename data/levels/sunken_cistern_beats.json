@@ -21,7 +21,7 @@
   "id": "z1d",
   "x": 430,
   "y": 300,
-  "intent": "The roof walkway runs overhead, well lit and clearly standable, and there is no way to reach it from here. The anchor at its lip is visible and out of range from every surface in this zone. It is a promise: the best rewards in the cistern are up there, and getting to them is a problem to solve later from somewhere else. An unreachable thing you can see is worth more than a locked door, because the player invents the route themselves."
+  "intent": "The roof walkway runs overhead, well lit and clearly standable, and there is no way to reach it from here. The anchor at its lip is visible and out of range from every surface in this zone. It is a promise: the best rewards in the cistern are up there, and getting to them is a problem to solve later from somewhere else. An unreachable thing you can see is worth more than a locked door, because the player invents the route themselves. The walkway itself is z6a's slab; this beat owns only the anchor at its lip, so the two are one piece of geometry rather than two copies of it."
  },
  {
   "id": "z1e",
@@ -622,5 +622,65 @@
   "x": 1120,
   "y": 620,
   "intent": "A rope line back up to the entry ledge from the top of the west wing, so that the cistern is never one-way. A player can always get back to where they came in and out to the Procession Hall, which matters because this level is a branch off the main route and trapping someone in an optional area is the worst thing an optional area can do. A player can always get back to where they came in and out to the Procession Hall, which matters more here than anywhere else in the game: this level is an optional branch, and trapping someone in an optional area is the worst thing an optional area can do. The line sits at the top of the west wing so it is on the way to the entry rather than a detour."
+ },
+ {
+  "id": "z11a",
+  "x": 1040,
+  "y": 520,
+  "intent": "A run of broken scaffold boards steps up from the shelf east of the entry to the lip of the roof walkway, each board close enough above the last that Michael can jump it without touching the rope. Until now the roof has been a promise seen from the entry and reachable only by a long swing, which meant a player with no rope skill could look at it and never stand on it. The boards do not make the swing pointless: taking them costs four separate jumps and a walk, where the rope crosses the same distance in one arc. This is the level's traversal contract stated as geometry -- jumping is always available and always slower."
+ },
+ {
+  "id": "z11b",
+  "x": 2780,
+  "y": 250,
+  "intent": "The roof walkway is not one slab but a run of planks laid across the gap between the wide vantage slab and the eastern walkway, sagging a little further with each one. Each plank is a short hop from the last, so a player who came up here at all can simply walk east, which is what the eastern roof beats have always assumed and what the geometry never actually allowed. Two anchors overhead let a confident player cross the whole span in one arc instead of six hops. The planks are the floor of the roof: they make the top of the level a place you can be rather than a set of islands you can only reach by rope."
+ },
+ {
+  "id": "z11c",
+  "x": 3720,
+  "y": 336,
+  "intent": "The planking continues past the eastern walkway and steps gently down toward the last roof slab above the kiln stack, each board a little lower than the one before. Walking it is free and takes about ten seconds; the two anchors above it turn the same distance into a single swing for anyone who would rather. It matters that the descent is gradual rather than a drop, because the slab at the end of it is the entrance to the most consequential shortcut in the cistern, and a player should arrive there having chosen to walk east rather than having fallen east."
+ },
+ {
+  "id": "z11d",
+  "x": 860,
+  "y": 1876,
+  "intent": "A collapsed pillar in the west galleries has left its drum sections stacked and offset, alternating left and right up the wall like a spiral stair with the middle missing. Each drum is one jump above the last, so the galleries can be climbed back up without a single throw of the rope -- slowly, six jumps at a time, where the anchors beside it do the same climb in two. It is placed on the natural fail-back route from the mural shelf, because the player who most needs a rope-free way up is the one who has just been knocked off something."
+ },
+ {
+  "id": "z11e",
+  "x": 1560,
+  "y": 1454,
+  "intent": "The same collapse repeated on the shaft's western wall, where the stepped ledges are three hundred pixels apart and a player without the rope simply could not climb the middle of the level. Eight offset drums close that spacing to a jump each, so the shaft becomes a staircase for anyone patient enough to take it one drum at a time. The vents are on the east wall and the drums are on the west, which means the slow route is also the safe one and the fast route is still the rope."
+ },
+ {
+  "id": "z11f",
+  "x": 3176,
+  "y": 1812,
+  "intent": "Kiln bricks fallen out of the stack's inner wall make a climbable column between the lowest cool tier and the shelf that threads the kiln mouths, alternating side to side for ten courses. The stack was built to be fought upward through and until now it could only be climbed by rope, which meant a player who lost the rope's rhythm lost the zone. The bricks are hot ground in a hot zone and they are slow, so taking them keeps Michael beside the vents for longer than a swing would -- the free route costs time in the one place where time is expensive."
+ },
+ {
+  "id": "z11g",
+  "x": 4040,
+  "y": 2604,
+  "intent": "A ladder of broken tier-edges climbs out of the eastern water onto the wide tier above, offset course by course so that each is a jump rather than a haul. Without it the eastern floor is a place the player can arrive at by falling and leave only by rope, which is the worst arrangement in a level whose floor is where failure lands. It is deliberately at the end of the level rather than the beginning: by now the player knows the rope, and this is not a lesson but an insurance policy for the run where the rope has stopped going right."
+ },
+ {
+  "id": "z11h",
+  "x": 472,
+  "y": 1264,
+  "intent": "Shelving pulled off the gallery wall has fallen in a staggered heap that reaches from the cache shelf below the jars all the way up to the stepped ledges under the entry. It is the west wing's spine for anyone not using the rope: nine short jumps and the whole gallery is a loop rather than a one-way descent. Because it lands beside the jar shelf it also gives a player who fled the sentinels a way back to them on their own terms, which turns the gallery's one fight into something that can be come at twice."
+ },
+ {
+  "id": "z11i",
+  "x": 3396,
+  "y": 1552,
+  "intent": "Broken firebrick courses climb the inside of the kiln stack from the wide tier up to the safe shelf between the heats, ten of them, offset so each is a single jump. The stack was designed to be fought upward through and its shelves are a rope's length apart, which made the whole zone unavailable to a player having a bad night with the lasso. These make the climb possible on foot and slow enough that anything already awake on the tiers gets time to meet him halfway."
+ },
+ {
+  "id": "z11j",
+  "x": 700,
+  "y": 2546,
+  "intent": "Fallen masonry stacked against the west wall climbs out of the shallows to the wide ledge halfway up the descent, so the bottom of the west wing is not a place a failed swing strands you in. Ten jumps is a long way to come back up and it is always available, which is exactly the trade this level makes everywhere: the rope is two swings and a nerve, the stone is a minute and no risk. The single anchor beside it is there so the climb can be abandoned halfway rather than only completed."
  }
 ]
