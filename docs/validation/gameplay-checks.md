@@ -270,3 +270,27 @@ rather than passing if the player never reaches a grounded frame -- an earlier
 version asserted on a frame where `is_on_floor()` was still false, so the branch
 under test never ran and it was measuring nothing. Verified to fail (1 px) when
 run against the commit before the fix.
+
+## What the rope aims at (10 Sep 2026)
+
+The playtest bot kept reporting "in reach with the lasso but the gate never
+opened". The switch was fine -- calling `receive()` on it directly returns true
+and the gate opens. The rope was grabbing something else.
+
+`aim_direction()` used the mouse whenever the viewport reported a non-zero
+cursor position. A viewport always reports **some** position: headless, with no
+mouse attached at all, reports (288, 148). So the aim was being steered by a
+phantom cursor. Measured standing 51px from the kiln bar:
+
+| candidate | distance | alignment | score |
+|---|---|---|---|
+| the switch | 51 px | +0.02 | 97 |
+| an anchor overhead | 166 px | +1.00 | 166 |
+
+The rope took the anchor. This was never only a bot problem: a keyboard or
+gamepad player's rope aimed at wherever the mouse had last been left.
+
+The mouse now only steers the aim for `MOUSE_AIM_TIMEOUT_S` after it is actually
+moved or clicked, and the controller starts stale, so a session that never
+touches a mouse never aims with one. Same position after the fix: switch scores
+52, anchor 352, and `_find_lasso_anchor` returns `cistern_kiln_bar`.

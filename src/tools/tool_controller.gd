@@ -22,6 +22,10 @@ const MAX_ANCHOR_CANDIDATES := 256
 ## 0 is pure nearest-wins, which cannot select a puzzle target in a dense
 ## anchor field; large values turn the rope into an aim test, which D18 forbids.
 const ANCHOR_FACING_BIAS := 0.9
+## How long after the last mouse movement the mouse still steers the aim. Long
+## enough that aiming does not flicker between shots, short enough that putting
+## the mouse down and picking up a gamepad hands control over.
+const MOUSE_AIM_TIMEOUT_S := 2.0
 
 const TOOL_ACTIONS := {
 	&"tool_lasso": &"lasso",
@@ -43,6 +47,9 @@ var player: Player
 var machine: ToolStateMachine
 
 var _attached_anchor: HitReceiver = null
+## Seconds since the mouse was last moved or clicked. Starts "stale" so a
+## session that never touches a mouse never aims with one.
+var _mouse_idle_s: float = 1000.0
 var _input_enabled: bool = true
 
 func bind(p_services: Services, p_player: Player) -> void:
@@ -60,6 +67,7 @@ func set_input_enabled(enabled: bool) -> void:
 	_input_enabled = enabled
 
 func step(delta: float) -> void:
+	_mouse_idle_s += delta
 	if _input_enabled:
 		_read_input()
 	machine.step(delta)
@@ -94,18 +102,27 @@ func _emit_ammo(tool_id: StringName) -> void:
 ## World-space direction the tool is pointed. Falls back to Michael's facing so
 ## a gamepad player with no stick input still has a defined aim.
 func aim_direction() -> Vector2:
-	var viewport := get_viewport()
-	if viewport != null:
-		var stick := Input.get_vector(&"move_left", &"move_right", &"jump", &"interact")
-		var mouse := viewport.get_mouse_position()
-		if mouse != Vector2.ZERO:
-			var world := get_global_mouse_position()
-			var to_mouse := world - global_position
-			if to_mouse.length() > 4.0:
-				return to_mouse.normalized()
-		if stick.length() > 0.3:
-			return stick.normalized()
+	var stick := Input.get_vector(&"move_left", &"move_right", &"jump", &"interact")
+	# The mouse only aims while it is actually being used. A viewport always
+	# reports SOME cursor position -- headless reports (288, 148) with no mouse
+	# attached at all -- so "is it non-zero" was never a test for whether anyone
+	# is holding it. The cost was real: a player standing against a winch aimed
+	# at wherever the cursor had been left, which in one measured case was
+	# almost straight up, giving an anchor overhead a perfect alignment score
+	# and the switch at 51px almost none. Keyboard and gamepad players got their
+	# rope pointed by a mouse they were not touching.
+	if _mouse_idle_s < MOUSE_AIM_TIMEOUT_S:
+		var world := get_global_mouse_position()
+		var to_mouse := world - global_position
+		if to_mouse.length() > 4.0:
+			return to_mouse.normalized()
+	if stick.length() > 0.3:
+		return stick.normalized()
 	return Vector2(player.facing if player != null else 1, 0.0)
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion or event is InputEventMouseButton:
+		_mouse_idle_s = 0.0
 
 func _on_committed(tool_id: StringName, definition: ToolDefinition) -> void:
 	if tool_id == &"lasso":

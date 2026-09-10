@@ -48,7 +48,16 @@ RUN_FRAMES = 20          # ~40px of run-up: enough to reach run_speed (150px/s)
 AIR_FRAMES = 4           # airborne before the rope goes out
 FLIGHT_FRAMES = 55       # after release, long enough to land from any arc
 MAX_RIDE = 70            # give up on an auto release after this many frames
-HOLDS = ("auto", "auto", "auto", 12, 20, 30, 42, 60)
+HOLDS = ("auto", "auto", 12, 20, 30, 42, 60,
+         "climb", "climb", "climb", "climb")
+## Holding jump during a ride hauls the rope in (SwingSolver.climb) and is the
+## ONLY way a swing gains height. The first version of this file rode every
+## trial with no buttons held, so it measured a pendulum and reported that
+## swings cannot climb -- which was true of what it measured and false of the
+## game, because the climb had just been added and nothing was pressing the
+## button. An instrument that never exercises the feature reports the feature
+## does not exist.
+CLIMB_FRAMES = 55
 
 
 class Game:
@@ -62,6 +71,19 @@ class Game:
         if not line:
             raise RuntimeError("server closed the connection")
         return json.loads(line.decode())
+
+
+def _ride_climb(g, side):
+    """Hold jump and haul the rope in, then release near the top of the arc."""
+    best_y = None
+    for i in range(CLIMB_FRAMES):
+        st = g.send(cmd="act", n=1, press=["jump"])
+        if not st["swinging"]:
+            return None
+        y = st["pos"][1]
+        if best_y is None or y < best_y:
+            best_y = y
+    return CLIMB_FRAMES
 
 
 def _ride_auto(g, side):
@@ -112,7 +134,11 @@ def one_trial(g, start, anchor, hold, reach):
         return None
 
     g.send(cmd="act", n=1, press=[], swing_at=list(anchor))
-    if hold == "auto":
+    if hold == "climb":
+        held = _ride_climb(g, side)
+        if held is None:
+            return None
+    elif hold == "auto":
         held = _ride_auto(g, side)
         if held is None:
             return None
@@ -135,7 +161,7 @@ def one_trial(g, start, anchor, hold, reach):
         "anchor": [round(anchor[0]), round(anchor[1])],
         "grab": [round(grab[0]), round(grab[1])],
         "grab_vel": [round(grab_vel[0]), round(grab_vel[1])],
-        "mode": "auto" if hold == "auto" else "fixed",
+        "mode": hold if isinstance(hold, str) else "fixed",
         "hold": held,
         "rope": round(rope, 1),
         "side": int(side),

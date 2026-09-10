@@ -582,6 +582,7 @@ class Bot:
         Returns the state after landing, and how many frames it cost.
         """
         anchor = self.nav.anchors[step["anchor"]]
+        target = self.nav.nodes[step["node"]] if step.get("node") is not None else None
         st = self.g.state()
         side = 1.0 if anchor[0] >= st["pos"][0] else -1.0
         press = ["move_right"] if side > 0 else ["move_left"]
@@ -599,16 +600,28 @@ class Bot:
 
         st = self._act({"cmd": "act", "n": 1, "press": [], "swing_at": list(anchor)})
         used += 1
+        # Holding jump on the rope hauls it in, and that is the only way a swing
+        # gains height at all -- a pendulum is a closed system and strictly
+        # loses. So: climb when the landing is above the grab, ride the arc when
+        # it is not. Without this the bot could physically never reach anything
+        # higher than it started, which read as "the level is unreachable".
+        climbing = target is not None and target[1] < st["pos"][1] - 40.0
+        ride_press = ["jump"] if climbing else []
         # Release at the bottom of the arc going the right way: vy crossing from
         # positive to negative IS the bottom, and it is visible from outside.
         prev_vy = None
         for _ in range(min(MAX_RIDE, budget_frames - used)):
-            st = self._act({"cmd": "act", "n": 1, "press": []})
+            st = self._act({"cmd": "act", "n": 1, "press": ride_press})
             used += 1
             if not st["swinging"]:
                 break
             vx, vy = st["vel"]
-            if prev_vy is not None and prev_vy > 20.0 and vy <= 0.0 and vx * side > 40.0:
+            if climbing:
+                # Climbing, the useful moment is being level with or above the
+                # landing, not the bottom of the arc.
+                if st["pos"][1] <= target[1] + 20.0 and vx * side > -10.0:
+                    break
+            elif prev_vy is not None and prev_vy > 20.0 and vy <= 0.0 and vx * side > 40.0:
                 break
             prev_vy = vy
         st = self._act({"cmd": "act", "n": 1, "press": [], "release_swing": True})
