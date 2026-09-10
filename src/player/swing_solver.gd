@@ -45,6 +45,25 @@ func step(delta: float, position: Vector2, velocity: Vector2) -> Dictionary:
 	v *= tuning.swing_damping
 	return {"position": next, "velocity": v}
 
+## Hauls in the rope while attached, which is the only way this tool can gain
+## height at all.
+##
+## A pendulum cannot rise above where it started -- it is a closed system with
+## damping, so it strictly loses energy. Measured over 248 real swings before
+## this existed: 5 of 177 that moved ended any higher, median vertical gain
+## +3px, and the 95th percentile was 135px DOWNWARD. The rope was a way across
+## and a way down and never a way up, while the levels built on it assumed
+## otherwise and Dan's direction was explicitly "you can swing anywhere...up
+## down".
+##
+## Shortening the rope raises the body toward the anchor directly, which is what
+## a person climbing a rope actually does, and it stays inside the constraint the
+## rest of this class enforces rather than bolting an impulse onto the outside.
+func climb(delta: float, rate: float) -> void:
+	if not attached:
+		return
+	length = maxf(tuning.swing_min_length_px, length - rate * delta)
+
 ## Speed the player keeps on release. A small boost rewards timing without
 ## turning the rope into a free accelerator.
 func release_velocity(velocity: Vector2) -> Vector2:

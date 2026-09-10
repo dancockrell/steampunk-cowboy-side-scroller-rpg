@@ -121,6 +121,11 @@ func _physics_grounded(delta: float) -> void:
 	move_and_slide()
 
 func _physics_swinging(delta: float) -> void:
+	# Holding jump while on the rope hauls it in. Jump is already bound to
+	# Space/W/Up, so "press up to go up" is true without a new binding, and it
+	# is the only way a swing gains height at all (SwingSolver.climb).
+	if _input_enabled and _hurt_stun_s <= 0.0 and Input.is_action_pressed(&"jump"):
+		swing.climb(delta, tuning.swing_climb_speed_px_s)
 	var result := swing.step(delta, global_position, velocity)
 	var target: Vector2 = result["position"]
 	var next_velocity: Vector2 = result["velocity"]

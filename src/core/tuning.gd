@@ -57,6 +57,10 @@ extends Resource
 ## physics step of the pendulum or the very first move_and_collide still lands
 ## on the floor and cancels the swing before it has begun.
 @export var swing_liftoff_px: float = 14.0
+## Rate the rope is hauled in while the jump button is held during a swing. A
+## pendulum cannot climb on its own, so this is the whole of the lasso's ability
+## to gain height -- see SwingSolver.climb.
+@export var swing_climb_speed_px_s: float = 260.0
 
 @export_group("Firearms")
 @export var pistol_range_px: float = 220.0
