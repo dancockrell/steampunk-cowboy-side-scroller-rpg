@@ -145,6 +145,17 @@ func _update_facing(axis: float) -> void:
 # --- lasso swing ----------------------------------------------------------
 
 func begin_swing(anchor_position: Vector2) -> void:
+	# A rope thrown from a standing start was being swallowed by the floor. The
+	# pendulum drives through move_and_collide, so with ground underfoot the
+	# first step collides and slide() eats most of the velocity: measured, a
+	# grounded throw travelled 40px where the same throw made in the air
+	# travelled 77px. Decision D18 asks for swinging to be organic rather than a
+	# precision check, and "jump first or the rope does nothing" is exactly the
+	# precision check it rules out -- so the throw lifts him off the ground
+	# itself, which is also what it looks like when a rope goes taut.
+	if is_on_floor():
+		global_position.y -= tuning.swing_liftoff_px
+		velocity.y = minf(velocity.y, -tuning.swing_liftoff_speed)
 	swing.attach(anchor_position, global_position)
 	traversal_mode = TraversalMode.SWINGING
 	solver.rising_from_jump = false

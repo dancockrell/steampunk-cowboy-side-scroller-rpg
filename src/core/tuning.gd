@@ -50,6 +50,13 @@ extends Resource
 @export var swing_damping: float = 0.997
 @export var swing_release_boost: float = 1.25
 @export var swing_min_length_px: float = 28.0
+## Upward kick given when a rope is thrown from a standing start, so the
+## pendulum clears the floor instead of being eaten by it. See Player.begin_swing.
+@export var swing_liftoff_speed: float = 430.0
+## How far off the ground that kick starts him, which has to be more than one
+## physics step of the pendulum or the very first move_and_collide still lands
+## on the floor and cancels the swing before it has begun.
+@export var swing_liftoff_px: float = 14.0
 
 @export_group("Firearms")
 @export var pistol_range_px: float = 220.0

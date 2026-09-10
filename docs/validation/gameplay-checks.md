@@ -244,3 +244,29 @@ Listed so a reader does not mistake silence for coverage:
   `reduced_flashes` are stored and announced but nothing outside `src/ui`
   currently reads them, because nothing outside `src/ui` exists to consume
   them yet (no camera shake or flash effect has been built at all).
+
+## A rope thrown from a standing start (10 Sep 2026)
+
+`Player._physics_swinging` drives the pendulum through `move_and_collide`. With
+ground underfoot the first sub-pixel step collides, `slide()` eats the velocity,
+and it happens again every frame: a lasso thrown while standing did **1 px** of
+travel in 60 frames. The lasso is this game's identity tool and it did nothing
+from the most natural place a player would ever throw it.
+
+`begin_swing` now lifts Michael off the floor as the rope goes taut
+(`swing_liftoff_speed`, `swing_liftoff_px` in Tuning). Same throw, same anchor:
+**107 px**. Decision D18 asks for swinging to be organic rather than a precision
+check, and "jump first or the rope does nothing" was exactly the precision check
+it rules out.
+
+Re-run it rather than trusting this paragraph:
+
+```
+godot --headless --path <throwaway copy> --script res://tools/verify_swing_liftoff.gd --quit-after 300
+```
+
+It prints the pixels travelled and PASSED/FAILED, and it reports NOT CHECKED
+rather than passing if the player never reaches a grounded frame -- an earlier
+version asserted on a frame where `is_on_floor()` was still false, so the branch
+under test never ran and it was measuring nothing. Verified to fail (1 px) when
+run against the commit before the fix.
