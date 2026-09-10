@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://src/world/room_exit.gd" id="10_exit"]
 [ext_resource type="PackedScene" path="res://levels/temple_clay_dead/burial_works.tscn" id="11_next"]
 [ext_resource type="Script" path="res://src/world/depth_crossing.gd" id="12_crossing"]
+[ext_resource type="PackedScene" path="res://levels/temple_clay_dead/sunken_cistern.tscn" id="13_cistern"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
@@ -297,3 +298,18 @@ required_gate_path = NodePath("../ExitGate")
 
 [node name="ExitShape" type="CollisionShape2D" parent="ExitToBurialWorks"]
 shape = SubResource("entry_box")
+
+[node name="ExitToCistern" type="Area2D" parent="."]
+position = Vector2(60, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_exit")
+next_room = ExtResource("13_cistern")
+next_spawn_id = &"spawn_from_procession"
+
+[node name="CisternExitShape" type="CollisionShape2D" parent="ExitToCistern"]
+shape = SubResource("entry_box")
+
+[node name="GrayboxCisternMouth" type="Polygon2D" parent="ExitToCistern"]
+color = Color(0.24, 0.34, 0.42, 1)
+polygon = PackedVector2Array(-18, -60, 18, -60, 18, 60, -18, 60)

@@ -1025,6 +1025,36 @@ func test_a_room_transition_always_resets_depth_to_near() -> void:
 		"arriving in the next room resets to the near plane")
 	bridge_main.free()
 
+# --- the Sunken Cistern branch ---------------------------------------------
+
+func test_the_cistern_is_reachable_in_play_and_leads_onward() -> void:
+	# A level that loads is not a level you can get to. The cistern hangs off
+	# the Procession Hall as a branch rather than a link in the chain, so the
+	# main route is untouched -- and it has to actually rejoin the world, or it
+	# is a room the player walks into and cannot leave.
+	_in_procession_hall()
+	var side := room.get_node_or_null(^"ExitToCistern") as RoomExit
+	assert_not_null(side, "the Procession Hall opens onto the cistern")
+	assert_true(side.required_gate_path.is_empty(),
+		"and the branch is ungated -- an optional space is not something to unlock")
+	side._on_body_entered(player)
+	room = main.world_root.room
+	player = main.world_root.player
+	assert_eq(room.room_id, &"sunken_cistern", "you are in the cistern")
+
+	var onward := room.get_node_or_null(^"ExitToBurialWorks") as RoomExit
+	assert_not_null(onward, "the cistern rejoins the temple rather than dead-ending")
+	onward._on_body_entered(player)
+	assert_eq(main.world_root.room.room_id, &"burial_works", "and it lets you out into Burial Works")
+
+func test_the_cistern_branch_does_not_disturb_the_main_route() -> void:
+	# The property that matters about a branch: the original way through still
+	# works and still needs its own gate opened.
+	_in_procession_hall()
+	_target("FarCounterweight").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
+	assert_eq(room.room_id, &"burial_works", "the authored route is unchanged")
+
 # --- the expanded Keeper's Shrine: warm-up sentinel, vault, mezzanine ------
 
 func _in_keepers_shrine() -> void:

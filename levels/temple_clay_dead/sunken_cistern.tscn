@@ -1,0 +1,3134 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
+[ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
+[ext_resource type="Script" path="res://src/world/tool_target.gd" id="3_target"]
+[ext_resource type="Script" path="res://src/world/checkpoint_shrine.gd" id="4_shrine"]
+[ext_resource type="Script" path="res://src/puzzles/mechanism_gate.gd" id="5_gate"]
+[ext_resource type="Script" path="res://src/emergence/encounter.gd" id="6_encounter"]
+[ext_resource type="Script" path="res://src/emergence/encounter_source.gd" id="7_source"]
+[ext_resource type="Script" path="res://src/world/encounter_trigger.gd" id="8_trigger"]
+[ext_resource type="Script" path="res://src/world/hazard.gd" id="9_hazard"]
+[ext_resource type="Script" path="res://src/world/sacred_object.gd" id="10_sacred"]
+[ext_resource type="Script" path="res://src/world/room_exit.gd" id="11_exit"]
+[ext_resource type="PackedScene" path="res://levels/temple_clay_dead/burial_works.tscn" id="12_burial"]
+
+[sub_resource type="RectangleShape2D" id="small_box"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="trigger_box"]
+size = Vector2(64, 160)
+
+[sub_resource type="RectangleShape2D" id="gate_box"]
+size = Vector2(32, 112)
+
+[sub_resource type="RectangleShape2D" id="anchor_box"]
+size = Vector2(30, 24)
+
+[sub_resource type="RectangleShape2D" id="supplicant_box"]
+size = Vector2(34, 44)
+
+[sub_resource type="Resource" id="src_cistern_jar_01"]
+script = ExtResource("7_source")
+id = &"cistern_jar_01"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"cistern_jar_01_trigger"
+spawn_point_id = &"cistern_jar_01_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_jar_01_resolved"
+
+[sub_resource type="Resource" id="src_cistern_jar_02"]
+script = ExtResource("7_source")
+id = &"cistern_jar_02"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"cistern_jar_02_trigger"
+spawn_point_id = &"cistern_jar_02_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_jar_02_resolved"
+
+[sub_resource type="Resource" id="src_cistern_jar_03"]
+script = ExtResource("7_source")
+id = &"cistern_jar_03"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"cistern_jar_03_trigger"
+spawn_point_id = &"cistern_jar_03_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_jar_03_resolved"
+
+[sub_resource type="Resource" id="src_cistern_jar_04"]
+script = ExtResource("7_source")
+id = &"cistern_jar_04"
+room_id = &"sunken_cistern"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"cistern_jar_04_trigger"
+spawn_point_id = &"cistern_jar_04_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_jar_04_resolved"
+
+[sub_resource type="Resource" id="src_cistern_mural_01"]
+script = ExtResource("7_source")
+id = &"cistern_mural_01"
+room_id = &"sunken_cistern"
+source_type = &"inscription"
+family_id = &"painted_procession_guard"
+trigger_id = &"cistern_mural_01_trigger"
+spawn_point_id = &"cistern_mural_01_spawn"
+tell_clip_id = &"painted_procession_guard_tell"
+emerge_clip_id = &"painted_procession_guard_emerge"
+resolved_visual_id = &"painted_procession_guard_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_mural_01_resolved"
+
+[sub_resource type="Resource" id="src_cistern_mural_02"]
+script = ExtResource("7_source")
+id = &"cistern_mural_02"
+room_id = &"sunken_cistern"
+source_type = &"inscription"
+family_id = &"painted_procession_guard"
+trigger_id = &"cistern_mural_02_trigger"
+spawn_point_id = &"cistern_mural_02_spawn"
+tell_clip_id = &"painted_procession_guard_tell"
+emerge_clip_id = &"painted_procession_guard_emerge"
+resolved_visual_id = &"painted_procession_guard_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_mural_02_resolved"
+
+[sub_resource type="Resource" id="src_cistern_mural_03"]
+script = ExtResource("7_source")
+id = &"cistern_mural_03"
+room_id = &"sunken_cistern"
+source_type = &"inscription"
+family_id = &"painted_procession_guard"
+trigger_id = &"cistern_mural_03_trigger"
+spawn_point_id = &"cistern_mural_03_spawn"
+tell_clip_id = &"painted_procession_guard_tell"
+emerge_clip_id = &"painted_procession_guard_emerge"
+resolved_visual_id = &"painted_procession_guard_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_mural_03_resolved"
+
+[sub_resource type="Resource" id="src_cistern_pit_01"]
+script = ExtResource("7_source")
+id = &"cistern_pit_01"
+room_id = &"sunken_cistern"
+source_type = &"pit"
+family_id = &"burial_pit_assembler"
+trigger_id = &"cistern_pit_01_trigger"
+spawn_point_id = &"cistern_pit_01_spawn"
+tell_clip_id = &"burial_pit_assembler_tell"
+emerge_clip_id = &"burial_pit_assembler_emerge"
+resolved_visual_id = &"burial_pit_assembler_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_pit_01_resolved"
+
+[sub_resource type="Resource" id="src_cistern_pit_02"]
+script = ExtResource("7_source")
+id = &"cistern_pit_02"
+room_id = &"sunken_cistern"
+source_type = &"pit"
+family_id = &"burial_pit_assembler"
+trigger_id = &"cistern_pit_02_trigger"
+spawn_point_id = &"cistern_pit_02_spawn"
+tell_clip_id = &"burial_pit_assembler_tell"
+emerge_clip_id = &"burial_pit_assembler_emerge"
+resolved_visual_id = &"burial_pit_assembler_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_pit_02_resolved"
+
+[sub_resource type="Resource" id="src_cistern_pit_03"]
+script = ExtResource("7_source")
+id = &"cistern_pit_03"
+room_id = &"sunken_cistern"
+source_type = &"pit"
+family_id = &"burial_pit_assembler"
+trigger_id = &"cistern_pit_03_trigger"
+spawn_point_id = &"cistern_pit_03_spawn"
+tell_clip_id = &"burial_pit_assembler_tell"
+emerge_clip_id = &"burial_pit_assembler_emerge"
+resolved_visual_id = &"burial_pit_assembler_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_pit_03_resolved"
+
+[sub_resource type="Resource" id="src_cistern_pit_04"]
+script = ExtResource("7_source")
+id = &"cistern_pit_04"
+room_id = &"sunken_cistern"
+source_type = &"pit"
+family_id = &"burial_pit_assembler"
+trigger_id = &"cistern_pit_04_trigger"
+spawn_point_id = &"cistern_pit_04_spawn"
+tell_clip_id = &"burial_pit_assembler_tell"
+emerge_clip_id = &"burial_pit_assembler_emerge"
+resolved_visual_id = &"burial_pit_assembler_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"cistern_pit_04_resolved"
+
+[node name="SunkenCistern" type="Node2D"]
+script = ExtResource("1_room")
+room_id = &"sunken_cistern"
+default_spawn_id = &"spawn_entry"
+bounds = Rect2(0, 0, 5120, 2880)
+
+[node name="Terrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+platforms = Array[Rect2]([Rect2(0, 2720, 760, 160), Rect2(900, 2720, 520, 160), Rect2(1560, 2720, 380, 160), Rect2(2120, 2720, 300, 160), Rect2(2600, 2720, 640, 160), Rect2(3400, 2720, 420, 160), Rect2(3980, 2720, 300, 160), Rect2(4420, 2720, 700, 160), Rect2(0, 620, 620, 60), Rect2(700, 540, 300, 48), Rect2(1100, 700, 260, 48), Rect2(120, 1000, 420, 44), Rect2(300, 1320, 360, 44), Rect2(90, 1640, 300, 44), Rect2(380, 1900, 420, 44), Rect2(140, 2200, 340, 44), Rect2(420, 2460, 300, 44), Rect2(0, 1180, 180, 44), Rect2(640, 1500, 220, 44), Rect2(560, 2060, 200, 44), Rect2(1460, 900, 150, 40), Rect2(2390, 900, 150, 40), Rect2(1460, 1500, 150, 40), Rect2(2390, 1500, 150, 40), Rect2(1460, 2100, 150, 40), Rect2(2390, 2100, 150, 40), Rect2(1880, 1220, 260, 40), Rect2(1760, 1820, 200, 40), Rect2(2160, 2380, 240, 40), Rect2(2760, 760, 460, 44), Rect2(3320, 1020, 380, 44), Rect2(2880, 1300, 360, 44), Rect2(3460, 1560, 420, 44), Rect2(2960, 1840, 380, 44), Rect2(3560, 2120, 340, 44), Rect2(4200, 900, 420, 44), Rect2(4560, 1240, 360, 44), Rect2(4260, 1560, 300, 44), Rect2(4620, 1880, 340, 44), Rect2(4180, 2200, 380, 44), Rect2(1300, 300, 420, 40), Rect2(2200, 240, 520, 40), Rect2(3200, 320, 460, 40), Rect2(4100, 420, 400, 40)])
+backdrop = Array[Rect2]([Rect2(64, 64, 4992, 2680)])
+
+[node name="spawn_entry" type="Marker2D" parent="."]
+position = Vector2(90, 620)
+
+[node name="spawn_from_procession" type="Marker2D" parent="."]
+position = Vector2(90, 620)
+
+[node name="ShrineEntry" type="Area2D" parent="."]
+position = Vector2(210, 578)
+script = ExtResource("4_shrine")
+checkpoint_id = &"cistern_entry"
+
+[node name="Shape" type="CollisionShape2D" parent="ShrineEntry"]
+shape = SubResource("small_box")
+
+[node name="Graybox" type="Polygon2D" parent="ShrineEntry"]
+color = Color(0.42, 0.7, 0.62, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="ShrineDeep" type="Area2D" parent="."]
+position = Vector2(2740, 2678)
+script = ExtResource("4_shrine")
+checkpoint_id = &"cistern_deep"
+
+[node name="Shape" type="CollisionShape2D" parent="ShrineDeep"]
+shape = SubResource("small_box")
+
+[node name="Graybox" type="Polygon2D" parent="ShrineDeep"]
+color = Color(0.42, 0.7, 0.62, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="ShrineKiln" type="Area2D" parent="."]
+position = Vector2(4420, 2678)
+script = ExtResource("4_shrine")
+checkpoint_id = &"cistern_kiln"
+
+[node name="Shape" type="CollisionShape2D" parent="ShrineKiln"]
+shape = SubResource("small_box")
+
+[node name="Graybox" type="Polygon2D" parent="ShrineKiln"]
+color = Color(0.42, 0.7, 0.62, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
+[node name="Anchor001" type="Area2D" parent="."]
+position = Vector2(520, 430)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor001"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor001"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor001"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor001"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor001"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor002" type="Area2D" parent="."]
+position = Vector2(730, 430)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor002"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor002"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor002"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor002"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor002"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor003" type="Area2D" parent="."]
+position = Vector2(940, 430)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor003"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor003"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor003"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor003"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor003"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor004" type="Area2D" parent="."]
+position = Vector2(1150, 430)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor004"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor004"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor004"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor004"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor004"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor005" type="Area2D" parent="."]
+position = Vector2(1360, 430)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor005"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor005"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor005"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor005"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor005"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor006" type="Area2D" parent="."]
+position = Vector2(300, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor006"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor006"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor006"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor006"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor006"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor007" type="Area2D" parent="."]
+position = Vector2(560, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor007"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor007"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor007"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor007"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor007"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor008" type="Area2D" parent="."]
+position = Vector2(820, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor008"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor008"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor008"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor008"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor008"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor009" type="Area2D" parent="."]
+position = Vector2(1080, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor009"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor009"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor009"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor009"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor009"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor010" type="Area2D" parent="."]
+position = Vector2(1340, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor010"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor010"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor010"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor010"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor010"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor011" type="Area2D" parent="."]
+position = Vector2(1600, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor011"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor011"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor011"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor011"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor011"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor012" type="Area2D" parent="."]
+position = Vector2(1860, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor012"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor012"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor012"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor012"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor012"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor013" type="Area2D" parent="."]
+position = Vector2(2120, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor013"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor013"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor013"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor013"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor013"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor014" type="Area2D" parent="."]
+position = Vector2(2380, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor014"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor014"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor014"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor014"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor014"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor015" type="Area2D" parent="."]
+position = Vector2(2640, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor015"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor015"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor015"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor015"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor015"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor016" type="Area2D" parent="."]
+position = Vector2(2900, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor016"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor016"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor016"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor016"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor016"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor017" type="Area2D" parent="."]
+position = Vector2(3160, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor017"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor017"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor017"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor017"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor017"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor018" type="Area2D" parent="."]
+position = Vector2(3420, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor018"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor018"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor018"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor018"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor018"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor019" type="Area2D" parent="."]
+position = Vector2(3680, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor019"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor019"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor019"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor019"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor019"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor020" type="Area2D" parent="."]
+position = Vector2(3940, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor020"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor020"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor020"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor020"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor020"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor021" type="Area2D" parent="."]
+position = Vector2(4200, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor021"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor021"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor021"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor021"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor021"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor022" type="Area2D" parent="."]
+position = Vector2(4460, 180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor022"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor022"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor022"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor022"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor022"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor023" type="Area2D" parent="."]
+position = Vector2(260, 780)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor023"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor023"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor023"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor023"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor023"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor024" type="Area2D" parent="."]
+position = Vector2(500, 780)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor024"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor024"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor024"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor024"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor024"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor025" type="Area2D" parent="."]
+position = Vector2(740, 780)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor025"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor025"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor025"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor025"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor025"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor026" type="Area2D" parent="."]
+position = Vector2(980, 780)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor026"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor026"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor026"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor026"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor026"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor027" type="Area2D" parent="."]
+position = Vector2(1220, 780)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor027"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor027"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor027"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor027"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor027"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor028" type="Area2D" parent="."]
+position = Vector2(60, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor028"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor028"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor028"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor028"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor028"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor029" type="Area2D" parent="."]
+position = Vector2(295, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor029"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor029"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor029"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor029"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor029"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor030" type="Area2D" parent="."]
+position = Vector2(530, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor030"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor030"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor030"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor030"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor030"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor031" type="Area2D" parent="."]
+position = Vector2(765, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor031"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor031"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor031"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor031"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor031"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor032" type="Area2D" parent="."]
+position = Vector2(1000, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor032"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor032"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor032"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor032"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor032"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor033" type="Area2D" parent="."]
+position = Vector2(1235, 1150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor033"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor033"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor033"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor033"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor033"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor034" type="Area2D" parent="."]
+position = Vector2(60, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor034"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor034"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor034"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor034"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor034"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor035" type="Area2D" parent="."]
+position = Vector2(295, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor035"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor035"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor035"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor035"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor035"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor036" type="Area2D" parent="."]
+position = Vector2(530, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor036"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor036"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor036"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor036"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor036"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor037" type="Area2D" parent="."]
+position = Vector2(765, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor037"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor037"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor037"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor037"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor037"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor038" type="Area2D" parent="."]
+position = Vector2(1000, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor038"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor038"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor038"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor038"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor038"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor039" type="Area2D" parent="."]
+position = Vector2(1235, 1470)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor039"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor039"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor039"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor039"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor039"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor040" type="Area2D" parent="."]
+position = Vector2(60, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor040"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor040"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor040"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor040"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor040"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor041" type="Area2D" parent="."]
+position = Vector2(295, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor041"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor041"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor041"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor041"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor041"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor042" type="Area2D" parent="."]
+position = Vector2(530, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor042"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor042"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor042"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor042"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor042"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor043" type="Area2D" parent="."]
+position = Vector2(765, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor043"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor043"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor043"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor043"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor043"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor044" type="Area2D" parent="."]
+position = Vector2(1000, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor044"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor044"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor044"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor044"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor044"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor045" type="Area2D" parent="."]
+position = Vector2(1235, 1790)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor045"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor045"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor045"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor045"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor045"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor046" type="Area2D" parent="."]
+position = Vector2(60, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor046"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor046"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor046"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor046"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor046"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor047" type="Area2D" parent="."]
+position = Vector2(295, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor047"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor047"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor047"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor047"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor047"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor048" type="Area2D" parent="."]
+position = Vector2(530, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor048"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor048"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor048"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor048"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor048"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor049" type="Area2D" parent="."]
+position = Vector2(765, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor049"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor049"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor049"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor049"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor049"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor050" type="Area2D" parent="."]
+position = Vector2(1000, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor050"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor050"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor050"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor050"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor050"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor051" type="Area2D" parent="."]
+position = Vector2(1235, 2100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor051"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor051"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor051"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor051"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor051"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor052" type="Area2D" parent="."]
+position = Vector2(1560, 700)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor052"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor052"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor052"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor052"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor052"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor053" type="Area2D" parent="."]
+position = Vector2(1790, 700)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor053"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor053"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor053"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor053"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor053"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor054" type="Area2D" parent="."]
+position = Vector2(2020, 700)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor054"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor054"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor054"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor054"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor054"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor055" type="Area2D" parent="."]
+position = Vector2(2250, 700)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor055"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor055"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor055"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor055"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor055"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor056" type="Area2D" parent="."]
+position = Vector2(1560, 1180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor056"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor056"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor056"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor056"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor056"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor057" type="Area2D" parent="."]
+position = Vector2(1790, 1180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor057"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor057"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor057"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor057"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor057"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor058" type="Area2D" parent="."]
+position = Vector2(2020, 1180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor058"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor058"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor058"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor058"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor058"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor059" type="Area2D" parent="."]
+position = Vector2(2250, 1180)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor059"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor059"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor059"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor059"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor059"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor060" type="Area2D" parent="."]
+position = Vector2(1560, 1660)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor060"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor060"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor060"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor060"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor060"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor061" type="Area2D" parent="."]
+position = Vector2(1790, 1660)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor061"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor061"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor061"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor061"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor061"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor062" type="Area2D" parent="."]
+position = Vector2(2020, 1660)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor062"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor062"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor062"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor062"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor062"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor063" type="Area2D" parent="."]
+position = Vector2(2250, 1660)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor063"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor063"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor063"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor063"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor063"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor064" type="Area2D" parent="."]
+position = Vector2(1600, 2160)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor064"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor064"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor064"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor064"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor064"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor065" type="Area2D" parent="."]
+position = Vector2(1840, 2160)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor065"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor065"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor065"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor065"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor065"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor066" type="Area2D" parent="."]
+position = Vector2(2080, 2160)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor066"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor066"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor066"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor066"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor066"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor067" type="Area2D" parent="."]
+position = Vector2(2320, 2160)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor067"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor067"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor067"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor067"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor067"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor068" type="Area2D" parent="."]
+position = Vector2(2700, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor068"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor068"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor068"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor068"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor068"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor069" type="Area2D" parent="."]
+position = Vector2(2950, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor069"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor069"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor069"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor069"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor069"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor070" type="Area2D" parent="."]
+position = Vector2(3200, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor070"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor070"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor070"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor070"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor070"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor071" type="Area2D" parent="."]
+position = Vector2(3450, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor071"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor071"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor071"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor071"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor071"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor072" type="Area2D" parent="."]
+position = Vector2(3700, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor072"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor072"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor072"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor072"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor072"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor073" type="Area2D" parent="."]
+position = Vector2(3950, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor073"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor073"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor073"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor073"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor073"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor074" type="Area2D" parent="."]
+position = Vector2(4200, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor074"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor074"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor074"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor074"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor074"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor075" type="Area2D" parent="."]
+position = Vector2(4450, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor075"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor075"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor075"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor075"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor075"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor076" type="Area2D" parent="."]
+position = Vector2(4700, 620)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor076"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor076"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor076"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor076"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor076"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor077" type="Area2D" parent="."]
+position = Vector2(2760, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor077"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor077"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor077"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor077"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor077"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor078" type="Area2D" parent="."]
+position = Vector2(3010, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor078"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor078"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor078"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor078"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor078"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor079" type="Area2D" parent="."]
+position = Vector2(3260, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor079"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor079"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor079"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor079"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor079"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor080" type="Area2D" parent="."]
+position = Vector2(3510, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor080"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor080"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor080"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor080"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor080"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor081" type="Area2D" parent="."]
+position = Vector2(3760, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor081"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor081"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor081"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor081"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor081"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor082" type="Area2D" parent="."]
+position = Vector2(4010, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor082"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor082"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor082"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor082"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor082"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor083" type="Area2D" parent="."]
+position = Vector2(4260, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor083"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor083"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor083"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor083"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor083"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor084" type="Area2D" parent="."]
+position = Vector2(4510, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor084"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor084"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor084"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor084"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor084"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor085" type="Area2D" parent="."]
+position = Vector2(4760, 1120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor085"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor085"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor085"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor085"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor085"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor086" type="Area2D" parent="."]
+position = Vector2(2820, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor086"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor086"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor086"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor086"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor086"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor087" type="Area2D" parent="."]
+position = Vector2(3070, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor087"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor087"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor087"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor087"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor087"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor088" type="Area2D" parent="."]
+position = Vector2(3320, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor088"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor088"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor088"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor088"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor088"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor089" type="Area2D" parent="."]
+position = Vector2(3570, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor089"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor089"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor089"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor089"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor089"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor090" type="Area2D" parent="."]
+position = Vector2(3820, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor090"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor090"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor090"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor090"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor090"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor091" type="Area2D" parent="."]
+position = Vector2(4070, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor091"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor091"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor091"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor091"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor091"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor092" type="Area2D" parent="."]
+position = Vector2(4320, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor092"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor092"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor092"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor092"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor092"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor093" type="Area2D" parent="."]
+position = Vector2(4570, 1640)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor093"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor093"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor093"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor093"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor093"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor094" type="Area2D" parent="."]
+position = Vector2(2760, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor094"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor094"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor094"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor094"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor094"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor095" type="Area2D" parent="."]
+position = Vector2(3010, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor095"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor095"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor095"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor095"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor095"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor096" type="Area2D" parent="."]
+position = Vector2(3260, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor096"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor096"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor096"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor096"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor096"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor097" type="Area2D" parent="."]
+position = Vector2(3510, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor097"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor097"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor097"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor097"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor097"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor098" type="Area2D" parent="."]
+position = Vector2(3760, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor098"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor098"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor098"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor098"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor098"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor099" type="Area2D" parent="."]
+position = Vector2(4010, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor099"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor099"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor099"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor099"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor099"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor100" type="Area2D" parent="."]
+position = Vector2(4260, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor100"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor100"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor100"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor100"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor100"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor101" type="Area2D" parent="."]
+position = Vector2(4510, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor101"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor101"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor101"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor101"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor101"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor102" type="Area2D" parent="."]
+position = Vector2(4760, 2120)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor102"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor102"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor102"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor102"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor102"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor103" type="Area2D" parent="."]
+position = Vector2(200, 2320)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor103"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor103"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor103"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor103"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor103"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor104" type="Area2D" parent="."]
+position = Vector2(460, 2320)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor104"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor104"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor104"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor104"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor104"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor105" type="Area2D" parent="."]
+position = Vector2(720, 2320)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor105"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor105"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor105"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor105"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor105"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor106" type="Area2D" parent="."]
+position = Vector2(980, 2320)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor106"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor106"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor106"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor106"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor106"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor107" type="Area2D" parent="."]
+position = Vector2(1240, 2320)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor107"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor107"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor107"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor107"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor107"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor108" type="Area2D" parent="."]
+position = Vector2(3600, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor108"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor108"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor108"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor108"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor108"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor109" type="Area2D" parent="."]
+position = Vector2(3860, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor109"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor109"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor109"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor109"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor109"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor110" type="Area2D" parent="."]
+position = Vector2(4120, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor110"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor110"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor110"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor110"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor110"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor111" type="Area2D" parent="."]
+position = Vector2(4380, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor111"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor111"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor111"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor111"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor111"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor112" type="Area2D" parent="."]
+position = Vector2(4640, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor112"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor112"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor112"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor112"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor112"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor113" type="Area2D" parent="."]
+position = Vector2(4900, 2400)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor113"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor113"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor113"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor113"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor113"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor114" type="Area2D" parent="."]
+position = Vector2(200, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor114"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor114"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor114"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor114"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor114"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor115" type="Area2D" parent="."]
+position = Vector2(500, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor115"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor115"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor115"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor115"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor115"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor116" type="Area2D" parent="."]
+position = Vector2(800, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor116"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor116"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor116"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor116"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor116"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor117" type="Area2D" parent="."]
+position = Vector2(1100, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor117"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor117"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor117"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor117"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor117"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor118" type="Area2D" parent="."]
+position = Vector2(1400, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor118"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor118"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor118"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor118"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor118"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor119" type="Area2D" parent="."]
+position = Vector2(1700, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor119"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor119"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor119"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor119"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor119"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor120" type="Area2D" parent="."]
+position = Vector2(2000, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor120"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor120"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor120"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor120"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor120"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor121" type="Area2D" parent="."]
+position = Vector2(2300, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor121"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor121"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor121"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor121"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor121"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor122" type="Area2D" parent="."]
+position = Vector2(2600, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor122"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor122"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor122"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor122"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor122"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor123" type="Area2D" parent="."]
+position = Vector2(2900, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor123"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor123"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor123"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor123"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor123"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor124" type="Area2D" parent="."]
+position = Vector2(3200, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor124"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor124"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor124"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor124"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor124"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor125" type="Area2D" parent="."]
+position = Vector2(3500, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor125"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor125"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor125"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor125"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor125"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor126" type="Area2D" parent="."]
+position = Vector2(3800, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor126"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor126"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor126"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor126"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor126"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor127" type="Area2D" parent="."]
+position = Vector2(4100, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor127"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor127"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor127"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor127"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor127"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor128" type="Area2D" parent="."]
+position = Vector2(4400, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor128"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor128"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor128"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor128"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor128"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor129" type="Area2D" parent="."]
+position = Vector2(4700, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor129"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor129"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor129"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor129"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor129"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Shards960" type="Area2D" parent="."]
+position = Vector2(960, 2760)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="Shards960"]
+shape = SubResource("small_box")
+scale = Vector2(6.428571, 3.214286)
+
+[node name="Graybox" type="Polygon2D" parent="Shards960"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
+
+[node name="Shards1620" type="Area2D" parent="."]
+position = Vector2(1620, 2760)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="Shards1620"]
+shape = SubResource("small_box")
+scale = Vector2(6.428571, 3.214286)
+
+[node name="Graybox" type="Polygon2D" parent="Shards1620"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
+
+[node name="Shards2180" type="Area2D" parent="."]
+position = Vector2(2180, 2760)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="Shards2180"]
+shape = SubResource("small_box")
+scale = Vector2(6.428571, 3.214286)
+
+[node name="Graybox" type="Polygon2D" parent="Shards2180"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
+
+[node name="Shards3460" type="Area2D" parent="."]
+position = Vector2(3460, 2760)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="Shards3460"]
+shape = SubResource("small_box")
+scale = Vector2(6.428571, 3.214286)
+
+[node name="Graybox" type="Polygon2D" parent="Shards3460"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
+
+[node name="Shards4040" type="Area2D" parent="."]
+position = Vector2(4040, 2760)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="Shards4040"]
+shape = SubResource("small_box")
+scale = Vector2(6.428571, 3.214286)
+
+[node name="Graybox" type="Polygon2D" parent="Shards4040"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-90, -45, 90, -45, 90, 45, -90, 45)
+
+[node name="KilnVent3040_1796" type="Area2D" parent="."]
+position = Vector2(3040, 1796)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="KilnVent3040_1796"]
+shape = SubResource("small_box")
+scale = Vector2(3.928571, 2.500000)
+
+[node name="Graybox" type="Polygon2D" parent="KilnVent3040_1796"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-55, -35, 55, -35, 55, 35, -55, 35)
+
+[node name="KilnVent3620_1516" type="Area2D" parent="."]
+position = Vector2(3620, 1516)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="KilnVent3620_1516"]
+shape = SubResource("small_box")
+scale = Vector2(3.928571, 2.500000)
+
+[node name="Graybox" type="Polygon2D" parent="KilnVent3620_1516"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-55, -35, 55, -35, 55, 35, -55, 35)
+
+[node name="KilnVent4300_1516" type="Area2D" parent="."]
+position = Vector2(4300, 1516)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="KilnVent4300_1516"]
+shape = SubResource("small_box")
+scale = Vector2(3.928571, 2.500000)
+
+[node name="Graybox" type="Polygon2D" parent="KilnVent4300_1516"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-55, -35, 55, -35, 55, 35, -55, 35)
+
+[node name="KilnVent2940_1256" type="Area2D" parent="."]
+position = Vector2(2940, 1256)
+script = ExtResource("9_hazard")
+
+[node name="Shape" type="CollisionShape2D" parent="KilnVent2940_1256"]
+shape = SubResource("small_box")
+scale = Vector2(3.928571, 2.500000)
+
+[node name="Graybox" type="Polygon2D" parent="KilnVent2940_1256"]
+color = Color(0.72, 0.28, 0.18, 1)
+polygon = PackedVector2Array(-55, -35, 55, -35, 55, 35, -55, 35)
+
+[node name="Enc_cistern_jar_01" type="Node2D" parent="."]
+position = Vector2(380, 1276)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_jar_01")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_jar_01"]
+
+[node name="Trig_cistern_jar_01" type="Area2D" parent="."]
+position = Vector2(230, 1216)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_jar_01")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_jar_01"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_jar_02" type="Node2D" parent="."]
+position = Vector2(520, 2416)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_jar_02")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_jar_02"]
+
+[node name="Trig_cistern_jar_02" type="Area2D" parent="."]
+position = Vector2(370, 2356)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_jar_02")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_jar_02"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_jar_03" type="Node2D" parent="."]
+position = Vector2(2020, 1176)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_jar_03")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_jar_03"]
+
+[node name="Trig_cistern_jar_03" type="Area2D" parent="."]
+position = Vector2(1870, 1116)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_jar_03")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_jar_03"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_jar_04" type="Node2D" parent="."]
+position = Vector2(4340, 856)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_jar_04")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_jar_04"]
+
+[node name="Trig_cistern_jar_04" type="Area2D" parent="."]
+position = Vector2(4190, 796)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_jar_04")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_jar_04"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_mural_01" type="Node2D" parent="."]
+position = Vector2(200, 1596)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_mural_01")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_mural_01"]
+
+[node name="Trig_cistern_mural_01" type="Area2D" parent="."]
+position = Vector2(50, 1536)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_mural_01")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_mural_01"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_mural_02" type="Node2D" parent="."]
+position = Vector2(3040, 976)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_mural_02")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_mural_02"]
+
+[node name="Trig_cistern_mural_02" type="Area2D" parent="."]
+position = Vector2(2890, 916)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_mural_02")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_mural_02"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_mural_03" type="Node2D" parent="."]
+position = Vector2(4700, 1196)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_mural_03")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_mural_03"]
+
+[node name="Trig_cistern_mural_03" type="Area2D" parent="."]
+position = Vector2(4550, 1136)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_mural_03")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_mural_03"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_pit_01" type="Node2D" parent="."]
+position = Vector2(2900, 2676)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_pit_01")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_pit_01"]
+
+[node name="Trig_cistern_pit_01" type="Area2D" parent="."]
+position = Vector2(2750, 2616)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_pit_01")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_pit_01"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_pit_02" type="Node2D" parent="."]
+position = Vector2(3560, 2676)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_pit_02")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_pit_02"]
+
+[node name="Trig_cistern_pit_02" type="Area2D" parent="."]
+position = Vector2(3410, 2616)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_pit_02")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_pit_02"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_pit_03" type="Node2D" parent="."]
+position = Vector2(4600, 2676)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_pit_03")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_pit_03"]
+
+[node name="Trig_cistern_pit_03" type="Area2D" parent="."]
+position = Vector2(4450, 2616)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_pit_03")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_pit_03"]
+shape = SubResource("trigger_box")
+
+[node name="Enc_cistern_pit_04" type="Node2D" parent="."]
+position = Vector2(2280, 2336)
+script = ExtResource("6_encounter")
+source = SubResource("src_cistern_pit_04")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"pull"])
+
+[node name="SpawnPoint" type="Marker2D" parent="Enc_cistern_pit_04"]
+
+[node name="Trig_cistern_pit_04" type="Area2D" parent="."]
+position = Vector2(2130, 2276)
+script = ExtResource("8_trigger")
+encounter_path = NodePath("../Enc_cistern_pit_04")
+
+[node name="Shape" type="CollisionShape2D" parent="Trig_cistern_pit_04"]
+shape = SubResource("trigger_box")
+
+[node name="WestVaultDoor" type="StaticBody2D" parent="."]
+position = Vector2(660, 1856)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("5_gate")
+watched_puzzle_id = &"cistern_west_winch"
+watched_field = &"uses"
+open_offset = Vector2(0, -128)
+
+[node name="Shape" type="CollisionShape2D" parent="WestVaultDoor"]
+shape = SubResource("gate_box")
+
+[node name="Graybox" type="Polygon2D" parent="WestVaultDoor"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -56, 16, -56, 16, 56, -16, 56)
+
+[node name="cistern_west_winch" type="Area2D" parent="."]
+position = Vector2(3600, 2076)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_west_winch"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_west_winch"
+reward_event_id = &"cistern_west_winch_used"
+
+[node name="Shape" type="CollisionShape2D" parent="cistern_west_winch"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="cistern_west_winch"]
+
+[node name="Graybox" type="Polygon2D" parent="cistern_west_winch"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="RoofHatch" type="StaticBody2D" parent="."]
+position = Vector2(2740, 396)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("5_gate")
+watched_puzzle_id = &"cistern_roof_latch"
+watched_field = &"uses"
+open_offset = Vector2(0, -128)
+
+[node name="Shape" type="CollisionShape2D" parent="RoofHatch"]
+shape = SubResource("gate_box")
+
+[node name="Graybox" type="Polygon2D" parent="RoofHatch"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -56, 16, -56, 16, 56, -16, 56)
+
+[node name="cistern_roof_latch" type="Area2D" parent="."]
+position = Vector2(1480, 356)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_roof_latch"
+allowed_verbs = Array[StringName]([&"precision_hit"])
+puzzle_id = &"cistern_roof_latch"
+reward_event_id = &"cistern_roof_latch_used"
+
+[node name="Shape" type="CollisionShape2D" parent="cistern_roof_latch"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="cistern_roof_latch"]
+
+[node name="Graybox" type="Polygon2D" parent="cistern_roof_latch"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="KilnDoor" type="StaticBody2D" parent="."]
+position = Vector2(4160, 2356)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("5_gate")
+watched_puzzle_id = &"cistern_kiln_bar"
+watched_field = &"uses"
+open_offset = Vector2(0, -128)
+
+[node name="Shape" type="CollisionShape2D" parent="KilnDoor"]
+shape = SubResource("gate_box")
+
+[node name="Graybox" type="Polygon2D" parent="KilnDoor"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -56, 16, -56, 16, 56, -16, 56)
+
+[node name="cistern_kiln_bar" type="Area2D" parent="."]
+position = Vector2(420, 2416)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_kiln_bar"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_kiln_bar"
+reward_event_id = &"cistern_kiln_bar_used"
+
+[node name="Shape" type="CollisionShape2D" parent="cistern_kiln_bar"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="cistern_kiln_bar"]
+
+[node name="Graybox" type="Polygon2D" parent="cistern_kiln_bar"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="ShaftGrate" type="StaticBody2D" parent="."]
+position = Vector2(2280, 2236)
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("5_gate")
+watched_puzzle_id = &"cistern_grate_pin"
+watched_field = &"uses"
+open_offset = Vector2(0, -128)
+
+[node name="Shape" type="CollisionShape2D" parent="ShaftGrate"]
+shape = SubResource("gate_box")
+
+[node name="Graybox" type="Polygon2D" parent="ShaftGrate"]
+color = Color(0.30, 0.26, 0.24, 1)
+polygon = PackedVector2Array(-16, -56, 16, -56, 16, 56, -16, 56)
+
+[node name="cistern_grate_pin" type="Area2D" parent="."]
+position = Vector2(2020, 1136)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_grate_pin"
+allowed_verbs = Array[StringName]([&"precision_hit"])
+puzzle_id = &"cistern_grate_pin"
+reward_event_id = &"cistern_grate_pin_used"
+
+[node name="Shape" type="CollisionShape2D" parent="cistern_grate_pin"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="cistern_grate_pin"]
+
+[node name="Graybox" type="Polygon2D" parent="cistern_grate_pin"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="RoofCache" type="Area2D" parent="."]
+position = Vector2(2420, 196)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_roof_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_roof_cache"
+reward_event_id = &"cistern_roof_cache_found"
+
+[node name="Shape" type="CollisionShape2D" parent="RoofCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="RoofCache"]
+
+[node name="Graybox" type="Polygon2D" parent="RoofCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="WestVaultCache" type="Area2D" parent="."]
+position = Vector2(180, 1856)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_west_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_west_cache"
+reward_event_id = &"cistern_west_cache_found"
+
+[node name="Shape" type="CollisionShape2D" parent="WestVaultCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="WestVaultCache"]
+
+[node name="Graybox" type="Polygon2D" parent="WestVaultCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="KilnCache" type="Area2D" parent="."]
+position = Vector2(4760, 1836)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_kiln_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_kiln_cache"
+reward_event_id = &"cistern_kiln_cache_found"
+
+[node name="Shape" type="CollisionShape2D" parent="KilnCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="KilnCache"]
+
+[node name="Graybox" type="Polygon2D" parent="KilnCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="DrownedCache" type="Area2D" parent="."]
+position = Vector2(2760, 2676)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_drowned_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_drowned_cache"
+reward_event_id = &"cistern_drowned_cache_found"
+
+[node name="Shape" type="CollisionShape2D" parent="DrownedCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="DrownedCache"]
+
+[node name="Graybox" type="Polygon2D" parent="DrownedCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="ShaftCache" type="Area2D" parent="."]
+position = Vector2(1820, 1776)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"cistern_shaft_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"cistern_shaft_cache"
+reward_event_id = &"cistern_shaft_cache_found"
+
+[node name="Shape" type="CollisionShape2D" parent="ShaftCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="ShaftCache"]
+
+[node name="Graybox" type="Polygon2D" parent="ShaftCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="DrownedSupplicant" type="Area2D" parent="."]
+position = Vector2(2660, 2676)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("10_sacred")
+receiver_id = &"cistern_supplicant"
+allowed_verbs = Array[StringName]([&"pull", &"precision_hit"])
+puzzle_id = &"cistern_supplicant"
+destroyed_event_id = &"supplicant_lost"
+preserved_event_id = &"supplicant_protected"
+
+[node name="Shape" type="CollisionShape2D" parent="DrownedSupplicant"]
+shape = SubResource("supplicant_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="DrownedSupplicant"]
+
+[node name="Graybox" type="Polygon2D" parent="DrownedSupplicant"]
+color = Color(0.88, 0.84, 0.72, 1)
+polygon = PackedVector2Array(-17, -22, 17, -22, 17, 22, -17, 22)
+
+[node name="ExitToBurialWorks" type="Area2D" parent="."]
+position = Vector2(4980, 2640)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("11_exit")
+next_room = ExtResource("12_burial")
+next_spawn_id = &"spawn_from_procession"
+
+[node name="Shape" type="CollisionShape2D" parent="ExitToBurialWorks"]
+shape = SubResource("gate_box")
+
+[node name="Graybox" type="Polygon2D" parent="ExitToBurialWorks"]
+color = Color(0.85, 0.75, 0.4, 1)
+polygon = PackedVector2Array(-16, -56, 16, -56, 16, 56, -16, 56)
