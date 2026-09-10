@@ -696,6 +696,86 @@ func test_the_full_route_connects_all_three_authored_rooms() -> void:
 	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
 	assert_eq(room.room_id, &"burial_works", "and finally the Burial Works")
 
+func _in_burial_works() -> void:
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
+	assert_eq(room.room_id, &"burial_works", "reached Burial Works")
+
+func test_burial_works_is_genuinely_bigger_than_it_was() -> void:
+	_in_burial_works()
+	assert_true(room.camera_bounds().size.x >= 2200.0,
+		"burial works is now a real expanse, not the original 1408px corridor")
+	assert_true(room.camera_bounds().size.y > Main.WORLD_HEIGHT,
+		"and tall enough for the camera to actually pan vertically")
+
+func test_burial_works_has_two_independent_pit_encounters() -> void:
+	_in_burial_works()
+	var first := room.get_node_or_null(^"PitEncounter") as Encounter
+	var second := room.get_node_or_null(^"SecondPitEncounter") as Encounter
+	assert_not_null(first, "the original pit assembler still exists")
+	assert_not_null(second, "a second, independent pit assembler was added")
+	assert_ne(first.source.id, second.source.id,
+		"two distinct encounters with their own stable IDs, not one duplicated")
+	assert_true(first.is_content_valid() and second.is_content_valid(),
+		"both authored sources validate independently")
+
+func test_burial_works_mezzanine_holds_a_real_reward() -> void:
+	_in_burial_works()
+	var anchor := _target("SwingAnchorMezzanine")
+	assert_not_null(anchor, "the mezzanine swing anchor exists")
+	assert_true(anchor.allowed_verbs.has(Verbs.SWING), "and it accepts a swing")
+	var cache := _target("MezzanineCache")
+	assert_true(cache.receive(_hit(&"lasso", Verbs.PULL)), "the mezzanine reward is genuinely pullable")
+	assert_true(main.services.ledger.has_consumed(&"burial_mezzanine_cache_found"),
+		"awarded through the same once-only ledger path as every other reward")
+
+func test_burial_works_mid_depth_vault_is_reachable() -> void:
+	_in_burial_works()
+	var to_mid := room.get_node_or_null(^"CrossingToMid") as DepthCrossing
+	assert_not_null(to_mid, "the vault archway exists")
+	to_mid._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.MID, "crossing works here too")
+
+	var cache := room.get_node_or_null(^"VaultCache") as ToolTarget
+	assert_eq(cache.collision_layer, Depth.target_bit(Depth.Layer.MID),
+		"the vault cache has no hardcoded fallback layer, same discipline throughout")
+	var mid_hit := Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)
+	mid_hit.depth_layer = Depth.Layer.MID
+	assert_true(cache.receive(mid_hit), "and it is genuinely reachable once on the same plane")
+
+	var to_near := room.get_node_or_null(^"CrossingToNear") as DepthCrossing
+	to_near._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.NEAR, "and the far archway returns to near")
+
+func test_burial_works_new_gap_is_load_bearing_not_decorative() -> void:
+	_in_burial_works()
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	var floor_platforms: Array[Rect2] = []
+	for rect: Rect2 in terrain.platforms:
+		if absf(rect.position.y - 288.0) < 1.0:
+			floor_platforms.append(rect)
+	floor_platforms.sort_custom(func(a: Rect2, b: Rect2) -> bool: return a.position.x < b.position.x)
+	assert_true(floor_platforms.size() >= 3, "the main floor is authored in at least 3 segments")
+	var real_gaps := 0
+	for i in floor_platforms.size() - 1:
+		var gap_px: float = floor_platforms[i + 1].position.x - floor_platforms[i].end.x
+		if gap_px > 87.5:
+			real_gaps += 1
+	assert_true(real_gaps >= 2, "at least two floor gaps genuinely exceed max jump distance (the original pit gap plus the new one)")
+	assert_not_null(_target("PitGapSwingAnchorC"), "and the new gap's anchor exists to bridge it")
+
+func test_burial_works_every_puzzle_id_is_actually_unique() -> void:
+	_in_burial_works()
+	var seen: Array[StringName] = []
+	for node: Node in _all(room):
+		var target := node as ToolTarget
+		if target == null or target.puzzle_id == &"":
+			continue
+		assert_false(seen.has(target.puzzle_id),
+			"puzzle_id '%s' is not reused by a second target" % target.puzzle_id)
+		seen.append(target.puzzle_id)
+
 func test_burial_works_has_a_pit_encounter_and_a_shotgun_plug() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
 	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
