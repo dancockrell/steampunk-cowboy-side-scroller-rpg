@@ -499,6 +499,100 @@ func test_an_unknown_checkpoint_room_is_refused_rather_than_restoring_the_wrong_
 		"a checkpoint naming a room this run never saw is refused, not guessed at")
 	assert_eq(main.world_root.room.room_id, &"gallery_of_vessels", "and the current room is left untouched")
 
+# --- the expanded Gallery: mezzanine, vault, and a second encounter --------
+
+func test_the_gallery_is_genuinely_bigger_than_it_was() -> void:
+	assert_true(room.camera_bounds().size.x >= 2000.0,
+		"the gallery is now a real expanse, not the original 1280px corridor")
+	assert_true(room.camera_bounds().size.y > Main.WORLD_HEIGHT,
+		"and tall enough for the camera to actually pan vertically")
+
+func test_the_gallery_has_two_independent_ceramic_encounters() -> void:
+	var first := room.get_node_or_null(^"JarEncounter") as Encounter
+	var second := room.get_node_or_null(^"SecondJarEncounter") as Encounter
+	assert_not_null(first, "the original jar encounter still exists")
+	assert_not_null(second, "a second, independent jar encounter was added")
+	assert_ne(first.source.id, second.source.id,
+		"they are two distinct encounters with their own stable IDs, not one duplicated")
+	assert_true(first.is_content_valid() and second.is_content_valid(),
+		"both authored sources validate independently")
+
+func test_the_mezzanine_is_reachable_and_holds_a_real_reward() -> void:
+	var mezzanine_anchor := _target("SwingAnchorMezzanine")
+	assert_not_null(mezzanine_anchor, "the mezzanine swing anchor exists")
+	assert_true(mezzanine_anchor.allowed_verbs.has(Verbs.SWING), "and it accepts a swing")
+	var cache := _target("MezzanineCache")
+	assert_not_null(cache, "the mezzanine holds its own reward, not just a viewpoint")
+	assert_true(cache.receive(_hit(&"lasso", Verbs.PULL)), "and it is genuinely pullable")
+	assert_true(main.services.ledger.has_consumed(&"gallery_mezzanine_cache_found"),
+		"awarded through the same once-only ledger path as every other reward")
+
+func test_the_mid_depth_vault_is_a_real_alternate_area_with_its_own_cache() -> void:
+	var to_mid := room.get_node_or_null(^"CrossingToMid") as DepthCrossing
+	assert_not_null(to_mid, "the vault archway exists")
+	assert_eq(player.current_depth, Depth.Layer.NEAR, "starting on the near plane")
+	to_mid._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.MID, "crossing works in the expanded gallery too")
+
+	var vault_terrain := room.get_node_or_null(^"MidVaultTerrain") as GrayboxTerrain
+	assert_not_null(vault_terrain, "the vault has its own walkway")
+	assert_eq(vault_terrain.depth_layer, Depth.Layer.MID, "authored on the mid plane")
+
+	var cache := room.get_node_or_null(^"VaultCache") as ToolTarget
+	assert_eq(cache.collision_layer, Depth.target_bit(Depth.Layer.MID),
+		"the vault's cache has no hardcoded fallback layer, same discipline as the bridge's")
+	var mid_hit := Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)
+	mid_hit.depth_layer = Depth.Layer.MID
+	assert_true(cache.receive(mid_hit), "and it is genuinely reachable once on the same plane")
+
+	var to_near := room.get_node_or_null(^"CrossingToNear") as DepthCrossing
+	to_near._on_body_entered(player)
+	assert_eq(player.current_depth, Depth.Layer.NEAR, "and the far archway returns to near")
+
+func test_both_new_swing_gaps_are_load_bearing_not_decorative() -> void:
+	# Reads the room's OWN authored platform list rather than repeating its
+	# numbers as literals -- a hardcoded copy of "140px" would keep passing
+	# even after someone shrank the real gap to something jumpable, which is
+	# exactly what a sabotage pass against the first version of this test
+	# found: it changed nothing when the terrain data itself was edited.
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	var floor_platforms: Array[Rect2] = []
+	for rect: Rect2 in terrain.platforms:
+		if absf(rect.position.y - 288.0) < 1.0:
+			floor_platforms.append(rect)
+	floor_platforms.sort_custom(func(a: Rect2, b: Rect2) -> bool: return a.position.x < b.position.x)
+	assert_true(floor_platforms.size() >= 3, "the main floor is authored in at least 3 segments (two real gaps)")
+
+	var gaps: Array[float] = []
+	for i in floor_platforms.size() - 1:
+		gaps.append(floor_platforms[i + 1].position.x - floor_platforms[i].end.x)
+	for gap_px: float in gaps:
+		assert_true(gap_px > 87.5,
+			"floor gap of %.0fpx exceeds the verified max jump distance (docs/validation/gameplay-checks.md)" % gap_px)
+
+	assert_not_null(_target("SwingAnchor"), "and the first gap's anchor exists")
+	assert_not_null(_target("SwingAnchorGap2"), "and the second gap's anchor exists")
+
+func test_every_new_gallery_content_id_is_actually_unique() -> void:
+	# A copy-pasted node with a forgotten renamed puzzle_id is a real, easy
+	# mistake at this scale -- two mechanisms silently sharing one puzzle_id
+	# would mean pulling one secretly also "solves" the other.
+	var seen: Array[StringName] = []
+	for node: Node in _all(room):
+		var target := node as ToolTarget
+		if target == null or target.puzzle_id == &"":
+			continue
+		assert_false(seen.has(target.puzzle_id),
+			"puzzle_id '%s' is not reused by a second target" % target.puzzle_id)
+		seen.append(target.puzzle_id)
+
+func _all(node: Node) -> Array[Node]:
+	var found: Array[Node] = []
+	for child: Node in node.get_children():
+		found.append(child)
+		found.append_array(_all(child))
+	return found
+
 # --- the three-room chain and Burial Works' preserve-or-disturb choice ------
 
 func _walk_through_gate_and_exit(gate_target_name: String, exit_node_name: String,

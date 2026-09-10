@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://src/world/heroine_npc.gd" id="10_heroine"]
 [ext_resource type="Script" path="res://src/world/room_exit.gd" id="11_exit"]
 [ext_resource type="PackedScene" path="res://levels/temple_clay_dead/procession_hall.tscn" id="12_next"]
+[ext_resource type="Script" path="res://src/world/depth_crossing.gd" id="13_crossing"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
 size = Vector2(28, 28)
@@ -24,6 +25,9 @@ size = Vector2(48, 128)
 
 [sub_resource type="RectangleShape2D" id="exit_box"]
 size = Vector2(32, 128)
+
+[sub_resource type="RectangleShape2D" id="crossing_box"]
+size = Vector2(32, 96)
 
 [sub_resource type="Resource" id="jar_source"]
 script = ExtResource("8_source")
@@ -40,16 +44,37 @@ interrupt_rule = &"to_staggered_active"
 blocked_spawn_policy = &"wait"
 reward_event_id = &"gallery_jar_01_resolved"
 
+[sub_resource type="Resource" id="jar_source_2"]
+script = ExtResource("8_source")
+id = &"gallery_jar_02"
+room_id = &"gallery_of_vessels"
+source_type = &"ceramic"
+family_id = &"ceramic_sentinel"
+trigger_id = &"gallery_jar_02_trigger"
+spawn_point_id = &"gallery_jar_02_spawn"
+tell_clip_id = &"ceramic_sentinel_tell"
+emerge_clip_id = &"ceramic_sentinel_emerge"
+resolved_visual_id = &"ceramic_sentinel_resolved"
+interrupt_rule = &"to_staggered_active"
+blocked_spawn_policy = &"wait"
+reward_event_id = &"gallery_jar_02_resolved"
+
 [node name="GalleryOfVessels" type="Node2D"]
 script = ExtResource("1_room")
 room_id = &"gallery_of_vessels"
 default_spawn_id = &"spawn_entry"
-bounds = Rect2(0, 0, 1280, 360)
+bounds = Rect2(0, 0, 2000, 640)
 
 [node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_terrain")
-platforms = Array[Rect2]([Rect2(0, 288, 480, 72), Rect2(576, 288, 704, 72), Rect2(416, 208, 128, 16), Rect2(832, 176, 160, 16)])
-backdrop = Array[Rect2]([Rect2(160, 96, 352, 192), Rect2(1184, 32, 96, 256)])
+platforms = Array[Rect2]([Rect2(0, 288, 460, 72), Rect2(600, 288, 900, 72), Rect2(1620, 288, 380, 72), Rect2(950, 140, 220, 16)])
+backdrop = Array[Rect2]([Rect2(96, 32, 1808, 320), Rect2(1904, 32, 96, 256)])
+
+[node name="MidVaultTerrain" type="Node2D" parent="."]
+script = ExtResource("2_terrain")
+depth_layer = 1
+platforms = Array[Rect2]([Rect2(660, 400, 300, 40)])
+backdrop = Array[Rect2]([Rect2(636, 300, 348, 160)])
 
 [node name="spawn_entry" type="Marker2D" parent="."]
 position = Vector2(64, 288)
@@ -65,6 +90,20 @@ shape = SubResource("small_box")
 [node name="GrayboxShrine" type="Polygon2D" parent="Shrine"]
 color = Color(0.35, 0.62, 0.55, 1)
 polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="KeeperNpc" type="Area2D" parent="."]
+position = Vector2(210, 240)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("10_heroine")
+heroine_id = &"keeper_of_the_clay_dead"
+
+[node name="KeeperShape" type="CollisionShape2D" parent="KeeperNpc"]
+shape = SubResource("small_box")
+
+[node name="GrayboxKeeper" type="Polygon2D" parent="KeeperNpc"]
+color = Color(0.62, 0.42, 0.68, 1)
+polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)
 
 [node name="Bell" type="Area2D" parent="."]
 position = Vector2(320, 176)
@@ -85,8 +124,25 @@ shape = SubResource("small_box")
 color = Color(0.78, 0.66, 0.28, 1)
 polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
 
+[node name="JarEncounter" type="Node2D" parent="."]
+position = Vector2(390, 288)
+script = ExtResource("7_encounter")
+source = SubResource("jar_source")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="JarEncounter"]
+
+[node name="JarTrigger" type="Area2D" parent="."]
+position = Vector2(270, 240)
+script = ExtResource("9_trigger")
+encounter_path = NodePath("../JarEncounter")
+
+[node name="TriggerShape" type="CollisionShape2D" parent="JarTrigger"]
+shape = SubResource("trigger_box")
+
 [node name="SwingAnchor" type="Area2D" parent="."]
-position = Vector2(528, 112)
+position = Vector2(530, 140)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -103,27 +159,55 @@ shape = SubResource("small_box")
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
 
-[node name="Counterweight" type="Area2D" parent="."]
-position = Vector2(704, 240)
-collision_layer = 8
+[node name="CrossingToMid" type="Area2D" parent="."]
+position = Vector2(700, 220)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("13_crossing")
+target_layer = 1
+
+[node name="CrossingToMidShape" type="CollisionShape2D" parent="CrossingToMid"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToMid" type="Polygon2D" parent="CrossingToMid"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="CrossingToNear" type="Area2D" parent="."]
+position = Vector2(920, 340)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("13_crossing")
+target_layer = 0
+
+[node name="CrossingToNearShape" type="CollisionShape2D" parent="CrossingToNear"]
+shape = SubResource("crossing_box")
+
+[node name="GrayboxCrossingToNear" type="Polygon2D" parent="CrossingToNear"]
+color = Color(0.35, 0.3, 0.42, 0.8)
+polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
+
+[node name="VaultCache" type="Area2D" parent="."]
+position = Vector2(790, 360)
 collision_mask = 0
 script = ExtResource("3_target")
-receiver_id = &"gallery_counterweight"
+depth_layer = 1
+receiver_id = &"gallery_vault_cache"
 allowed_verbs = Array[StringName]([&"pull"])
-puzzle_id = &"gallery_counterweight"
-reward_event_id = &"gallery_counterweight_pulled"
+puzzle_id = &"gallery_vault_cache"
+reward_event_id = &"gallery_vault_cache_found"
 
-[node name="WeightShape" type="CollisionShape2D" parent="Counterweight"]
+[node name="VaultCacheShape" type="CollisionShape2D" parent="VaultCache"]
 shape = SubResource("small_box")
 
-[node name="InteractionPoint" type="Marker2D" parent="Counterweight"]
+[node name="InteractionPoint" type="Marker2D" parent="VaultCache"]
 
-[node name="GrayboxWeight" type="Polygon2D" parent="Counterweight"]
-color = Color(0.62, 0.45, 0.30, 1)
-polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+[node name="GrayboxVaultCache" type="Polygon2D" parent="VaultCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
 
 [node name="SacredUrn" type="Area2D" parent="."]
-position = Vector2(448, 264)
+position = Vector2(700, 264)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("4_sacred")
@@ -142,8 +226,99 @@ shape = SubResource("small_box")
 color = Color(0.88, 0.84, 0.72, 1)
 polygon = PackedVector2Array(-10, -16, 10, -16, 14, 16, -14, 16)
 
+[node name="SwingAnchorMezzanine" type="Area2D" parent="."]
+position = Vector2(870, 100)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"gallery_swing_anchor_mezzanine"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"gallery_swing_anchor_mezzanine"
+
+[node name="MezzanineAnchorShape" type="CollisionShape2D" parent="SwingAnchorMezzanine"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchorMezzanine"]
+
+[node name="GrayboxMezzanineAnchor" type="Polygon2D" parent="SwingAnchorMezzanine"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="MezzanineCache" type="Area2D" parent="."]
+position = Vector2(1050, 128)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"gallery_mezzanine_cache"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"gallery_mezzanine_cache"
+reward_event_id = &"gallery_mezzanine_cache_found"
+
+[node name="MezzanineCacheShape" type="CollisionShape2D" parent="MezzanineCache"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="MezzanineCache"]
+
+[node name="GrayboxMezzanineCache" type="Polygon2D" parent="MezzanineCache"]
+color = Color(0.78, 0.66, 0.28, 1)
+polygon = PackedVector2Array(-12, -14, 12, -14, 8, 14, -8, 14)
+
+[node name="SecondJarEncounter" type="Node2D" parent="."]
+position = Vector2(1300, 288)
+script = ExtResource("7_encounter")
+source = SubResource("jar_source_2")
+spawn_point_path = NodePath("SpawnPoint")
+source_allowed_verbs = Array[StringName]([&"force_hit"])
+
+[node name="SpawnPoint" type="Marker2D" parent="SecondJarEncounter"]
+
+[node name="SecondJarTrigger" type="Area2D" parent="."]
+position = Vector2(1180, 240)
+script = ExtResource("9_trigger")
+encounter_path = NodePath("../SecondJarEncounter")
+
+[node name="SecondTriggerShape" type="CollisionShape2D" parent="SecondJarTrigger"]
+shape = SubResource("trigger_box")
+
+[node name="SwingAnchorGap2" type="Area2D" parent="."]
+position = Vector2(1560, 150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"gallery_swing_anchor_gap2"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"gallery_swing_anchor_gap2"
+
+[node name="Gap2AnchorShape" type="CollisionShape2D" parent="SwingAnchorGap2"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="SwingAnchorGap2"]
+
+[node name="GrayboxGap2Anchor" type="Polygon2D" parent="SwingAnchorGap2"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="Counterweight" type="Area2D" parent="."]
+position = Vector2(1680, 240)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"gallery_counterweight"
+allowed_verbs = Array[StringName]([&"pull"])
+puzzle_id = &"gallery_counterweight"
+reward_event_id = &"gallery_counterweight_pulled"
+
+[node name="WeightShape" type="CollisionShape2D" parent="Counterweight"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Counterweight"]
+
+[node name="GrayboxWeight" type="Polygon2D" parent="Counterweight"]
+color = Color(0.62, 0.45, 0.30, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
 [node name="StonePlug" type="Area2D" parent="."]
-position = Vector2(896, 240)
+position = Vector2(1810, 240)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -162,7 +337,7 @@ color = Color(0.45, 0.44, 0.46, 1)
 polygon = PackedVector2Array(-16, -14, 16, -14, 16, 14, -16, 14)
 
 [node name="FarCounterweight" type="Area2D" parent="."]
-position = Vector2(1120, 128)
+position = Vector2(1960, 128)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -181,7 +356,7 @@ color = Color(0.70, 0.52, 0.66, 1)
 polygon = PackedVector2Array(-12, -12, 12, -12, 12, 12, -12, 12)
 
 [node name="ExitGate" type="StaticBody2D" parent="."]
-position = Vector2(1024, 240)
+position = Vector2(1900, 240)
 collision_layer = 1
 collision_mask = 0
 script = ExtResource("6_gate")
@@ -196,39 +371,8 @@ shape = SubResource("gate_box")
 color = Color(0.30, 0.26, 0.24, 1)
 polygon = PackedVector2Array(-16, -48, 16, -48, 16, 48, -16, 48)
 
-[node name="JarEncounter" type="Node2D" parent="."]
-position = Vector2(640, 288)
-script = ExtResource("7_encounter")
-source = SubResource("jar_source")
-spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
-
-[node name="SpawnPoint" type="Marker2D" parent="JarEncounter"]
-
-[node name="JarTrigger" type="Area2D" parent="."]
-position = Vector2(560, 240)
-script = ExtResource("9_trigger")
-encounter_path = NodePath("../JarEncounter")
-
-[node name="TriggerShape" type="CollisionShape2D" parent="JarTrigger"]
-shape = SubResource("trigger_box")
-
-[node name="KeeperNpc" type="Area2D" parent="."]
-position = Vector2(224, 240)
-collision_layer = 0
-collision_mask = 2
-script = ExtResource("10_heroine")
-heroine_id = &"keeper_of_the_clay_dead"
-
-[node name="KeeperShape" type="CollisionShape2D" parent="KeeperNpc"]
-shape = SubResource("small_box")
-
-[node name="GrayboxKeeper" type="Polygon2D" parent="KeeperNpc"]
-color = Color(0.62, 0.42, 0.68, 1)
-polygon = PackedVector2Array(-12, -40, 12, -40, 16, 24, -16, 24)
-
 [node name="ExitToProcessionHall" type="Area2D" parent="."]
-position = Vector2(1200, 240)
+position = Vector2(1980, 240)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("11_exit")
