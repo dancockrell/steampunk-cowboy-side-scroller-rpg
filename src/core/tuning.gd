@@ -32,16 +32,23 @@ extends Resource
 ## silent, permanent loss of control.
 @export var fall_death_margin_px: float = 96.0
 
+## Dan's direction, 10 Sep 2026: swinging should be easy, generous and a big
+## part of level design, not a precision check against a slow rope. The
+## auto-target system in ToolController._find_lasso_anchor already picks the
+## nearest anchor in range on proximity alone, with no aim required; the
+## numbers below are the other half of "organic" -- reach far enough that an
+## anchor is usable from across a room, and respond fast enough that throwing
+## the rope never feels like the bottleneck.
 @export_group("Lasso")
-@export var lasso_range_px: float = 190.0
-@export var lasso_throw_speed_px_s: float = 900.0
-@export var lasso_commit_ms: int = 240
-@export var lasso_recovery_ms: int = 180
-@export var lasso_miss_recovery_ms: int = 260
+@export var lasso_range_px: float = 320.0
+@export var lasso_throw_speed_px_s: float = 1200.0
+@export var lasso_commit_ms: int = 110
+@export var lasso_recovery_ms: int = 90
+@export var lasso_miss_recovery_ms: int = 140
 @export var lasso_pull_speed_px_s: float = 90.0
-@export var swing_gravity: float = 1100.0
-@export var swing_damping: float = 0.995
-@export var swing_release_boost: float = 1.12
+@export var swing_gravity: float = 900.0
+@export var swing_damping: float = 0.997
+@export var swing_release_boost: float = 1.25
 @export var swing_min_length_px: float = 28.0
 
 @export_group("Firearms")

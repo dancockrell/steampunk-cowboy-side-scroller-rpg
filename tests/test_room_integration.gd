@@ -24,7 +24,9 @@ func before_each() -> void:
 	# here, and leave the rest of the file testing what it already tested.
 	# The bridge gets its own dedicated tests below instead.
 	var bridge := main.world_root.room
-	(bridge.get_node_or_null(^"Counterweight") as ToolTarget).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO))
+	# The bridge's exit is ungated: the chasm and its anchor chain ARE the
+	# obstacle, so nothing needs to be pulled first (see test_room_exit.gd
+	# and the redesign notes on entry_bridge.tscn).
 	(bridge.get_node_or_null(^"ExitToGallery") as RoomExit)._on_body_entered(main.world_root.player)
 	room = main.world_root.room
 	player = main.world_root.player
@@ -485,6 +487,29 @@ func test_the_plug_puzzle_can_always_be_reset() -> void:
 	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 0,
 		"and can always be returned to its authored start, per docs/gameplay-pillars.md")
 
+func test_the_burial_pit_gap_is_bridged_by_a_chain_of_swing_anchors_not_left_impossible() -> void:
+	# The pit's own floor gap (416->544, 128px) exceeds the verified maximum
+	# jump distance (87.5px, see docs/validation/gameplay-checks.md): without
+	# an anchor this room is not merely hard, it is uncrossable. Two anchors,
+	# chained and well within lasso range, both fixes that and gives the
+	# player more than one hook to use, matching the bridge's redesign.
+	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	var anchor_names := [&"PitGapSwingAnchorA", &"PitGapSwingAnchorB"]
+	var anchors: Array[ToolTarget] = []
+	for anchor_name: StringName in anchor_names:
+		var anchor := _target(String(anchor_name))
+		assert_not_null(anchor, "%s exists over the pit gap" % anchor_name)
+		assert_true(anchor.allowed_verbs.has(Verbs.SWING), "%s accepts the swing" % anchor_name)
+		anchors.append(anchor)
+	assert_true(anchors[0].global_position.distance_to(anchors[1].global_position) <= main.services.tuning.lasso_range_px,
+		"the two anchors are within lasso range of each other")
+	# And the actual gap really is unjumpable, so the anchors are load-bearing
+	# rather than decorative: a room with no swing anchors here would strand
+	# the player, which is exactly the defect this replaces.
+	var gap_px := 544.0 - 416.0
+	assert_true(gap_px > 87.5, "the pit gap (%.0fpx) genuinely exceeds max jump distance, confirming the anchors are necessary" % gap_px)
+
 # --- entry bridge (beat 1), tested against its own fresh boot -------------
 
 func _fresh_bridge() -> Dictionary:
@@ -500,23 +525,61 @@ func test_the_entry_bridge_is_the_true_starting_room() -> void:
 		"the route now starts before the Gallery, at the broken bridge")
 	(ctx["main"] as Main).free()
 
-func test_the_bridge_gap_requires_the_swing_not_a_bare_jump() -> void:
+func test_the_bridge_gap_is_crossed_by_a_chain_of_three_swing_anchors() -> void:
+	# Dan's direction, 10 Sep 2026: swinging should be easy, generous and a
+	# central, repeated part of level design, not one precision hook over one
+	# gap. The bridge now has three anchors, each accepting SWING and none
+	# accepting a plain PULL, so crossing means swinging more than once.
 	var ctx := _fresh_bridge()
 	var bridge := ctx["room"] as Room
-	var anchor := bridge.get_node_or_null(^"SwingAnchor") as ToolTarget
-	assert_not_null(anchor, "the swing anchor over the gap exists")
-	assert_true(anchor.allowed_verbs.has(Verbs.SWING), "and it accepts the lasso swing specifically")
-	assert_false(anchor.allowed_verbs.has(Verbs.PULL), "not a plain pull, so it teaches swing, not tug")
+	var anchor_names := [&"SwingAnchorA", &"SwingAnchorB", &"SwingAnchorC"]
+	var anchors: Array[ToolTarget] = []
+	for anchor_name: StringName in anchor_names:
+		var anchor := bridge.get_node_or_null(NodePath(String(anchor_name))) as ToolTarget
+		assert_not_null(anchor, "%s exists over the chasm" % anchor_name)
+		assert_true(anchor.allowed_verbs.has(Verbs.SWING), "%s accepts the lasso swing" % anchor_name)
+		assert_false(anchor.allowed_verbs.has(Verbs.PULL), "%s teaches swing, not tug" % anchor_name)
+		anchors.append(anchor)
+
+	# Chainability: every anchor is within lasso range of its neighbour, so a
+	# player mid-swing on one can reach for the next without landing first.
+	var tuning := ctx["main"].services.tuning as Tuning
+	for i in anchors.size() - 1:
+		var d := anchors[i].global_position.distance_to(anchors[i + 1].global_position)
+		assert_true(d <= tuning.lasso_range_px,
+			"%s is within lasso range of %s (%.0fpx <= %.0fpx), so the chain is actually chainable"
+				% [anchor_names[i], anchor_names[i + 1], d, tuning.lasso_range_px])
+	(ctx["main"] as Main).free()
+
+func test_the_bridge_room_is_tall_enough_for_the_camera_to_actually_pan() -> void:
+	# Every room used to be authored at exactly WORLD_HEIGHT (360), which
+	# leaves camera Y permanently clamped to a single value: zero vertical
+	# travel, ever, regardless of how tall the content is. A room built to
+	# showcase verticality has to actually be taller than that.
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	assert_true(bridge.camera_bounds().size.y > Main.WORLD_HEIGHT,
+		"the bridge room is taller than the fixed world viewport, so the camera has real room to pan")
 	(ctx["main"] as Main).free()
 
 func test_crossing_the_bridge_reaches_the_gallery_at_its_own_entry_marker() -> void:
 	var ctx := _fresh_bridge()
 	var bridge := ctx["room"] as Room
 	var main_ref := ctx["main"] as Main
-	(bridge.get_node_or_null(^"Counterweight") as ToolTarget).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO))
 	(bridge.get_node_or_null(^"ExitToGallery") as RoomExit)._on_body_entered(ctx["player"])
 	assert_eq(main_ref.world_root.room.room_id, &"gallery_of_vessels", "the bridge leads into the Gallery")
 	main_ref.free()
+
+func test_the_bridge_still_teaches_the_pull_verb_without_gating_the_exit_on_it() -> void:
+	# The counterweight moved to the start-side platform: a side lesson in
+	# the pull verb, not a lock on the only way across.
+	var ctx := _fresh_bridge()
+	var bridge := ctx["room"] as Room
+	var counterweight := bridge.get_node_or_null(^"Counterweight") as ToolTarget
+	assert_not_null(counterweight, "the counterweight still exists, to teach pull")
+	var exit_door := bridge.get_node_or_null(^"ExitToGallery") as RoomExit
+	assert_true(exit_door.is_open(), "and the exit is never gated on having pulled it")
+	(ctx["main"] as Main).free()
 
 # --- the full five-beat route ----------------------------------------------
 

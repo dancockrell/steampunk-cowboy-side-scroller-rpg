@@ -65,6 +65,42 @@ shape = SubResource("small_box")
 color = Color(0.35, 0.62, 0.55, 1)
 polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
 
+[node name="PitGapSwingAnchorA" type="Area2D" parent="."]
+position = Vector2(440, 150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"burial_pit_gap_swing_anchor_a"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"burial_pit_gap_swing_anchor_a"
+
+[node name="PitGapAnchorAShape" type="CollisionShape2D" parent="PitGapSwingAnchorA"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="PitGapSwingAnchorA"]
+
+[node name="GrayboxPitGapAnchorA" type="Polygon2D" parent="PitGapSwingAnchorA"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
+[node name="PitGapSwingAnchorB" type="Area2D" parent="."]
+position = Vector2(600, 150)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"burial_pit_gap_swing_anchor_b"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"burial_pit_gap_swing_anchor_b"
+
+[node name="PitGapAnchorBShape" type="CollisionShape2D" parent="PitGapSwingAnchorB"]
+shape = SubResource("small_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="PitGapSwingAnchorB"]
+
+[node name="GrayboxPitGapAnchorB" type="Polygon2D" parent="PitGapSwingAnchorB"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-14, -10, 14, -10, 10, 10, -10, 10)
+
 [node name="PitEncounter" type="Node2D" parent="."]
 position = Vector2(688, 288)
 script = ExtResource("7_encounter")
