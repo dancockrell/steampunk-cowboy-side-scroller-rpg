@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/tools/tool_controller.gd" id="2_tools"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/michael/michael_run_right.tres" id="3_frames"]
 
 [sub_resource type="RectangleShape2D" id="body_shape"]
 size = Vector2(24, 64)
@@ -19,17 +20,11 @@ script = ExtResource("1_player")
 position = Vector2(0, -32)
 shape = SubResource("body_shape")
 
-[node name="GrayboxBody" type="Polygon2D" parent="."]
-color = Color(0.79, 0.63, 0.36, 1)
-polygon = PackedVector2Array(-12, -64, 12, -64, 12, 0, -12, 0)
-
-[node name="GrayboxHat" type="Polygon2D" parent="."]
-color = Color(0.45, 0.29, 0.18, 1)
-polygon = PackedVector2Array(-18, -72, 18, -72, 14, -64, -14, -64)
-
-[node name="GrayboxFacing" type="Polygon2D" parent="."]
-color = Color(0.94, 0.88, 0.74, 1)
-polygon = PackedVector2Array(12, -52, 20, -48, 12, -44)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.16, 0.16)
+sprite_frames = ExtResource("3_frames")
+animation = &"idle"
+offset = Vector2(0, -218.5)
 
 [node name="ToolController" type="Node2D" parent="."]
 position = Vector2(0, -40)

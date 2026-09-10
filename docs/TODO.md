@@ -6,7 +6,7 @@ This checked-in backlog is the initial issue tracker. Items are not started and 
 - [x] F02 World/portrait compositor implemented and tested. NOT demonstrated on the PINNED 4.4.1 editor; checks ran on 4.7.2 against a copy. See docs/validation/gameplay-checks.md.
 - [x] F03 Movement, camera and the 14-action input map. Coyote time, jump buffer and jump cut are tested; input FEEL is unmeasured and the numbers are hypotheses.
 - [x] F04 Lasso throw, attach, swing, pull, release, miss and destroyed-anchor cases, integrated with movement rather than isolated.
-- [ ] F05 Produce and admit Michael movement/lasso action pack.
+- [ ] F05 Partially admitted: the run cycle only (docs/production/asset-register.md), extracted from the existing batch-001 candidate rather than newly generated. Idle, jump, lasso and firearm poses are not yet extracted or admitted.
 - [x] F06 Pistol, shotgun and rifle with distinct verbs, ammo spent once per commit, interruptible reload and queued switching.
 - [ ] F07 Produce temple room kit and ceramic emergence art.
 - [x] F08 All three families, not just ceramic. Single spawn transfer, blocked spawn, interrupt, pause and reload cases covered.

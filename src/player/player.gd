@@ -35,6 +35,7 @@ var traversal_mode: TraversalMode = TraversalMode.GROUNDED
 var _invulnerable_s: float = 0.0
 var _hurt_stun_s: float = 0.0
 var _input_enabled: bool = true
+var _sprite: AnimatedSprite2D
 
 func bind(p_services: Services) -> void:
 	services = p_services
@@ -45,6 +46,7 @@ func bind(p_services: Services) -> void:
 	tools = get_node_or_null(^"ToolController") as ToolController
 	if tools != null:
 		tools.bind(p_services, self)
+	_sprite = get_node_or_null(^"Sprite") as AnimatedSprite2D
 	health_changed.emit(health, tuning.max_health)
 
 ## Dialogue in a safe shrine must not leave Michael taking unseen damage, so a
@@ -69,6 +71,26 @@ func _physics_process(delta: float) -> void:
 
 	if tools != null:
 		tools.step(delta)
+	_update_presentation()
+
+## Only a right-facing run cycle is admitted (assets/sprites/michael). Left
+## movement mirrors it with AnimatedSprite2D.flip_h rather than using the
+## batch-001 "run_left" candidate, which was measured against its own file
+## (not assumed) to still show Michael facing right despite its name and the
+## README's claim otherwise -- see docs/production/asset-handoff.md review
+## record. Mirroring an asymmetric-gear character is explicitly flagged as
+## UNCONFIRMED pending F01 handedness review (michael-pose-brief.md); this is
+## the interim, trivially reversible choice that review anticipates, not a
+## final claim about which hand carries what.
+func _update_presentation() -> void:
+	if _sprite == null:
+		return
+	_sprite.flip_h = facing < 0
+	var moving := absf(velocity.x) > 5.0
+	var wanted := &"run" if moving else &"idle"
+	if _sprite.animation != wanted:
+		_sprite.animation = wanted
+		_sprite.play()
 
 func _physics_grounded(delta: float) -> void:
 	var move_axis := 0.0

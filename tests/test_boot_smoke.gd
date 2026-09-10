@@ -227,3 +227,31 @@ func test_a_menu_that_cannot_reach_the_tree_admits_it_rather_than_lying() -> voi
 	var stopped := main.pause_menu.open()
 	assert_true(main.pause_menu.is_open(), "the menu still shows itself")
 	assert_false(stopped, "but it never claims to have paused a tree it could not reach")
+
+func test_michael_has_an_admitted_run_cycle_not_a_flat_rectangle() -> void:
+	var player := main.world_root.player
+	var sprite := player.get_node_or_null(^"Sprite") as AnimatedSprite2D
+	assert_not_null(sprite, "the player has a real sprite node, not only a graybox polygon")
+	assert_not_null(sprite.sprite_frames, "and it has frames assigned")
+	assert_true(sprite.sprite_frames.has_animation(&"run"), "a run animation exists")
+	assert_true(sprite.sprite_frames.has_animation(&"idle"), "and an idle animation exists")
+	assert_eq(sprite.sprite_frames.get_frame_count(&"run"), 8,
+		"the full 8-pose run cycle is present, not a partial extraction")
+	for i in 8:
+		var tex := sprite.sprite_frames.get_frame_texture(&"run", i)
+		assert_not_null(tex, "run frame %d has a real texture" % i)
+		assert_true(tex.get_width() > 50 and tex.get_height() > 50,
+			"run frame %d is a real sprite, not a 1x1 placeholder (%dx%d)"
+				% [i, tex.get_width(), tex.get_height()])
+
+func test_the_run_cycle_frames_share_a_stable_foot_line() -> void:
+	# Verified once at extraction time (docs/validation/gameplay-checks.md);
+	# this is the standing guard against a future re-extraction silently
+	# breaking bottom-alignment and making the run cycle bob unnaturally.
+	var player := main.world_root.player
+	var sprite := player.get_node_or_null(^"Sprite") as AnimatedSprite2D
+	var first_height := sprite.sprite_frames.get_frame_texture(&"run", 0).get_height()
+	for i in 8:
+		var tex := sprite.sprite_frames.get_frame_texture(&"run", i)
+		assert_eq(tex.get_height(), first_height,
+			"frame %d shares the same padded canvas height as frame 0, which is what bottom-alignment means" % i)

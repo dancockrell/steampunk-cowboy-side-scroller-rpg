@@ -2,9 +2,9 @@
 
 A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
-**Stage: the full vertical-slice route is playable, no admitted art.** All five authored beats exist and connect end to end: Entry Bridge, Gallery of Vessels, Procession Hall, Burial Works, and the Keeper's Shrine and Return Gate. Movement, all four tools, all three emergence families, checkpoints scoped correctly across rooms, the relationship arc, the Keeper's dialogue and her intervention are implemented and tested. Reaching the return gate completes the route.
+**Stage: the full vertical-slice route is playable, with Michael's first admitted sprite.** All five authored beats exist and connect end to end: Entry Bridge, Gallery of Vessels, Procession Hall, Burial Works, and the Keeper's Shrine and Return Gate. Movement, all four tools, all three emergence families, checkpoints scoped correctly across rooms, the relationship arc, the Keeper's dialogue and her intervention are implemented and tested. Reaching the return gate completes the route.
 
-Everything you see is a **placeholder**. Every character, creature and prop is a flat coloured polygon. The 23 sheets in [art-source/candidates/batch-001](art-source/candidates/batch-001/README.md) are saved candidates, not admitted runtime assets, and [F01 reference recovery](docs/decisions.md) is still open. No sprite has been admitted, nothing here is approved art, and the graybox is not a style.
+Almost everything you see is still a **placeholder**: every creature, prop and room element is a flat coloured polygon. Michael's run cycle is the one exception -- a real sprite, extracted from an existing candidate sheet and admitted per [the asset register](docs/production/asset-register.md), not a claim of finished art. [F01 reference recovery](docs/decisions.md) is still open, and idle/jump/lasso/firearm poses, every enemy, the Keeper and the environment remain graybox.
 
 The [sprite prompt pack](docs/production/prompt-pack/README.md) contains 77 ready-to-use generation prompts for the art that would replace it.
 
@@ -54,7 +54,7 @@ From PowerShell, `./tools/validate-foundation.ps1` still checks the documentatio
 | `src/` | Movement, tools, emergence, puzzles, relationships, save and UI code |
 | `scenes/` | Main compositor, Michael, enemy grayboxes and UI scenes |
 | `levels/` | Hand-authored temple rooms and their composition |
-| `assets/sprites/` | Admitted Michael and enemy frame exports (still empty: none admitted) |
+| `assets/sprites/` | Admitted Michael and enemy frame exports (Michael's run cycle so far; see [asset register](docs/production/asset-register.md)) |
 | `assets/backgrounds/`, `assets/tiles/` | Layered environment exports and reusable tiles |
 | `assets/vfx/`, `assets/ui/`, `assets/portraits/` | Effects, interface and divine art |
 | `assets/audio/` | Music, ambience, effects and voice |
