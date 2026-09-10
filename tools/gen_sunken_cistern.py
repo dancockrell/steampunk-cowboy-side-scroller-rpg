@@ -73,6 +73,44 @@ P(4260, 1560, 300, 44)
 P(4620, 1880, 340, 44)
 P(4180, 2200, 380, 44)
 
+# ---------------------------------------------------------------- infill
+# The first pass was 44 platforms across 64 screens -- under one per screen,
+# which reads as an empty box at play zoom however big it is. These are the
+# small ledges, brackets and broken slabs that make each screen worth crossing.
+INFILL_ROWS = [
+    # (x0, x1, step, y, width) -- staggered so no two rows line up into a stair
+    (240,  1360, 300, 860,  120),
+    (140,  1300, 320, 1160, 110),
+    (200,  1340, 300, 1480, 130),
+    (120,  1320, 320, 1780, 110),
+    (260,  1300, 300, 2080, 120),
+    (180,  1280, 340, 2380, 120),
+    (1580, 2420, 280, 620,  110),
+    (1620, 2400, 300, 1000, 100),
+    (1560, 2440, 290, 1380, 110),
+    (1640, 2380, 280, 1680, 100),
+    (1580, 2420, 300, 2000, 110),
+    (1620, 2400, 290, 2260, 100),
+    (2740, 4860, 300, 560,  120),
+    (2800, 4880, 320, 900,  110),
+    (2760, 4840, 300, 1180, 130),
+    (2820, 4860, 310, 1440, 110),
+    (2780, 4880, 300, 1720, 120),
+    (2840, 4840, 320, 2000, 110),
+    (2760, 4860, 300, 2280, 120),
+    (300,  4800, 360, 400,  110),
+]
+for x0, x1, step, y, w in INFILL_ROWS:
+    x = x0
+    n = 0
+    while x <= x1:
+        # every third one is dropped, so the rows read as broken masonry
+        # rather than a regular grid of identical shelves
+        if n % 3 != 2:
+            P(x, y, w, 26)
+        x += step
+        n += 1
+
 # high roof walkway, reachable only by rope
 P(1300, 300, 420, 40)
 P(2200, 240, 520, 40)
@@ -103,7 +141,7 @@ ANCHOR_ROWS = [
     (1600, 2440, 240, 2160),  # shaft, above the water
     (2700, 4800, 250, 620),   # east wing air, upper
     (2760, 4820, 250, 1120),
-    (2820, 4800, 250, 1640),
+    (2820, 5000, 250, 1640),
     (2760, 4800, 250, 2120),
     (200, 1300, 260, 2320),   # west, low
     (3600, 4900, 260, 2400),  # east, low

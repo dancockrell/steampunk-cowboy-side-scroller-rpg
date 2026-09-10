@@ -201,7 +201,7 @@ bounds = Rect2(0, 0, 5120, 2880)
 
 [node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_terrain")
-platforms = Array[Rect2]([Rect2(0, 2720, 760, 160), Rect2(900, 2720, 520, 160), Rect2(1560, 2720, 380, 160), Rect2(2120, 2720, 300, 160), Rect2(2600, 2720, 640, 160), Rect2(3400, 2720, 420, 160), Rect2(3980, 2720, 300, 160), Rect2(4420, 2720, 700, 160), Rect2(0, 620, 620, 60), Rect2(700, 540, 300, 48), Rect2(1100, 700, 260, 48), Rect2(120, 1000, 420, 44), Rect2(300, 1320, 360, 44), Rect2(90, 1640, 300, 44), Rect2(380, 1900, 420, 44), Rect2(140, 2200, 340, 44), Rect2(420, 2460, 300, 44), Rect2(0, 1180, 180, 44), Rect2(640, 1500, 220, 44), Rect2(560, 2060, 200, 44), Rect2(1460, 900, 150, 40), Rect2(2390, 900, 150, 40), Rect2(1460, 1500, 150, 40), Rect2(2390, 1500, 150, 40), Rect2(1460, 2100, 150, 40), Rect2(2390, 2100, 150, 40), Rect2(1880, 1220, 260, 40), Rect2(1760, 1820, 200, 40), Rect2(2160, 2380, 240, 40), Rect2(2760, 760, 460, 44), Rect2(3320, 1020, 380, 44), Rect2(2880, 1300, 360, 44), Rect2(3460, 1560, 420, 44), Rect2(2960, 1840, 380, 44), Rect2(3560, 2120, 340, 44), Rect2(4200, 900, 420, 44), Rect2(4560, 1240, 360, 44), Rect2(4260, 1560, 300, 44), Rect2(4620, 1880, 340, 44), Rect2(4180, 2200, 380, 44), Rect2(1300, 300, 420, 40), Rect2(2200, 240, 520, 40), Rect2(3200, 320, 460, 40), Rect2(4100, 420, 400, 40)])
+platforms = Array[Rect2]([Rect2(0, 2720, 760, 160), Rect2(900, 2720, 520, 160), Rect2(1560, 2720, 380, 160), Rect2(2120, 2720, 300, 160), Rect2(2600, 2720, 640, 160), Rect2(3400, 2720, 420, 160), Rect2(3980, 2720, 300, 160), Rect2(4420, 2720, 700, 160), Rect2(0, 620, 620, 60), Rect2(700, 540, 300, 48), Rect2(1100, 700, 260, 48), Rect2(120, 1000, 420, 44), Rect2(300, 1320, 360, 44), Rect2(90, 1640, 300, 44), Rect2(380, 1900, 420, 44), Rect2(140, 2200, 340, 44), Rect2(420, 2460, 300, 44), Rect2(0, 1180, 180, 44), Rect2(640, 1500, 220, 44), Rect2(560, 2060, 200, 44), Rect2(1460, 900, 150, 40), Rect2(2390, 900, 150, 40), Rect2(1460, 1500, 150, 40), Rect2(2390, 1500, 150, 40), Rect2(1460, 2100, 150, 40), Rect2(2390, 2100, 150, 40), Rect2(1880, 1220, 260, 40), Rect2(1760, 1820, 200, 40), Rect2(2160, 2380, 240, 40), Rect2(2760, 760, 460, 44), Rect2(3320, 1020, 380, 44), Rect2(2880, 1300, 360, 44), Rect2(3460, 1560, 420, 44), Rect2(2960, 1840, 380, 44), Rect2(3560, 2120, 340, 44), Rect2(4200, 900, 420, 44), Rect2(4560, 1240, 360, 44), Rect2(4260, 1560, 300, 44), Rect2(4620, 1880, 340, 44), Rect2(4180, 2200, 380, 44), Rect2(240, 860, 120, 26), Rect2(540, 860, 120, 26), Rect2(1140, 860, 120, 26), Rect2(140, 1160, 110, 26), Rect2(460, 1160, 110, 26), Rect2(1100, 1160, 110, 26), Rect2(200, 1480, 130, 26), Rect2(500, 1480, 130, 26), Rect2(1100, 1480, 130, 26), Rect2(120, 1780, 110, 26), Rect2(440, 1780, 110, 26), Rect2(1080, 1780, 110, 26), Rect2(260, 2080, 120, 26), Rect2(560, 2080, 120, 26), Rect2(1160, 2080, 120, 26), Rect2(180, 2380, 120, 26), Rect2(520, 2380, 120, 26), Rect2(1200, 2380, 120, 26), Rect2(1580, 620, 110, 26), Rect2(1860, 620, 110, 26), Rect2(2420, 620, 110, 26), Rect2(1620, 1000, 100, 26), Rect2(1920, 1000, 100, 26), Rect2(1560, 1380, 110, 26), Rect2(1850, 1380, 110, 26), Rect2(2430, 1380, 110, 26), Rect2(1640, 1680, 100, 26), Rect2(1920, 1680, 100, 26), Rect2(1580, 2000, 110, 26), Rect2(1880, 2000, 110, 26), Rect2(1620, 2260, 100, 26), Rect2(1910, 2260, 100, 26), Rect2(2740, 560, 120, 26), Rect2(3040, 560, 120, 26), Rect2(3640, 560, 120, 26), Rect2(3940, 560, 120, 26), Rect2(4540, 560, 120, 26), Rect2(4840, 560, 120, 26), Rect2(2800, 900, 110, 26), Rect2(3120, 900, 110, 26), Rect2(3760, 900, 110, 26), Rect2(4080, 900, 110, 26), Rect2(4720, 900, 110, 26), Rect2(2760, 1180, 130, 26), Rect2(3060, 1180, 130, 26), Rect2(3660, 1180, 130, 26), Rect2(3960, 1180, 130, 26), Rect2(4560, 1180, 130, 26), Rect2(2820, 1440, 110, 26), Rect2(3130, 1440, 110, 26), Rect2(3750, 1440, 110, 26), Rect2(4060, 1440, 110, 26), Rect2(4680, 1440, 110, 26), Rect2(2780, 1720, 120, 26), Rect2(3080, 1720, 120, 26), Rect2(3680, 1720, 120, 26), Rect2(3980, 1720, 120, 26), Rect2(4580, 1720, 120, 26), Rect2(4880, 1720, 120, 26), Rect2(2840, 2000, 110, 26), Rect2(3160, 2000, 110, 26), Rect2(3800, 2000, 110, 26), Rect2(4120, 2000, 110, 26), Rect2(4760, 2000, 110, 26), Rect2(2760, 2280, 120, 26), Rect2(3060, 2280, 120, 26), Rect2(3660, 2280, 120, 26), Rect2(3960, 2280, 120, 26), Rect2(4560, 2280, 120, 26), Rect2(4860, 2280, 120, 26), Rect2(300, 400, 110, 26), Rect2(660, 400, 110, 26), Rect2(1380, 400, 110, 26), Rect2(1740, 400, 110, 26), Rect2(2460, 400, 110, 26), Rect2(2820, 400, 110, 26), Rect2(3540, 400, 110, 26), Rect2(3900, 400, 110, 26), Rect2(4620, 400, 110, 26), Rect2(1300, 300, 420, 40), Rect2(2200, 240, 520, 40), Rect2(3200, 320, 460, 40), Rect2(4100, 420, 400, 40)])
 backdrop = Array[Rect2]([Rect2(64, 64, 4992, 2680)])
 
 [node name="spawn_entry" type="Marker2D" parent="."]
@@ -1921,7 +1921,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor094" type="Area2D" parent="."]
-position = Vector2(2760, 2120)
+position = Vector2(4820, 1640)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -1939,7 +1939,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor095" type="Area2D" parent="."]
-position = Vector2(3010, 2120)
+position = Vector2(2760, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -1957,7 +1957,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor096" type="Area2D" parent="."]
-position = Vector2(3260, 2120)
+position = Vector2(3010, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -1975,7 +1975,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor097" type="Area2D" parent="."]
-position = Vector2(3510, 2120)
+position = Vector2(3260, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -1993,7 +1993,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor098" type="Area2D" parent="."]
-position = Vector2(3760, 2120)
+position = Vector2(3510, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2011,7 +2011,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor099" type="Area2D" parent="."]
-position = Vector2(4010, 2120)
+position = Vector2(3760, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2029,7 +2029,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor100" type="Area2D" parent="."]
-position = Vector2(4260, 2120)
+position = Vector2(4010, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2047,7 +2047,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor101" type="Area2D" parent="."]
-position = Vector2(4510, 2120)
+position = Vector2(4260, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2065,7 +2065,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor102" type="Area2D" parent="."]
-position = Vector2(4760, 2120)
+position = Vector2(4510, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2083,7 +2083,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor103" type="Area2D" parent="."]
-position = Vector2(200, 2320)
+position = Vector2(4760, 2120)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2101,7 +2101,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor104" type="Area2D" parent="."]
-position = Vector2(460, 2320)
+position = Vector2(200, 2320)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2119,7 +2119,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor105" type="Area2D" parent="."]
-position = Vector2(720, 2320)
+position = Vector2(460, 2320)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2137,7 +2137,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor106" type="Area2D" parent="."]
-position = Vector2(980, 2320)
+position = Vector2(720, 2320)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2155,7 +2155,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor107" type="Area2D" parent="."]
-position = Vector2(1240, 2320)
+position = Vector2(980, 2320)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2173,7 +2173,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor108" type="Area2D" parent="."]
-position = Vector2(3600, 2400)
+position = Vector2(1240, 2320)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2191,7 +2191,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor109" type="Area2D" parent="."]
-position = Vector2(3860, 2400)
+position = Vector2(3600, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2209,7 +2209,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor110" type="Area2D" parent="."]
-position = Vector2(4120, 2400)
+position = Vector2(3860, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2227,7 +2227,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor111" type="Area2D" parent="."]
-position = Vector2(4380, 2400)
+position = Vector2(4120, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2245,7 +2245,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor112" type="Area2D" parent="."]
-position = Vector2(4640, 2400)
+position = Vector2(4380, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2263,7 +2263,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor113" type="Area2D" parent="."]
-position = Vector2(4900, 2400)
+position = Vector2(4640, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2281,7 +2281,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor114" type="Area2D" parent="."]
-position = Vector2(200, 2560)
+position = Vector2(4900, 2400)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2299,7 +2299,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor115" type="Area2D" parent="."]
-position = Vector2(500, 2560)
+position = Vector2(200, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2317,7 +2317,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor116" type="Area2D" parent="."]
-position = Vector2(800, 2560)
+position = Vector2(500, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2335,7 +2335,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor117" type="Area2D" parent="."]
-position = Vector2(1100, 2560)
+position = Vector2(800, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2353,7 +2353,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor118" type="Area2D" parent="."]
-position = Vector2(1400, 2560)
+position = Vector2(1100, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2371,7 +2371,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor119" type="Area2D" parent="."]
-position = Vector2(1700, 2560)
+position = Vector2(1400, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2389,7 +2389,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor120" type="Area2D" parent="."]
-position = Vector2(2000, 2560)
+position = Vector2(1700, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2407,7 +2407,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor121" type="Area2D" parent="."]
-position = Vector2(2300, 2560)
+position = Vector2(2000, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2425,7 +2425,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor122" type="Area2D" parent="."]
-position = Vector2(2600, 2560)
+position = Vector2(2300, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2443,7 +2443,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor123" type="Area2D" parent="."]
-position = Vector2(2900, 2560)
+position = Vector2(2600, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2461,7 +2461,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor124" type="Area2D" parent="."]
-position = Vector2(3200, 2560)
+position = Vector2(2900, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2479,7 +2479,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor125" type="Area2D" parent="."]
-position = Vector2(3500, 2560)
+position = Vector2(3200, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2497,7 +2497,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor126" type="Area2D" parent="."]
-position = Vector2(3800, 2560)
+position = Vector2(3500, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2515,7 +2515,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor127" type="Area2D" parent="."]
-position = Vector2(4100, 2560)
+position = Vector2(3800, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2533,7 +2533,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor128" type="Area2D" parent="."]
-position = Vector2(4400, 2560)
+position = Vector2(4100, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2551,7 +2551,7 @@ color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
 [node name="Anchor129" type="Area2D" parent="."]
-position = Vector2(4700, 2560)
+position = Vector2(4400, 2560)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
@@ -2565,6 +2565,24 @@ shape = SubResource("anchor_box")
 [node name="InteractionPoint" type="Marker2D" parent="Anchor129"]
 
 [node name="Graybox" type="Polygon2D" parent="Anchor129"]
+color = Color(0.55, 0.75, 0.85, 1)
+polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Anchor130" type="Area2D" parent="."]
+position = Vector2(4700, 2560)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_target")
+receiver_id = &"anchor130"
+allowed_verbs = Array[StringName]([&"swing"])
+puzzle_id = &"anchor130"
+
+[node name="Shape" type="CollisionShape2D" parent="Anchor130"]
+shape = SubResource("anchor_box")
+
+[node name="InteractionPoint" type="Marker2D" parent="Anchor130"]
+
+[node name="Graybox" type="Polygon2D" parent="Anchor130"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
 
