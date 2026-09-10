@@ -34,6 +34,13 @@ HOST, PORT = "127.0.0.1", 8777
 ROOM = "res://levels/temple_clay_dead/sunken_cistern.tscn"
 SCREEN = (640, 360)
 
+# How a swing is set up, and it has to match tools/calibrate_swing.py exactly:
+# the envelope measured there describes THIS approach, so the graph is only
+# entitled to believe in it while the executor performs the same move.
+RUN_FRAMES = 20
+AIR_FRAMES = 4
+MAX_RIDE = 110
+
 
 # ------------------------------------------------------------------ transport
 class Game:
@@ -63,17 +70,64 @@ class Nav:
     SAMPLE = 48.0
     CELL = 340.0            # spatial bucket, a little over lasso range
 
-    def __init__(self, level):
+    # Tolerances for matching a proposed swing against the measured cloud, in
+    # rope-normalised units, so a short rope is judged more tightly in pixels
+    # than a long one -- which is what the measurements actually show.
+    TOL_ANCHOR = 0.28       # how alike the anchor geometry has to be
+    TOL_LANDING = 0.22      # how close the landing has to be to a real one
+    MIN_SUPPORT = 2         # how many measured swings must vouch for an edge
+
+    def __init__(self, level, swing_samples=None):
         t = level["tuning"]
+        self.tuning = t
         v = abs(t["jump_velocity"])
         self.up = (v * v) / (2.0 * t["gravity"])
         t_up = v / t["gravity"]
         t_dn = math.sqrt(2.0 * self.up / (t["gravity"] * t["fall_gravity_multiplier"]))
         self.across = t["run_speed"] * (t_up + t_dn)
         self.reach = t["lasso_range_px"]
+        self.fall_g = t["gravity"] * t["fall_gravity_multiplier"]
+        self.run_speed = t["run_speed"]
+        self.term = t.get("terminal_fall_speed", 700.0)
+        self.bottom = level["bounds"][1] + level["bounds"][3] + 200.0
+
+        # The measured swing envelope. None means NOT MEASURED, and in that
+        # case no swing edge is created at all: a graph with a guessed rope in
+        # it looks exactly like a graph with a real one until the bot tries it.
+        self.samples = swing_samples
+        self.swing_measured = bool(swing_samples)
+        self.grab_dx, self.grab_dy = 0.0, 0.0
+        self.rope_lo, self.rope_hi = 0.0, 0.0
+        if self.swing_measured:
+            gdx = sorted(s["side"] * (s["grab"][0] - s["from"][0]) for s in swing_samples)
+            gdy = sorted(s["grab"][1] - s["from"][1] for s in swing_samples)
+            ropes = sorted(s["rope"] for s in swing_samples)
+            self.grab_dx = gdx[len(gdx) // 2]
+            self.grab_dy = gdy[len(gdy) // 2]
+            self.rope_lo, self.rope_hi = ropes[0], ropes[-1]
+            self.sbucket = defaultdict(list)
+            for s in swing_samples:
+                key = (int(round(s["ax"] / self.TOL_ANCHOR)),
+                       int(round(s["ay"] / self.TOL_ANCHOR)))
+                self.sbucket[key].append(s)
 
         self.plats = [tuple(p) for p in level["platforms"]]
         self.anchors = [tuple(a) for a in level["anchors"]]
+        # Hazards hurt, and an active encounter is a solid body that simply
+        # stops Michael walking: one guard standing on a ledge held the bot at
+        # x=632 for a whole 70s leg, pushing it back a pixel at a time, with the
+        # level geometry entirely innocent.
+        self.hazards = [tuple(h) for h in level.get("hazards", [])]
+        self.foes = [tuple(e["at"]) for e in level.get("encounters", [])]
+        # A closed MechanismGate is solid and is not in the platform list. One
+        # of them (Door_z10a, watching cistern_west_winch) sits across the only
+        # walkway off the y=1900 ledge, and every run before the server started
+        # reporting doors ended standing against it, unable to move, with the
+        # bot blaming the physics for a puzzle nobody had told it about.
+        self.shut = [tuple(d["rect"]) for d in level.get("doors", [])
+                     if not d.get("open")]
+        self.locked_by = sorted({d.get("puzzle", "?") for d in level.get("doors", [])
+                                 if not d.get("open")})
         self.nodes = []
         self.owner = []
         for pi, (x, y, w, h) in enumerate(self.plats):
@@ -94,9 +148,58 @@ class Nav:
         for i, (x, y) in enumerate(self.nodes):
             self.bucket[(int(x // self.CELL), int(y // self.CELL))].append(i)
 
+        # Platforms bucketed by x column, so simulating a fall does not have to
+        # ask all 66 of them on every one of its frames.
+        self.pcol = defaultdict(list)
+        for (px, py, pw, ph) in self.plats:
+            for c in range(int(px // self.CELL), int((px + pw) // self.CELL) + 1):
+                self.pcol[c].append((px, py, pw, ph))
+
+        self.danger = [0.0] * len(self.nodes)
+        for i, (x, y) in enumerate(self.nodes):
+            for hx, hy in self.hazards:
+                if math.dist((x, y), (hx, hy)) < self.HAZARD_RADIUS:
+                    self.danger[i] += self.HAZARD_COST
+            for fx, fy in self.foes:
+                if math.dist((x, y), (fx, fy)) < self.FOE_RADIUS:
+                    self.danger[i] += self.FOE_COST
+
         self.edges = defaultdict(list)
         self.blocked = set()
         self._build()
+
+    HALF_W = 12.0           # Player.BODY_WIDTH / 2
+
+    def _fall(self, x, y, vx, max_frames=260):
+        """Simulate a real fall. Returns the platform top landed on, or None.
+
+        The first version of the drop edge said "any node below within a
+        ballistic span", which let the graph plan a 560px drop straight down
+        THROUGH the platform Michael was standing on. Terrain here is solid
+        StaticBody2D rectangles (GrayboxTerrain), so a fall can be simulated
+        against them, and a drop that hits a wall or a ceiling on the way is
+        simply not an edge.
+        """
+        dt = 1.0 / 60.0
+        vy = 0.0
+        for _ in range(max_frames):
+            nx = x + vx * dt
+            vy = min(vy + self.fall_g * dt, self.term)
+            ny = y + vy * dt
+            best = None
+            for (px, py, pw, ph) in list(self.pcol.get(int(nx // self.CELL), ())) + self.shut:
+                if nx + self.HALF_W <= px or nx - self.HALF_W >= px + pw:
+                    continue
+                if y <= py <= ny and (best is None or py < best):
+                    best = py                       # landed on this top surface
+                elif py + 4.0 < ny < py + ph and y > py + 4.0:
+                    return None                     # walked into its side
+            if best is not None:
+                return (nx, best)
+            x, y = nx, ny
+            if y > self.bottom:
+                return None
+        return None
 
     def _near(self, x, y, radius):
         cx, cy = int(x // self.CELL), int(y // self.CELL)
@@ -107,8 +210,50 @@ class Nav:
                 out.extend(self.bucket.get((gx, gy), ()))
         return out
 
-    def _add(self, a, b, move, cost, anchor=None):
-        self.edges[a].append({"to": b, "move": move, "cost": cost, "anchor": anchor})
+    HAZARD_RADIUS = 90.0
+    HAZARD_COST = 400.0
+    FOE_RADIUS = 70.0
+    FOE_COST = 120.0
+
+    def _add(self, a, b, move, cost, anchor=None, hold=None):
+        # A route that walks over a hazard is cheap in distance and expensive in
+        # health: the first run of this reached one goal and arrived at 1 of 5
+        # health, having simply strolled through everything in the way.
+        self.edges[a].append({"to": b, "move": move,
+                              "cost": cost + self.danger[b],
+                              "anchor": anchor, "hold": hold})
+
+    def _barred(self, ax, ay, bx, by):
+        """True if a closed gate stands between two standing spots."""
+        lo, hi = min(ax, bx) - self.HALF_W, max(ax, bx) + self.HALF_W
+        top, bot = min(ay, by) - 64.0, max(ay, by)
+        for (dx, dy, dw, dh) in self.shut:
+            if dx < hi and dx + dw > lo and dy < bot and dy + dh > top:
+                return True
+        return False
+
+    def _landing_node(self, hit):
+        """The standable node nearest a simulated landing, or None if it is bare."""
+        best, bd = None, 1e18
+        for j in self._near(hit[0], hit[1], 200.0):
+            if abs(self.nodes[j][1] - hit[1]) > 6.0:
+                continue
+            d = abs(self.nodes[j][0] - hit[0])
+            if d < bd and d <= self.SAMPLE:
+                best, bd = j, d
+        return best
+
+    def _vouchers(self, ax, ay):
+        """Measured swings whose anchor geometry resembles this one."""
+        out = []
+        kx = int(round(ax / self.TOL_ANCHOR))
+        ky = int(round(ay / self.TOL_ANCHOR))
+        for gx in (kx - 1, kx, kx + 1):
+            for gy in (ky - 1, ky, ky + 1):
+                for s in self.sbucket.get((gx, gy), ()):
+                    if abs(s["ax"] - ax) <= self.TOL_ANCHOR and abs(s["ay"] - ay) <= self.TOL_ANCHOR:
+                        out.append(s)
+        return out
 
     def _build(self):
         for i, (ax, ay) in enumerate(self.nodes):
@@ -117,48 +262,89 @@ class Nav:
                     continue
                 bx, by = self.nodes[j]
                 dx, dy = abs(bx - ax), by - ay
+                if self._barred(ax, ay, bx, by):
+                    continue
                 if self.owner[i] == self.owner[j] and dx <= self.SAMPLE * 1.2:
                     self._add(i, j, "walk", dx)
-                elif dx <= self.across and -dy <= self.up and dy <= 260.0:
+                elif dx <= self.across and -dy <= self.up and dy <= 20.0:
+                    # Upward or level only. A "jump" 260px downward was really a
+                    # drop with no obstruction check on it.
                     self._add(i, j, "jump", dx + abs(dy) + 40.0)
 
-        # drops: step off and take the first top strictly below
-        tops = defaultdict(list)
-        for j, (x, y) in enumerate(self.nodes):
-            tops[int(x // self.SAMPLE)].append(j)
+        # drops: step off the end of a platform and fall wherever the physics
+        # puts you. Both ends, at a walk and at a run, since the two land in
+        # meaningfully different places over a wide gap.
         for i, (x, y) in enumerate(self.nodes):
-            best, best_y = None, 1e9
-            for j in tops.get(int(x // self.SAMPLE), ()):
-                jy = self.nodes[j][1]
-                if y + 8.0 < jy < best_y and abs(self.nodes[j][0] - x) <= self.SAMPLE:
-                    best, best_y = j, jy
-            if best is not None:
-                self._add(i, best, "drop", (best_y - y) * 0.6 + 20.0)
+            px, py, pw, ph = self.plats[self.owner[i]]
+            for edge_x, out in ((px - self.HALF_W - 2.0, -1.0),
+                                (px + pw + self.HALF_W + 2.0, 1.0)):
+                if abs(edge_x - x) > self.SAMPLE * 1.5:
+                    continue
+                for speed in (self.run_speed, self.run_speed * 0.45):
+                    hit = self._fall(edge_x, y - 2.0, out * speed)
+                    if hit is None:
+                        continue
+                    j = self._landing_node(hit)
+                    if j is None or j == i:
+                        continue
+                    self._add(i, j, "drop",
+                              (hit[1] - y) * 0.35 + abs(hit[0] - x) * 0.3 + 30.0)
 
-        # swings: an anchor in reach, landing under it and within a rope length
+        # swings: only where a swing has actually been measured landing there.
+        if not self.swing_measured:
+            return
         abucket = defaultdict(list)
         for k, (x, y) in enumerate(self.anchors):
             abucket[(int(x // self.CELL), int(y // self.CELL))].append(k)
-        for i, (ax, ay) in enumerate(self.nodes):
-            cx, cy = int(ax // self.CELL), int(ay // self.CELL)
-            for gx in range(cx - 1, cx + 2):
-                for gy in range(cy - 1, cy + 2):
-                    for k in abucket.get((gx, gy), ()):
-                        anx, any_ = self.anchors[k]
-                        rope = math.dist((ax, ay), (anx, any_))
-                        if not (20.0 < rope <= self.reach):
-                            continue
-                        for j in self._near(anx, any_, self.reach):
-                            if j == i:
+        for i, (nx, ny) in enumerate(self.nodes):
+            cx, cy = int(nx // self.CELL), int(ny // self.CELL)
+            for side in (1.0, -1.0):
+                # Where the rope actually goes out from: a run-up and a held
+                # jump ahead of the standing spot, measured, not assumed.
+                gx = nx + side * self.grab_dx
+                gy = ny + self.grab_dy
+                for bgx in range(cx - 1, cx + 2):
+                    for bgy in range(cy - 1, cy + 2):
+                        for k in abucket.get((bgx, bgy), ()):
+                            anx, anyy = self.anchors[k]
+                            if (anx - nx) * side < 0.0:
+                                continue          # you run at the anchor, not away
+                            rope = math.dist((gx, gy), (anx, anyy))
+                            if not (self.rope_lo <= rope <= min(self.rope_hi, self.reach)):
                                 continue
-                            bx, by = self.nodes[j]
-                            if by < any_ + 20.0:
+                            ax = side * (anx - nx) / rope
+                            ay = (anyy - ny) / rope
+                            near = self._vouchers(ax, ay)
+                            if len(near) < self.MIN_SUPPORT:
                                 continue
-                            land = math.dist((bx, by), (anx, any_))
-                            if land > self.reach * 1.15 or abs(land - rope) > 190.0:
-                                continue
-                            self._add(i, j, "swing",
-                                      math.dist((ax, ay), (bx, by)) * 0.8 + 30.0, k)
+                            for j in self._near(nx, ny, self.reach * 2.0):
+                                if j == i:
+                                    continue
+                                bx, by = self.nodes[j]
+                                u = side * (bx - nx) / rope
+                                v = (by - ny) / rope
+                                hits = [s for s in near
+                                        if abs(s["u"] - u) <= self.TOL_LANDING
+                                        and abs(s["v"] - v) <= self.TOL_LANDING]
+                                if len(hits) < self.MIN_SUPPORT:
+                                    continue
+                                holds = sorted(h["hold"] for h in hits)
+                                # Swings are priced above their distance because
+                                # even a measured one only lands where the graph
+                                # expects about half the time, while a walk is
+                                # near certain. But not priced too far above:
+                                # at +400 A* preferred long chains of drops, and
+                                # a drop is ONE WAY -- a swing gains no height
+                                # (measured: best +3px in 248 trials) and the
+                                # jump is 63px -- so the bot fell somewhere it
+                                # could never climb out of and every later leg
+                                # started from there. Measured at +90, +150 and
+                                # +400: the leg count did not separate them, so
+                                # this sits in the middle rather than claiming
+                                # a win it did not earn.
+                                self._add(i, j, "swing",
+                                          math.dist((nx, ny), (bx, by)) * 0.9 + 150.0,
+                                          k, holds[len(holds) // 2])
 
     def nearest(self, p):
         best, bd = -1, 1e18
@@ -185,8 +371,9 @@ class Nav:
             if cur == b:
                 out = []
                 while cur in came:
-                    prev, move, anchor = came[cur]
-                    out.append({"node": cur, "move": move, "anchor": anchor})
+                    prev, move, anchor, hold = came[cur]
+                    out.append({"node": cur, "move": move, "anchor": anchor,
+                                "hold": hold, "from": prev})
                     cur = prev
                 return out[::-1]
             if cur in seen:
@@ -199,7 +386,7 @@ class Nav:
                 ng = gc + e["cost"]
                 if ng < g.get(nxt, 1e18):
                     g[nxt] = ng
-                    came[nxt] = (cur, e["move"], e["anchor"])
+                    came[nxt] = (cur, e["move"], e["anchor"], e["hold"])
                     heapq.heappush(openq, (ng + math.dist(self.nodes[nxt], goal), ng, nxt))
         return []
 
@@ -227,16 +414,18 @@ GOALS = [
 
 
 class Bot:
-    def __init__(self, game, nav, shots_dir=None):
+    def __init__(self, game, nav, shots_dir=None, trace=False):
         self.g = game
         self.nav = nav
         self.shots = shots_dir
+        self.trace = trace
         self.path = []
         self.cells = set()
         self.damage = 0
         self.health = 5
         self.blocked_edges = 0
         self.replans = 0
+        self.shots_at = {}
         self.frames = 0
         self.shot_n = 0
 
@@ -271,59 +460,246 @@ class Bot:
         self.shot_n += 1
         return path if r.get("ok") else None
 
-    def run_leg(self, label, goal, budget_s=70.0):
+    def _closest_reachable(self, start, goal):
+        """The best place still open, preferring not to throw away height.
+
+        Height is measurably one-way here: a swing gains none (best +3px over
+        248 measured trials) and the jump is 63px, so a drop can never be
+        undone. Taking the single nearest reachable node sent the bot down a
+        shaft on leg one, 396px from a goal it could not reach anyway, and
+        every later leg then started below the gate it needed. Among the
+        candidates that are near enough to be indistinguishable, take the
+        highest one.
+        """
+        cands = [(math.dist(self.nav.nodes[i], goal), i)
+                 for i in self.nav.reachable(start)]
+        if not cands:
+            return None
+        bd = min(d for d, _ in cands)
+        near = [i for d, i in cands if d <= max(bd * 1.25, bd + 80.0)]
+        return min(near, key=lambda i: self.nav.nodes[i][1])
+
+    def _clear_the_way(self, st, toward_x):
+        """Shoot whatever is standing in the way, if anything is.
+
+        An active encounter is a solid body. One painted guard on the ledge at
+        y=1900 stopped Michael dead at x=632 -- pressing move_right produced a
+        velocity of exactly zero -- and every route onward from that platform
+        ran through it, so the bot spent leg after leg failing at a piece of
+        level design that was entirely fine. Michael carries a pistol; the bot
+        had simply never fired it.
+
+        Returns True if it shot at something.
+        """
+        p = tuple(st["pos"])
+        side = 1.0 if toward_x > p[0] else -1.0
+        ahead = [e for e in st.get("encounters", [])
+                 if abs(e["at"][1] - p[1]) < 90.0
+                 and 0.0 < (e["at"][0] - p[0]) * side < 260.0]
+        if not ahead:
+            return False
+        press = ["move_right"] if side > 0 else ["move_left"]
+        self._act({"cmd": "act", "n": 2, "press": ["tool_pistol"]})
+        for _ in range(6):
+            # tool_use is read with is_action_just_pressed, so it has to be
+            # released between shots or only the first one ever fires.
+            self._act({"cmd": "act", "n": 3, "press": press + ["tool_use"]})
+            self._act({"cmd": "act", "n": 7, "press": press})
+        return True
+
+    def _replan(self, p, target, goal):
+        """Re-plan to the goal, or failing that to the best place still open.
+
+        Breaking out of a leg the moment the plan runs dry threw away most of
+        the budget: several legs stopped with sixty seconds unspent while
+        standing somewhere the graph could still have improved on.
+        """
+        here = self.nav.nearest(p)
+        plan = self.nav.plan(here, target)
+        if plan:
+            return plan
+        alt = self._closest_reachable(here, goal)
+        if alt is None or alt == here:
+            return []
+        return self.nav.plan(here, alt)
+
+    def _do_swing(self, step, budget_frames=240):
+        """Run up, jump, grab in the air, ride to the bottom of the arc, let go.
+
+        This is the same sequence tools/calibrate_swing.py measured, which is
+        the only reason the graph is entitled to believe in the edge. The old
+        version threw the rope from a standing start, and a standing swing does
+        not move at all: the pendulum's first sub-pixel step collides with the
+        floor and `slide` zeroes the velocity, so Michael was pinned to the spot
+        for the whole timeout, every time.
+
+        Returns the state after landing, and how many frames it cost.
+        """
+        anchor = self.nav.anchors[step["anchor"]]
+        st = self.g.state()
+        side = 1.0 if anchor[0] >= st["pos"][0] else -1.0
+        press = ["move_right"] if side > 0 else ["move_left"]
+        used = 0
+
+        st = self._act({"cmd": "act", "n": RUN_FRAMES, "press": press})
+        st = self._act({"cmd": "act", "n": 1, "press": press + ["jump"]})
+        st = self._act({"cmd": "act", "n": AIR_FRAMES, "press": press + ["jump"]})
+        used += RUN_FRAMES + 1 + AIR_FRAMES
+        if st["on_floor"]:
+            return st, used, "never left the ground"
+        rope = math.dist(tuple(st["pos"]), anchor)
+        if rope > self.nav.reach:
+            return st, used, "anchor out of reach at the grab (%.0fpx)" % rope
+
+        st = self._act({"cmd": "act", "n": 1, "press": [], "swing_at": list(anchor)})
+        used += 1
+        # Release at the bottom of the arc going the right way: vy crossing from
+        # positive to negative IS the bottom, and it is visible from outside.
+        prev_vy = None
+        for _ in range(min(MAX_RIDE, budget_frames - used)):
+            st = self._act({"cmd": "act", "n": 1, "press": []})
+            used += 1
+            if not st["swinging"]:
+                break
+            vx, vy = st["vel"]
+            if prev_vy is not None and prev_vy > 20.0 and vy <= 0.0 and vx * side > 40.0:
+                break
+            prev_vy = vy
+        st = self._act({"cmd": "act", "n": 1, "press": [], "release_swing": True})
+        used += 1
+        for _ in range(14):
+            st = self._act({"cmd": "act", "n": 6, "press": []})
+            used += 6
+            if st["on_floor"]:
+                break
+        return st, used, None
+
+    def run_leg(self, label, goal, budget_s=90.0):
         st = self.g.state()
         start = self.nav.nearest(tuple(st["pos"]))
         target = self.nav.nearest(goal)
         plan = self.nav.plan(start, target)
         planned = bool(plan)
-        t0 = time.time()
+        fallback = False
+        if not plan:
+            # No route to the goal. Standing still measures nothing; going as
+            # far as the graph allows measures how far short the level leaves
+            # you, which is the number worth reporting.
+            alt = self._closest_reachable(start, goal)
+            if alt is not None and alt != start:
+                plan = self.nav.plan(start, alt)
+                target = alt
+                fallback = bool(plan)
         elapsed = 0.0
         step_i = 0
         step_t = 0.0
         step_from = tuple(st["pos"])
+        jump_held = 0
+        best = math.dist(tuple(st["pos"]), goal)
+        # When a leg stops closing on its goal it is usually standing at a dead
+        # end -- most often a locked gate -- and the rest of the budget goes
+        # into re-trying rope edges that have already failed. Six legs doing
+        # that is nine minutes of run time telling you nothing the first twenty
+        # seconds did not.
+        stale = 0.0
 
         while step_i < len(plan) and elapsed < budget_s:
+            # Arriving is the point, not finishing the plan. Without this the
+            # bot walked through the goal and kept going, and a leg that had
+            # been within 165px of its target was scored a failure from
+            # wherever the budget happened to run out.
+            if st["on_floor"] and not st["swinging"] \
+                    and math.dist(tuple(st["pos"]), goal) < 200.0:
+                break
+            if stale > 25.0:
+                break
             step = plan[step_i]
             tgt = self.nav.nodes[step["node"]]
             move = step["move"]
-            act = {"cmd": "act", "n": 4, "press": []}
 
-            if move in ("walk", "drop", "jump"):
-                act["press"] = self._dir(st["pos"][0], tgt[0])
-                if move == "jump" and st["on_floor"]:
+            if move == "swing":
+                at = tuple(st["pos"])
+                st, used, why = self._do_swing(step)
+                elapsed += used / 60.0
+                p = tuple(st["pos"])
+                # "Within 60px of the target" is not enough on its own: a swing
+                # that goes nowhere at all can satisfy it when the target is the
+                # next node along, and then the edge is scored a success and
+                # planned again, forever. A leg was burning its whole 70s budget
+                # doing exactly that against an enemy body that was blocking the
+                # ledge. Arriving has to include having moved.
+                landed_on_target = (abs(p[0] - tgt[0]) < 60 and abs(p[1] - tgt[1]) < 56
+                                    and st["on_floor"] and math.dist(p, at) > 55.0)
+                if self.trace:
+                    print("      swing  from %s anchor %s -> want %s got %s  %s"
+                          % ([int(v) for v in at],
+                             [int(v) for v in self.nav.anchors[step["anchor"]]],
+                             [int(v) for v in tgt], [int(v) for v in p],
+                             "OK" if landed_on_target else (why or "landed elsewhere")))
+                if not landed_on_target:
+                    self.nav.blocked.add((step["from"], step["node"]))
+                    self.blocked_edges += 1
+                # A swing is a throw, not a step: wherever it put him is the new
+                # truth, so replan from there instead of insisting on the plan.
+                self.replans += 1
+                plan = self._replan(p, target, goal)
+                step_i, step_t, step_from, jump_held = 0, 0.0, p, 0
+                gap = math.dist(p, goal)
+                stale = 0.0 if gap < best - 20.0 else stale + used / 60.0
+                best = min(best, gap)
+                if not plan:
+                    break
+                continue
+
+            act = {"cmd": "act", "n": 4, "press": self._dir(st["pos"][0], tgt[0])}
+            if move == "jump":
+                # The jump must be HELD or jump_cut_multiplier takes two thirds
+                # of the height: 18px instead of 63px, which is most of the
+                # jumps in this level.
+                if st["on_floor"]:
                     act["press"].append("jump")
-            elif move == "swing":
-                anchor = self.nav.anchors[step["anchor"]]
-                if not st["swinging"]:
-                    if math.dist(tuple(st["pos"]), anchor) <= self.nav.reach:
-                        act["swing_at"] = list(anchor)
-                    else:
-                        act["press"] = self._dir(st["pos"][0], anchor[0])
-                else:
-                    toward = (st["vel"][0] > 0) == (tgt[0] > st["pos"][0])
-                    if (toward and st["pos"][1] <= tgt[1] + 40) or step_t > 1.6:
-                        act["release_swing"] = True
+                    jump_held = 1
+                elif 0 < jump_held < 4 and st["vel"][1] < 0:
+                    act["press"].append("jump")
+                    jump_held += 1
+            else:
+                jump_held = 0
 
             st = self._act(act)
             step_t += 4 / 60.0
             elapsed += 4 / 60.0
             p = tuple(st["pos"])
+            gap = math.dist(p, goal)
+            stale = 0.0 if gap < best - 20.0 else stale + 4 / 60.0
+            best = min(best, gap)
 
             if abs(p[0] - tgt[0]) < 44 and abs(p[1] - tgt[1]) < 48 \
                     and st["on_floor"] and not st["swinging"]:
                 step_i += 1
                 step_t = 0.0
                 step_from = p
-            elif step_t > (3.4 if move == "swing" else 2.4):
+                jump_held = 0
+            elif step_t > 2.4:
+                # Before disbelieving the edge, check whether the obstacle is a
+                # living thing rather than the geometry, and shoot it if so.
+                if (self.shots_at.get(step["from"], 0) < 2
+                        and self._clear_the_way(st, tgt[0])):
+                    self.shots_at[step["from"]] = self.shots_at.get(step["from"], 0) + 1
+                    st = self._tick(1)
+                    step_t = 0.0
+                    elapsed += 1.5
+                    continue
                 # the level did not honour this edge; stop believing in it
-                self.nav.blocked.add((self.nav.nearest(step_from), step["node"]))
+                if self.trace:
+                    print("      %-6s want %s got %s  TIMED OUT"
+                          % (move, [int(v) for v in tgt], [int(v) for v in p]))
+                self.nav.blocked.add((step["from"], step["node"]))
                 self.blocked_edges += 1
                 self.replans += 1
                 if st["swinging"]:
                     self.g.send(cmd="release_swing")
-                plan = self.nav.plan(self.nav.nearest(p), target)
-                step_i, step_t, step_from = 0, 0.0, p
+                plan = self._replan(p, target, goal)
+                step_i, step_t, step_from, jump_held = 0, 0.0, p, 0
                 if not plan:
                     break
 
@@ -332,7 +708,9 @@ class Bot:
         p = tuple(st["pos"])
         return {
             "goal": label, "at": list(goal), "planned": planned,
+            "fallback": fallback,
             "plan_steps": len(plan), "reached": math.dist(p, goal) < 200,
+            "closest": int(best),
             "seconds": round(elapsed, 1), "ended": [int(p[0]), int(p[1])],
             "short_by": int(math.dist(p, goal)),
         }
@@ -419,6 +797,15 @@ def evaluate(nav, legs, bot, level):
             "where": "hazards sit on the routes people move along",
         })
 
+    if nav.shut:
+        out.append({
+            "severity": "blocker",
+            "what": "Closed puzzle gates stand across the route, and nothing "
+                    "on the way to them opens one.",
+            "number": "%d gates shut, watching %s" % (len(nav.shut), ", ".join(nav.locked_by)),
+            "where": "; ".join("gate at %d,%d" % (int(d[0]), int(d[1])) for d in nav.shut),
+        })
+
     haz = len(level["hazards"])
     anchors = len(level["anchors"])
     if anchors > 90:
@@ -434,39 +821,68 @@ def evaluate(nav, legs, bot, level):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", action="store_true")
+    ap.add_argument("--trace", action="store_true",
+                    help="print every step the executor attempts and what came of it")
     ap.add_argument("--out", default="playbot_out")
+    ap.add_argument("--port", type=int, default=PORT)
+    ap.add_argument("--host", default=HOST)
+    ap.add_argument("--swing-model", default="swing_model.json",
+                    help="the measured envelope from tools/calibrate_swing.py")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     shots = os.path.join(args.out, "shots") if args.shots else None
     if shots:
         os.makedirs(shots, exist_ok=True)
 
-    s = socket.create_connection((HOST, PORT), timeout=30)
+    # A swing edge exists only where a swing was measured landing there. With no
+    # measurement the graph gets NO swing edges and says so: a guessed rope and
+    # a real one look identical in a node count, and the first version of this
+    # file shipped 12,775 guessed ones.
+    samples = None
+    if os.path.exists(args.swing_model):
+        with open(args.swing_model) as f:
+            blob = json.load(f)
+        samples = blob["samples"] if isinstance(blob, dict) else blob
+        samples = [s for s in samples if s.get("landed") and "u" in s]
+    if samples:
+        print("swing model: %d measured swings from %s" % (len(samples), args.swing_model))
+    else:
+        print("swing model: NOT MEASURED (%s missing or empty). Building the graph "
+              "with ZERO swing edges rather than guessing them." % args.swing_model)
+
+    s = socket.create_connection((args.host, args.port), timeout=30)
     g = Game(s)
     g.send(cmd="load_room", scene=ROOM)
     level = g.send(cmd="level")
+    level["encounters"] = g.send(cmd="state").get("encounters", [])
 
     t0 = time.time()
-    nav = Nav(level)
+    nav = Nav(level, samples)
     build_s = time.time() - t0
     print("graph: %d nodes, %d edges in %.1fs (walk %d / jump %d / drop %d / swing %d)" % (
         len(nav.nodes), sum(len(v) for v in nav.edges.values()), build_s,
         *[sum(1 for i in nav.edges for e in nav.edges[i] if e["move"] == m)
           for m in ("walk", "jump", "drop", "swing")]))
     print("jump budget: %.0fpx up, %.0fpx across | lasso %.0fpx" % (nav.up, nav.across, nav.reach))
+    if nav.swing_measured:
+        print("swing envelope: grab %+.0f,%+.0f from the launch spot; rope %.0f-%.0fpx"
+              % (nav.grab_dx, nav.grab_dy, nav.rope_lo, nav.rope_hi))
+    if nav.shut:
+        print("closed gates: %d, solid and not in the platform list (%s)"
+              % (len(nav.shut), ", ".join(nav.locked_by)))
     start = nav.nearest((90, 620))
     print("reachable from entry: %d of %d spots (%.0f%%)" % (
         len(nav.reachable(start)), len(nav.nodes),
         100.0 * len(nav.reachable(start)) / len(nav.nodes)))
 
-    bot = Bot(g, nav, shots)
+    bot = Bot(g, nav, shots, trace=args.trace)
     legs = []
     for label, goal in GOALS:
         r = bot.run_leg(label, goal)
         legs.append(r)
-        print("  %-42s %s %5.1fs  %2d steps  %s" % (
+        print("  %-42s %s %5.1fs  %2d steps  ended %s  closest %dpx" % (
             label, "REACHED" if r["reached"] else "failed ", r["seconds"],
-            r["plan_steps"], r["ended"]))
+            r["plan_steps"], r["ended"], r["closest"]))
         if shots:
             bot.look(label.split()[0])
 
