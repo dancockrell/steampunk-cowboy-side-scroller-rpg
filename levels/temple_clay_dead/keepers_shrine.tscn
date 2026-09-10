@@ -101,7 +101,7 @@ position = Vector2(380, 288)
 script = ExtResource("4_encounter")
 source = SubResource("warmup_sentinel_source")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="FirstSentinelEncounter"]
 
@@ -238,7 +238,7 @@ position = Vector2(1760, 288)
 script = ExtResource("4_encounter")
 source = SubResource("final_sentinel_source")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="FinalSentinelEncounter"]
 

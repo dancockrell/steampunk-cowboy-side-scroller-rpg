@@ -28,10 +28,10 @@ const STATE_NAMES: Array[String] = [
 	"settling", "idle", "pursue", "windup", "strike", "recover", "staggered", "defeated",
 ]
 
-## Every damaging verb plus PULL. PULL does not damage; it staggers, which is
-## what makes the lasso a control tool rather than a fifth gun.
+## The pistol damages; the lasso does not. PULL staggers and repositions, which
+## is what makes the lasso a control tool rather than a second gun (D21).
 const HURTBOX_VERBS: Array[StringName] = [
-	Verbs.PULL, Verbs.PRECISION_HIT, Verbs.FORCE_HIT, Verbs.LONG_PRECISION_HIT,
+	Verbs.PULL, Verbs.PRECISION_HIT,
 ]
 
 ## Provisional tuning. These are hypotheses to measure in playtest, not approved

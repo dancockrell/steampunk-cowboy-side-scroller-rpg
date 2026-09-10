@@ -46,4 +46,4 @@ func test_every_project_action_still_has_at_least_one_binding() -> void:
 		checked += 1
 		assert_false(InputMap.action_get_events(action).is_empty(),
 			"action '%s' has at least one bound input" % action)
-	assert_true(checked >= 14, "the project's own 14 authored actions were all checked, found %d" % checked)
+	assert_true(checked >= 12, "the project's own 12 authored actions were all checked, found %d" % checked)

@@ -14,4 +14,14 @@ Michael is charismatic and resourceful, not an unstoppable gun platform. The dea
 
 Single-player side-view action-platforming for desktop first, keyboard/mouse and gamepad. Deliberate movement with forgiveness is the initial feel target; precision speedrunning is not the organizing principle. Desktop/Windows is the first validation target. Other platforms and commercial rating strategy are later decisions.
 
-Long-term expeditions and multiple adult partners are supported by narrative contracts, but this foundation scopes only one temple and one relationship arc. No hub economy, crafting, procedural generation, open world, multiplayer or complete romance campaign is authorized here.
+No hub economy, crafting, procedural generation, open world or multiplayer is authorized here.
+
+## Genre and content boundary
+
+Set by Dan on 10 Sep 2026, and it governs writing, art briefs and prompt packs alike.
+
+**The genre is haremlit.** Michael is meant to end the story with several divine partners, not to choose one. Multiple relationship arcs are in scope; the earlier line scoping this foundation to "one relationship arc" is superseded. `RelationshipBook` already registers any number of heroines, so this is a content gap, not an architectural one -- only the Keeper of the Clay Dead is authored so far, while the README has promised "goddesses and nymphs" plural from the start.
+
+**Overtly sexy, and no actual nudity.** Both halves are requirements. The register is sensual and over the top, not coy -- but the no-nudity line is a hard content boundary rather than a shyness setting, and every generated portrait, manifestation and animation brief inherits it. A prompt that would produce nudity is out of spec however good the rest of it is.
+
+**The frame is Indiana Jones with a cowboy instead of an archaeologist.** Temple exploration, physical mysteries, rope and revolver (see D21). That is also where the two-tool kit comes from: it is Indy's kit.

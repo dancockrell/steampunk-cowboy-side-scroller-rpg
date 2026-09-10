@@ -7,7 +7,7 @@ This checked-in backlog is the initial issue tracker. Items are not started and 
 - [x] F03 Movement, camera and the 14-action input map. Coyote time, jump buffer and jump cut are tested; input FEEL is unmeasured and the numbers are hypotheses.
 - [x] F04 Lasso throw, attach, swing, pull, release, miss and destroyed-anchor cases, integrated with movement rather than isolated.
 - [ ] F05 Partially admitted: the run cycle only (docs/production/asset-register.md), extracted from the existing batch-001 candidate rather than newly generated. Idle, jump, lasso and firearm poses are not yet extracted or admitted.
-- [x] F06 Pistol, shotgun and rifle with distinct verbs, ammo spent once per commit, interruptible reload and queued switching.
+- [x] F06 Pistol with its own verb, ammo spent once per commit, interruptible reload and queued switching. (Shotgun and rifle cut by D21; the state machine still handles any authored tool, proved by an injected slow tool in tests.)
 - [ ] F07 Produce temple room kit and ceramic emergence art.
 - [x] F08 All three families, not just ceramic. Single spawn transfer, blocked spawn, interrupt, pause and reload cases covered.
 - [ ] F09 Produce adult Keeper identity/portrait package and branching dialogue plan.

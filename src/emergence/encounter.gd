@@ -56,7 +56,7 @@ const RESULT_RECALLED := "recalled"
 @export var min_spawn_clearance_px: float = 44.0
 ## Authored verbs that can destroy the disguised source. A source that accepts
 ## none simply cannot be destroyed collaterally.
-@export var source_allowed_verbs: Array[StringName] = [Verbs.FORCE_HIT]
+@export var source_allowed_verbs: Array[StringName] = [Verbs.PULL]
 @export var source_prop_health: int = 1
 
 var _services: Services

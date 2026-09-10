@@ -58,20 +58,7 @@ extends Resource
 @export var pistol_reload_ms: int = 900
 @export var pistol_magazine: int = 6
 
-@export var shotgun_range_px: float = 96.0
-@export var shotgun_cone_degrees: float = 34.0
-@export var shotgun_commit_ms: int = 140
-@export var shotgun_recovery_ms: int = 420
-@export var shotgun_reload_ms: int = 1400
-@export var shotgun_magazine: int = 2
-@export var shotgun_knockback_px_s: float = 200.0
 
-@export var rifle_range_px: float = 520.0
-@export var rifle_aim_ms: int = 380
-@export var rifle_commit_ms: int = 110
-@export var rifle_recovery_ms: int = 420
-@export var rifle_reload_ms: int = 1600
-@export var rifle_magazine: int = 4
 
 @export_group("Emergence")
 @export var tell_duration_ms: int = 900

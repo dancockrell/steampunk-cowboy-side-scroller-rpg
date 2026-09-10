@@ -131,7 +131,7 @@ position = Vector2(688, 288)
 script = ExtResource("7_encounter")
 source = SubResource("pit_source")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="PitEncounter"]
 
@@ -149,7 +149,7 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
 receiver_id = &"burial_stone_plug"
-allowed_verbs = Array[StringName]([&"force_hit"])
+allowed_verbs = Array[StringName]([&"pull"])
 puzzle_id = &"burial_stone_plug"
 reward_event_id = &"burial_plug_moved"
 
@@ -168,7 +168,7 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("4_sacred")
 receiver_id = &"burial_funerary_site"
-allowed_verbs = Array[StringName]([&"force_hit", &"precision_hit"])
+allowed_verbs = Array[StringName]([&"pull", &"precision_hit"])
 puzzle_id = &"burial_funerary_site"
 destroyed_event_id = &"burial_identity_lost"
 preserved_event_id = &"burial_identity_restored"
@@ -289,7 +289,7 @@ position = Vector2(1840, 288)
 script = ExtResource("7_encounter")
 source = SubResource("pit_source_2")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="SecondPitEncounter"]
 

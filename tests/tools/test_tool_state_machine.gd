@@ -20,6 +20,30 @@ func _advance(seconds: float) -> int:
 		machine.step(TICK)
 	return ticks
 
+## A deliberately slow tool, injected rather than taken from the shipped kit.
+## Neither authored tool has aim time now that the kit is lasso + pistol (D14),
+## so without this the AIMING branch would be unreachable -- and a branch nobody
+## can execute on purpose is a branch nobody can prove they fixed. These tests
+## assert the PROPERTY (a tool with aim time must be held on target), which is
+## what they were always really about, rather than one weapon that had it.
+func _machine_with_slow_tool() -> ToolStateMachine:
+	var defs := ToolDefinition.build(tuning)
+	var slow := ToolDefinition.new()
+	slow.id = &"test_slow_tool"
+	slow.display_name = "Slow Tool"
+	slow.verb = Verbs.PRECISION_HIT
+	slow.range_px = 400.0
+	slow.aim_ms = 380
+	slow.commit_ms = 110
+	slow.recovery_ms = 420
+	slow.reload_ms = 1600
+	slow.magazine = 4
+	slow.damage = 2
+	defs[slow.id] = slow
+	var m := ToolStateMachine.new(defs)
+	m.request_switch(&"pistol")
+	return m
+
 func _run_to_ready(limit_s: float = 5.0) -> bool:
 	var elapsed := 0.0
 	while machine.state != ToolStateMachine.State.READY and elapsed < limit_s:
@@ -27,9 +51,9 @@ func _run_to_ready(limit_s: float = 5.0) -> bool:
 		elapsed += TICK
 	return machine.state == ToolStateMachine.State.READY
 
-func test_all_four_tools_are_defined_with_distinct_verbs() -> void:
+func test_every_authored_tool_is_defined_with_its_own_verb() -> void:
 	var seen: Array[StringName] = []
-	for id: StringName in [&"lasso", &"pistol", &"shotgun", &"rifle"]:
+	for id: StringName in Verbs.TOOL_VERB:
 		var def: ToolDefinition = machine.definitions.get(id)
 		assert_not_null(def, "tool %s is defined" % id)
 		assert_false(seen.has(def.verb), "tool %s has its own physical verb" % id)
@@ -69,15 +93,15 @@ func test_switching_during_recovery_queues_and_does_not_cancel_the_spent_shot() 
 	machine.request_use()
 	var spent := machine.loaded()
 	assert_true(machine.is_committed_action(), "the shot is committed")
-	assert_false(machine.request_switch(&"shotgun"), "the switch does not take effect immediately")
+	assert_false(machine.request_switch(&"lasso"), "the switch does not take effect immediately")
 	assert_eq(machine.equipped_id, &"pistol", "the pistol is still equipped through its recovery")
 	assert_eq(machine.loaded(&"pistol"), spent, "the spent round is not refunded by switching")
 	_run_to_ready()
-	assert_eq(machine.equipped_id, &"shotgun", "the queued switch applies once the action finishes")
+	assert_eq(machine.equipped_id, &"lasso", "the queued switch applies once the action finishes")
 
 func test_switching_while_idle_is_immediate() -> void:
-	assert_true(machine.request_switch(&"rifle"), "an idle switch takes effect at once")
-	assert_eq(machine.equipped_id, &"rifle", "the rifle is equipped")
+	assert_true(machine.request_switch(&"lasso"), "an idle switch takes effect at once")
+	assert_eq(machine.equipped_id, &"lasso", "the lasso is equipped")
 
 func test_switching_away_mid_reload_abandons_it_without_refilling() -> void:
 	machine.request_use()
@@ -85,8 +109,8 @@ func test_switching_away_mid_reload_abandons_it_without_refilling() -> void:
 	var before := machine.loaded(&"pistol")
 	machine.request_reload()
 	machine.step(TICK)
-	machine.request_switch(&"shotgun")
-	assert_eq(machine.equipped_id, &"shotgun", "the switch is allowed mid-reload")
+	machine.request_switch(&"lasso")
+	assert_eq(machine.equipped_id, &"lasso", "the switch is allowed mid-reload")
 	assert_eq(machine.loaded(&"pistol"), before, "an abandoned reload does not quietly complete")
 
 func test_reload_refills_the_magazine() -> void:
@@ -109,9 +133,10 @@ func test_the_lasso_has_no_ammunition_and_cannot_be_exhausted() -> void:
 		_run_to_ready()
 
 func test_hurt_interrupts_aiming() -> void:
-	machine.request_switch(&"rifle")
+	machine = _machine_with_slow_tool()
+	machine.request_switch(&"test_slow_tool")
 	machine.request_use()
-	assert_eq(machine.state, ToolStateMachine.State.AIMING, "the rifle aims before it fires")
+	assert_eq(machine.state, ToolStateMachine.State.AIMING, "a slow tool aims before it fires")
 	var before := machine.loaded()
 	machine.interrupt_hurt()
 	assert_eq(machine.state, ToolStateMachine.State.READY, "hurt interrupts the aim")
@@ -134,7 +159,8 @@ func test_hurt_during_recovery_does_not_refund_the_shot() -> void:
 	assert_eq(machine.loaded(), spent, "damage never refunds a round that was already committed")
 
 func test_releasing_the_input_cancels_a_slow_aim_before_it_commits() -> void:
-	machine.request_switch(&"rifle")
+	machine = _machine_with_slow_tool()
+	machine.request_switch(&"test_slow_tool")
 	var before := machine.loaded()
 	machine.request_use()
 	machine.step(TICK)
@@ -143,13 +169,15 @@ func test_releasing_the_input_cancels_a_slow_aim_before_it_commits() -> void:
 	assert_eq(machine.loaded(), before, "nothing was spent because nothing committed")
 
 func test_holding_a_slow_aim_long_enough_does_commit() -> void:
-	machine.request_switch(&"rifle")
+	machine = _machine_with_slow_tool()
+	machine.request_switch(&"test_slow_tool")
 	var before := machine.loaded()
 	machine.request_use()
-	_advance(tuning.rifle_aim_ms / 1000.0 + 0.05)
-	assert_eq(machine.loaded(), before - 1, "holding the rifle on target commits the shot")
+	_advance(0.38 + 0.05)
+	assert_eq(machine.loaded(), before - 1, "holding it on target commits the shot")
 
-func test_the_rifle_takes_longer_to_commit_than_the_pistol() -> void:
+func test_a_tool_with_aim_time_takes_longer_to_commit_than_one_without() -> void:
+	machine = _machine_with_slow_tool()
 	var pistol_ticks := 0
 	machine.request_use()
 	while machine.state == ToolStateMachine.State.AIMING:
@@ -157,15 +185,15 @@ func test_the_rifle_takes_longer_to_commit_than_the_pistol() -> void:
 		pistol_ticks += 1
 	machine.force_release_to_ready()
 
-	machine.request_switch(&"rifle")
-	var rifle_ticks := 0
+	machine.request_switch(&"test_slow_tool")
+	var slow_ticks := 0
 	machine.request_use()
 	while machine.state == ToolStateMachine.State.AIMING:
 		machine.step(TICK)
-		rifle_ticks += 1
-	assert_true(rifle_ticks > pistol_ticks,
+		slow_ticks += 1
+	assert_true(slow_ticks > pistol_ticks,
 		"the deliberate tool must feel slower to commit than the quick one (%d vs %d ticks)"
-			% [rifle_ticks, pistol_ticks])
+			% [slow_ticks, pistol_ticks])
 
 func test_a_destroyed_anchor_releases_cleanly_rather_than_leaving_a_rope_attached() -> void:
 	machine.request_switch(&"lasso")
@@ -187,14 +215,18 @@ func test_ammo_round_trips_and_resets_to_a_safe_idle() -> void:
 		"a restore resets to a documented safe idle rather than restoring a mid-action state")
 
 func test_replenish_restores_every_magazine() -> void:
+	# Two magazines are needed to tell "every magazine" apart from "the equipped
+	# one", and the shipped kit now has only the pistol -- so the second comes
+	# from the injected tool rather than the test quietly checking one.
+	machine = _machine_with_slow_tool()
 	machine.request_use()
 	_run_to_ready()
-	machine.request_switch(&"shotgun")
+	machine.request_switch(&"test_slow_tool")
 	machine.request_use()
 	_run_to_ready()
 	machine.replenish_all()
 	assert_eq(machine.loaded(&"pistol"), tuning.pistol_magazine, "the pistol is topped up")
-	assert_eq(machine.loaded(&"shotgun"), tuning.shotgun_magazine, "so is the shotgun")
+	assert_eq(machine.loaded(&"test_slow_tool"), 4, "so is the other magazine")
 
 func test_switching_to_an_unknown_tool_is_refused() -> void:
 	assert_false(machine.request_switch(&"dynamite"), "an undefined tool cannot be equipped")

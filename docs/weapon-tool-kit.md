@@ -1,13 +1,13 @@
 # Michael's weapon and tool kit
 
-All ranges, speeds, damage, ammunition capacities and animation rates are tuning data. Do not balance them from prose alone. The lasso is the identity tool; firearms have distinct physical verbs.
+All ranges, speeds, damage, ammunition capacities and animation rates are tuning data. Do not balance them from prose alone.
+
+**The kit is two tools (D21): the lasso and the pistol.** The shotgun and rifle were cut on 10 Sep 2026 and are not coming back behind a flag. The lasso is the identity tool and the only control tool: it swings, it grabs, it hauls, and against a creature it staggers rather than damages. The pistol is the only damaging verb in the game. That division is the point -- every encounter is meant to be a physical problem you solve with rope and one accurate shot, not a damage check.
 
 | Tool | Traversal/puzzle role | Combat role | Cost and readability | First-slice proof |
 | --- | --- | --- | --- | --- |
-| Lasso | Hook authored anchor, swing, pull counterweight or movable object | Restrain or unbalance eligible enemy | Visible valid target, rope tension, clear release; no ammunition | Swing across pit, then pull a weight while standing safely |
-| Pistol | Precise near/mid-range switch or bell | Quick interrupt and exposed weak point hit | Short recovery, small clear muzzle flash, explicit reload | Ring a bell to expose a ceramic sentinel |
-| Shotgun | Push marked plugs, fracture authored weak material | Close cone, force and stagger | Strong recoil, limited shells; rubble cannot obstruct required route | Move a stone plug without destroying the sacred urn nearby |
-| Rifle | Distant counterweight, seal or weak point | Deliberate aimed shot | Longer aim/recovery; aim must not reveal offscreen hazards unfairly | Release a visible far counterweight to make an anchor accessible |
+| Lasso | Hook authored anchor, swing, haul a counterweight, plug or movable object | Restrain, unbalance or reposition an eligible enemy; staggers, never damages | Visible valid target, rope tension, clear release; no ammunition | Swing across pit, then pull a weight while standing safely |
+| Pistol | Precise near/mid-range switch, bell, or a counterweight too far to rope | Quick interrupt and exposed weak point hit; the only damaging verb | Short recovery, small clear muzzle flash, explicit reload | Ring a bell to expose a ceramic sentinel |
 
 ## Action ownership and conflicts
 
@@ -17,7 +17,7 @@ Lasso flow: ready → throw → attached or miss → pull/swing/hold → release
 
 If an anchor is destroyed, a target despawns, the player changes room or a save reloads, release cleanly. An obstructed throw returns to ready; it cannot attach through walls. Pulling objects uses a bounded authored route/constraint, not unconstrained debris physics. A swing cannot clip Michael through a wall. No sticky input after pause or focus loss.
 
-Puzzle targets expose verbs such as `pull`, `precision_hit`, `force_hit`, `long_precision_hit`; cosmetic props do not secretly inherit all verbs. Tool preview and impact feedback explain invalid uses without consuming required puzzle progress. Slice rooms provide replenishment or a reset if the player wastes critical ammo.
+The verb set is closed at three: `pull` and `swing` (lasso, chosen by what it catches) and `precision_hit` (pistol). Cosmetic props do not secretly inherit all verbs. Tool preview and impact feedback explain invalid uses without consuming required puzzle progress. Slice rooms provide replenishment or a reset if the player wastes critical ammo.
 
 ## Required animation and VFX events
 

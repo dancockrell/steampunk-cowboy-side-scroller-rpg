@@ -6,8 +6,9 @@ extends TestCase
 ## still distinguishes the states. If these pass, the HUD is readable on a
 ## greyscale screen.
 
-func test_the_four_tools_are_the_four_the_tool_table_names() -> void:
-	assert_eq(HudFormat.slot_order().size(), 4, "Michael carries four tools")
+func test_the_hud_slots_are_exactly_the_tools_the_table_names() -> void:
+	assert_eq(HudFormat.slot_order().size(), Verbs.TOOL_VERB.size(),
+		"the HUD shows one slot per authored tool, neither more nor fewer")
 	for tool_id: StringName in HudFormat.slot_order():
 		assert_true(Verbs.TOOL_VERB.has(tool_id), "'%s' comes from the canonical tool table" % tool_id)
 
@@ -18,7 +19,7 @@ func test_the_equipped_slot_is_distinguishable_without_any_colour() -> void:
 
 func test_each_tool_shows_its_select_number() -> void:
 	assert_true(HudFormat.slot_label(&"lasso", false).contains("1"), "lasso is slot 1")
-	assert_true(HudFormat.slot_label(&"rifle", false).contains("4"), "rifle is slot 4")
+	assert_true(HudFormat.slot_label(&"pistol", false).contains("2"), "pistol is slot 2")
 
 func test_the_lasso_reads_as_having_no_ammunition_not_as_an_empty_magazine() -> void:
 	# docs/weapon-tool-kit.md: the lasso has "no ammunition". An absent magazine
@@ -35,10 +36,10 @@ func test_an_empty_firearm_says_empty_in_words() -> void:
 	assert_true(line.contains("reload"), "and it says what to do about it")
 
 func test_a_loaded_firearm_shows_what_is_left_and_the_capacity() -> void:
-	assert_eq(HudFormat.ammo_line(&"rifle", 3, 4), "RIFLE  3 / 4", "loaded and capacity are both shown")
+	assert_eq(HudFormat.ammo_line(&"pistol", 3, 6), "PISTOL  3 / 6", "loaded and capacity are both shown")
 
 func test_ammunition_above_capacity_cannot_be_displayed() -> void:
-	assert_eq(HudFormat.ammo_line(&"shotgun", 99, 2), "SHOTGUN  2 / 2",
+	assert_eq(HudFormat.ammo_line(&"pistol", 99, 2), "PISTOL  2 / 2",
 		"the readout is clamped rather than printing an impossible magazine")
 
 func test_low_health_says_low_in_words() -> void:

@@ -20,8 +20,6 @@ const TOOL_USE := &"tool_use"
 const TOOL_CANCEL := &"tool_cancel"
 const TOOL_LASSO := &"tool_lasso"
 const TOOL_PISTOL := &"tool_pistol"
-const TOOL_SHOTGUN := &"tool_shotgun"
-const TOOL_RIFLE := &"tool_rifle"
 const INTERACT := &"interact"
 const RELOAD := &"reload"
 const INTERVENTION := &"intervention"
@@ -31,7 +29,7 @@ const DIALOGUE_ADVANCE := &"dialogue_advance"
 const ALL: Array[StringName] = [
 	MOVE_LEFT, MOVE_RIGHT, JUMP,
 	TOOL_USE, TOOL_CANCEL,
-	TOOL_LASSO, TOOL_PISTOL, TOOL_SHOTGUN, TOOL_RIFLE,
+	TOOL_LASSO, TOOL_PISTOL,
 	INTERACT, RELOAD, INTERVENTION,
 	PAUSE, DIALOGUE_ADVANCE,
 ]
@@ -41,7 +39,7 @@ const ALL: Array[StringName] = [
 ## be added to one structure and forgotten in the other.
 const GROUPS: Array[Dictionary] = [
 	{"title": "Movement", "actions": [MOVE_LEFT, MOVE_RIGHT, JUMP]},
-	{"title": "Tools", "actions": [TOOL_USE, TOOL_CANCEL, TOOL_LASSO, TOOL_PISTOL, TOOL_SHOTGUN, TOOL_RIFLE]},
+	{"title": "Tools", "actions": [TOOL_USE, TOOL_CANCEL, TOOL_LASSO, TOOL_PISTOL]},
 	{"title": "Interaction", "actions": [INTERACT, RELOAD, INTERVENTION]},
 	{"title": "System", "actions": [PAUSE, DIALOGUE_ADVANCE]},
 ]
@@ -54,8 +52,6 @@ const LABELS: Dictionary = {
 	TOOL_CANCEL: "Lasso release / cancel",
 	TOOL_LASSO: "Equip lasso",
 	TOOL_PISTOL: "Equip pistol",
-	TOOL_SHOTGUN: "Equip shotgun",
-	TOOL_RIFLE: "Equip rifle",
 	INTERACT: "Interact",
 	RELOAD: "Reload",
 	INTERVENTION: "Divine intervention",

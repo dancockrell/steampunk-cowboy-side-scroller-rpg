@@ -7,15 +7,17 @@ func test_every_tool_maps_to_a_known_verb() -> void:
 		assert_true(Verbs.is_known(Verbs.TOOL_VERB[tool_id]),
 			"tool '%s' maps to a verb in the known set" % tool_id)
 
-func test_all_four_tools_are_present() -> void:
-	for tool_id: StringName in [&"lasso", &"pistol", &"shotgun", &"rifle"]:
+func test_both_authored_tools_are_present() -> void:
+	for tool_id: StringName in [&"lasso", &"pistol"]:
 		assert_true(Verbs.TOOL_VERB.has(tool_id), "tool '%s' has an authored verb" % tool_id)
 
-func test_the_three_firearms_emit_distinct_verbs() -> void:
+func test_every_tool_emits_its_own_distinct_verb() -> void:
+	# Reads the real map rather than a hardcoded tool list, so adding or cutting
+	# a tool cannot leave this checking a roster that no longer exists.
 	var seen: Array[StringName] = []
-	for tool_id: StringName in [&"pistol", &"shotgun", &"rifle"]:
+	for tool_id: StringName in Verbs.TOOL_VERB:
 		var verb: StringName = Verbs.TOOL_VERB[tool_id]
-		assert_false(seen.has(verb), "firearm '%s' has its own physical verb, not a shared one" % tool_id)
+		assert_false(seen.has(verb), "tool '%s' has its own physical verb, not a shared one" % tool_id)
 		seen.append(verb)
 
 func test_an_invented_verb_is_not_known() -> void:

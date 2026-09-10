@@ -8,8 +8,8 @@ Planning target: one polished 20–30 minute first-play route. Duration and room
 | --- | --- | --- |
 | Entry and broken bridge | 3–4 min | Read temple silhouette; move/jump; a chained sequence of lasso swings across a genuine vertical chasm; an optional 2.5D depth-layer alcove reached through an archway, offering an alternate route and a hidden reward; a side counterweight that teaches pull without gating the crossing |
 | Gallery of vessels | 4–5 min | Teach ceramic tell; pistol bell interaction; first respectful/destructive choice |
-| Procession hall | 4–5 min | Mural guard; rifle far counterweight; combine precision and lasso |
-| Burial works | 4–6 min | Pit assembler; shotgun plug; preserve or disturb funerary objects; resettable puzzle |
+| Procession hall | 4–5 min | Mural guard; a far counterweight only the pistol can reach; combine precision and lasso |
+| Burial works | 4–6 min | Pit assembler; a stone plug the rope hauls out; preserve or disturb funerary objects; resettable puzzle |
 | Keeper's shrine and return gate | 5–8 min | Judgment dialogue, alliance and optional romance beat; Recall to Clay demonstration or physical alternative; exit |
 
 These five beats may share room scenes. No extra boss family is required: climax recombines existing enemies and mechanisms. One checkpoint at entry and safe shrines/before the final combination; final placement follows playtesting.
@@ -20,7 +20,7 @@ Michael's slice animation families; one temple tileset and layered room kit; thr
 
 ## Exit criteria
 
-- A new player completes the authored route with all four tools and at least one combined physical puzzle; no developer console is needed.
+- A new player completes the authored route using both tools (D21) and at least one combined physical puzzle; no developer console is needed.
 - Three emergence families read as transformations of scenery, not unrelated spawn effects. No invisible/offscreen unavoidable first hit.
 - Lasso misses, destroyed anchors, ammo exhaustion, pause, defeat and checkpoint reload have recoverable outcomes.
 - The goddess reacts to at least one recorded behavior; alliance, defer/decline and romance decisions are distinct. Critical progression survives refusal.

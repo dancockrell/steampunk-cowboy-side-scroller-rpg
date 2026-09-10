@@ -16,7 +16,7 @@ Sources refer to existing room/clip/marker IDs. The encounter owns one actor at 
 
 ## ToolTarget and ToolDefinition
 
-ToolTarget: `id`, `room_id`, nonempty `allowed_verbs`, `interaction_point`, `reset_policy`, optional `anchor_break_rule`. ToolDefinition: `id` (lasso/pistol/shotgun/rifle), `verbs`, `range_px`, `commit_ms`, `recovery_ms`, `ammo_policy`, clip IDs, optional rope/force fields. Numeric bounds and tuning are introduced through the controller test scene, not invented in data now.
+ToolTarget: `id`, `room_id`, nonempty `allowed_verbs`, `interaction_point`, `reset_policy`, optional `anchor_break_rule`. ToolDefinition: `id` (lasso/pistol, per D21), `verbs`, `range_px`, `commit_ms`, `recovery_ms`, `ammo_policy`, clip IDs, optional rope/force fields. Numeric bounds and tuning are introduced through the controller test scene, not invented in data now.
 
 ## Heroine and RelationshipState
 

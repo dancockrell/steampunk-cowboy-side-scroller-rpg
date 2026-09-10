@@ -17,8 +17,6 @@ signal ammo_changed(tool_id: StringName, loaded: int, capacity: int)
 const TOOL_ACTIONS := {
 	&"tool_lasso": &"lasso",
 	&"tool_pistol": &"pistol",
-	&"tool_shotgun": &"shotgun",
-	&"tool_rifle": &"rifle",
 }
 
 ## Depth-aware: every query below reads the CURRENT plane's bits from
@@ -123,9 +121,9 @@ func _commit_firearm(definition: ToolDefinition) -> void:
 	if not receiver.receive(hit):
 		tool_rejected.emit(definition.id, "wrong tool for %s" % receiver.receiver_id)
 
-## Casts for the first receiver in range. A shotgun casts several rays inside its
-## cone; every other tool casts one. Rubble and terrain block the shot, so a
-## blocked throw or shot cannot reach through a wall.
+## Casts for the first receiver in range. A tool with a spread cone casts several
+## rays inside it; every other tool casts one. Rubble and terrain block the shot,
+## so a blocked throw or shot cannot reach through a wall.
 func _query_receiver(direction: Vector2, definition: ToolDefinition) -> HitReceiver:
 	var space := get_world_2d().direct_space_state
 	var rays: Array[Vector2] = [direction]

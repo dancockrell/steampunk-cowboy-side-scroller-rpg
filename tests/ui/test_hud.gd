@@ -22,32 +22,35 @@ func after_each() -> void:
 		hud.free()
 		hud = null
 
-func test_the_hud_shows_a_slot_for_each_of_the_four_tools() -> void:
+func test_the_hud_shows_a_slot_for_each_tool() -> void:
 	for tool_id: StringName in HudFormat.slot_order():
 		assert_ne(hud.slot_text(tool_id), "", "'%s' has a slot on screen" % tool_id)
 
 func test_only_the_equipped_tool_is_marked() -> void:
-	hud.set_equipped(&"shotgun")
-	assert_eq(hud.slot_text(&"shotgun"), HudFormat.slot_label(&"shotgun", true), "the shotgun is marked")
+	hud.set_equipped(&"lasso")
+	assert_eq(hud.slot_text(&"lasso"), HudFormat.slot_label(&"lasso", true), "the lasso is marked")
 	for tool_id: StringName in HudFormat.slot_order():
-		if tool_id == &"shotgun":
+		if tool_id == &"lasso":
 			continue
 		assert_eq(hud.slot_text(tool_id), HudFormat.slot_label(tool_id, false),
 			"'%s' is not also marked" % tool_id)
 
 func test_switching_tools_moves_the_mark() -> void:
 	hud.set_equipped(&"pistol")
-	hud.set_equipped(&"rifle")
+	hud.set_equipped(&"lasso")
 	assert_eq(hud.slot_text(&"pistol"), HudFormat.slot_label(&"pistol", false),
 		"the previous tool stops being marked, so two tools never look equipped at once")
 
-func test_the_ammo_readout_follows_the_equipped_firearm() -> void:
+func test_the_ammo_readout_follows_the_equipped_tool() -> void:
+	# With one firearm in the kit the stale-value risk is the readout keeping the
+	# pistol's magazine after switching to a tool that has none, which is the
+	# same defect the old two-firearm version of this test was aimed at.
 	hud.set_ammo(&"pistol", 4, 6)
-	hud.set_ammo(&"rifle", 1, 4)
 	hud.set_equipped(&"pistol")
 	assert_eq(hud.ammo_text(), "PISTOL  4 / 6", "the equipped pistol's magazine is shown")
-	hud.set_equipped(&"rifle")
-	assert_eq(hud.ammo_text(), "RIFLE  1 / 4", "switching shows the rifle's, not a stale pistol count")
+	hud.set_equipped(&"lasso")
+	assert_false(hud.ammo_text().contains("4 / 6"),
+		"switching away does not leave the pistol's count on screen")
 
 func test_equipping_the_lasso_shows_no_magazine() -> void:
 	hud.set_equipped(&"lasso")

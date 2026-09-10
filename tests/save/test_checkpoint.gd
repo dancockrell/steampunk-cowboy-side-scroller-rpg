@@ -16,7 +16,7 @@ func after_each() -> void:
 
 func _sample_snapshot() -> CheckpointSnapshot:
 	return services.capture(&"shrine_gallery", &"gallery_of_vessels", &"spawn_shrine",
-		{"health": 4, "facing": 1}, {"pistol": 6, "shotgun": 2, "rifle": 4})
+		{"health": 4, "facing": 1}, {"pistol": 6})
 
 func test_capture_produces_every_required_field() -> void:
 	var snapshot := _sample_snapshot()

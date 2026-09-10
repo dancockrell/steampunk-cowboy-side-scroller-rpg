@@ -117,10 +117,10 @@ func test_every_tool_target_in_the_starting_room_declares_at_least_one_verb() ->
 	assert_true(checked >= 2, "the starting room contains its authored tool targets, found %d" % checked)
 
 ## docs/vertical-slice.md spreads verb teaching across beats rather than
-## cramming every tool into room one: the bridge teaches the lasso, the
-## gallery adds the pistol, the procession hall the rifle, burial works the
-## shotgun. This sweeps every authored room in the route, not just the first,
-## which is the honest scope for "every tool has a use somewhere on the route".
+## cramming everything into room one: the bridge teaches the lasso's swing, the
+## gallery its pull and the pistol, and the later rooms combine them. This
+## sweeps every authored room in the route, not just the first, which is the
+## honest scope for "every tool has a use somewhere on the route".
 const _ROOM_SCENES: Array[String] = [
 	"res://levels/temple_clay_dead/entry_bridge.tscn",
 	"res://levels/temple_clay_dead/gallery_of_vessels.tscn",
@@ -128,7 +128,7 @@ const _ROOM_SCENES: Array[String] = [
 	"res://levels/temple_clay_dead/burial_works.tscn",
 ]
 
-func test_the_four_tools_each_have_a_target_somewhere_on_the_route() -> void:
+func test_both_tools_each_have_a_target_somewhere_on_the_route() -> void:
 	var verbs_present: Array[StringName] = []
 	for scene_path: String in _ROOM_SCENES:
 		var packed: PackedScene = load(scene_path)
@@ -142,7 +142,7 @@ func test_the_four_tools_each_have_a_target_somewhere_on_the_route() -> void:
 				if not verbs_present.has(verb):
 					verbs_present.append(verb)
 		instance.free()
-	for verb: StringName in [Verbs.PRECISION_HIT, Verbs.FORCE_HIT, Verbs.LONG_PRECISION_HIT, Verbs.PULL, Verbs.SWING]:
+	for verb: StringName in [Verbs.PRECISION_HIT, Verbs.PULL, Verbs.SWING]:
 		assert_true(verbs_present.has(verb),
 			"the route gives verb '%s' something to act on somewhere" % verb)
 

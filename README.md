@@ -1,8 +1,8 @@
 # Steampunk Cowboy Side Scroller RPG
 
-A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and three firearms, and becoming the chosen champion and lover of adult goddesses and nymphs.
+A side-view steampunk-cowboy platformer about entering beautiful, haunted temples, solving their physical mysteries with a lasso and a pistol, and becoming the chosen champion and lover of adult goddesses and nymphs.
 
-**Stage: the full vertical-slice route is playable, with Michael's first admitted sprite.** All five authored beats exist and connect end to end: Entry Bridge, Gallery of Vessels, Procession Hall, Burial Works, and the Keeper's Shrine and Return Gate. Movement, all four tools, all three emergence families, checkpoints scoped correctly across rooms, the relationship arc, the Keeper's dialogue and her intervention are implemented and tested. Reaching the return gate completes the route.
+**Stage: the full vertical-slice route is playable, with Michael's first admitted sprite.** All five authored beats exist and connect end to end: Entry Bridge, Gallery of Vessels, Procession Hall, Burial Works, and the Keeper's Shrine and Return Gate. Movement, both tools, all three emergence families, checkpoints scoped correctly across rooms, the relationship arc, the Keeper's dialogue and her intervention are implemented and tested. Reaching the return gate completes the route.
 
 Almost everything you see is still a **placeholder**: every creature, prop and room element is a flat coloured polygon. Michael's run cycle is the one exception -- a real sprite, extracted from an existing candidate sheet and admitted per [the asset register](docs/production/asset-register.md), not a claim of finished art. [F01 reference recovery](docs/decisions.md) is still open, and idle/jump/lasso/firearm poses, every enemy, the Keeper and the environment remain graybox.
 
@@ -41,7 +41,7 @@ bash tools/check-gdscript.sh    # every .gd file parses
 
 `tools/gate.sh` reports three states, not two: passed, failed, and NOT CHECKED. A run that skipped something never prints "all passed".
 
-To play it, open `project.godot` and press F5. `scenes/main.tscn` is the main scene. Move with A/D or the arrow keys, jump with Space, W or Up, 1-4 select lasso/pistol/shotgun/rifle, left mouse uses the equipped tool, right mouse releases the rope, E interacts, R reloads, Q calls the intervention, Escape pauses.
+To play it, open `project.godot` and press F5. `scenes/main.tscn` is the main scene. Move with A/D or the arrow keys, jump with Space, W or Up, 1-2 select lasso/pistol, left mouse uses the equipped tool, right mouse releases the rope, E interacts, R reloads, Q calls the intervention, Escape pauses.
 
 **The checks in this repository have not been run on the pinned 4.4.1 editor**, which is not installed on the machine they were run on. They ran on 4.7.2 against a throwaway copy so the pin was not silently upgraded, and every run prints the version it used. See [gameplay checks](docs/validation/gameplay-checks.md) for what is verified, what each instrument cannot catch, and what is not checked at all.
 

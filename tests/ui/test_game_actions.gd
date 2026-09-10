@@ -11,7 +11,7 @@ func test_every_offered_action_exists_in_the_project() -> void:
 	for action: StringName in GameActions.ALL:
 		if not InputMap.has_action(action):
 			missing.append(String(action))
-	assert_eq(GameActions.ALL.size(), 14, "the project defines fourteen gameplay actions")
+	assert_eq(GameActions.ALL.size(), 12, "the project defines twelve gameplay actions")
 	assert_eq(", ".join(missing), "", "the UI must not offer an action the project does not define")
 
 func test_every_project_action_is_offered_for_remapping() -> void:
@@ -23,7 +23,7 @@ func test_every_project_action_is_offered_for_remapping() -> void:
 	for action: StringName in GameActions.project_actions():
 		declared.append(String(action))
 	declared.sort()
-	assert_true(declared.size() >= 14, "the running project really does declare its actions (%d found)" % declared.size())
+	assert_true(declared.size() >= 12, "the running project really does declare its actions (%d found)" % declared.size())
 	assert_eq(offered, declared, "an action the project defines must have a remap row, not be silently skipped")
 
 func test_the_groups_cover_every_action_exactly_once() -> void:

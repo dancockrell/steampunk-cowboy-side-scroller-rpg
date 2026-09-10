@@ -16,7 +16,9 @@ enum AmmoPolicy {
 @export var verb: StringName
 @export var range_px: float = 0.0
 ## Time held on target before the shot commits. Zero commits immediately, which
-## is what makes the pistol feel quick and the rifle feel deliberate.
+## is what makes the pistol feel quick; a tool authored with aim time feels
+## deliberate instead. Neither shipped tool uses it, so the aim path is proved
+## by an injected definition in tests/tools/test_tool_state_machine.gd.
 @export var aim_ms: int = 0
 @export var commit_ms: int = 100
 @export var recovery_ms: int = 150
@@ -53,34 +55,7 @@ static func build(tuning: Tuning) -> Dictionary:
 	pistol.magazine = tuning.pistol_magazine
 	pistol.damage = 1
 
-	var shotgun := ToolDefinition.new()
-	shotgun.id = &"shotgun"
-	shotgun.display_name = "Shotgun"
-	shotgun.verb = Verbs.FORCE_HIT
-	shotgun.range_px = tuning.shotgun_range_px
-	shotgun.commit_ms = tuning.shotgun_commit_ms
-	shotgun.recovery_ms = tuning.shotgun_recovery_ms
-	shotgun.reload_ms = tuning.shotgun_reload_ms
-	shotgun.magazine = tuning.shotgun_magazine
-	shotgun.damage = 2
-	shotgun.force = tuning.shotgun_knockback_px_s
-	shotgun.cone_degrees = tuning.shotgun_cone_degrees
-
-	var rifle := ToolDefinition.new()
-	rifle.id = &"rifle"
-	rifle.display_name = "Rifle"
-	rifle.verb = Verbs.LONG_PRECISION_HIT
-	rifle.range_px = tuning.rifle_range_px
-	rifle.aim_ms = tuning.rifle_aim_ms
-	rifle.commit_ms = tuning.rifle_commit_ms
-	rifle.recovery_ms = tuning.rifle_recovery_ms
-	rifle.reload_ms = tuning.rifle_reload_ms
-	rifle.magazine = tuning.rifle_magazine
-	rifle.damage = 2
-
 	return {
 		&"lasso": lasso,
 		&"pistol": pistol,
-		&"shotgun": shotgun,
-		&"rifle": rifle,
 	}

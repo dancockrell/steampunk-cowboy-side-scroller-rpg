@@ -20,6 +20,6 @@ Each offer names its conditions and allows accept, defer or decline. A previous 
 
 ## Mechanical aid
 
-One slice intervention: **Recall to Clay**, a provisional ability that returns one eligible weakened dead creature to its vessel, briefly clearing a route. Eligibility, cooldown, active-use limit and duration are explicit tuning fields. It cannot resolve every boss or replace the four tools. Michael gets a visible preview and clear unavailable feedback. Only one major manifestation occupies the action field at a time; portraits may carry dialogue outside combat.
+One slice intervention: **Recall to Clay**, a provisional ability that returns one eligible weakened dead creature to its vessel, briefly clearing a route. Eligibility, cooldown, active-use limit and duration are explicit tuning fields. It cannot resolve every boss or replace the tools themselves. Michael gets a visible preview and clear unavailable feedback. Only one major manifestation occupies the action field at a time; portraits may carry dialogue outside combat.
 
 If the player declines alliance, the temple remains completable using a slower physical tool route. Relationship flags and intervention access save with checkpoint progress; a reload cannot re-award the offer or erase a recorded refusal.

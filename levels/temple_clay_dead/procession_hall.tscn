@@ -102,7 +102,7 @@ position = Vector2(720, 288)
 script = ExtResource("7_encounter")
 source = SubResource("mural_source")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="MuralEncounter"]
 
@@ -120,7 +120,7 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("3_target")
 receiver_id = &"procession_far_counterweight"
-allowed_verbs = Array[StringName]([&"long_precision_hit"])
+allowed_verbs = Array[StringName]([&"precision_hit"])
 puzzle_id = &"procession_far_counterweight"
 reward_event_id = &"procession_far_weight_released"
 
@@ -258,7 +258,7 @@ position = Vector2(1900, 288)
 script = ExtResource("7_encounter")
 source = SubResource("mural_source_2")
 spawn_point_path = NodePath("SpawnPoint")
-source_allowed_verbs = Array[StringName]([&"force_hit"])
+source_allowed_verbs = Array[StringName]([&"pull"])
 
 [node name="SpawnPoint" type="Marker2D" parent="SecondMuralEncounter"]
 

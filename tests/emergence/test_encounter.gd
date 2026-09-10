@@ -236,7 +236,7 @@ func test_destroying_the_source_records_a_different_fact_from_defeating_the_crea
 	encounter.trigger()
 	_drive(encounter, 0.3)
 
-	assert_true(_prop_of(encounter).receive(Hit.new(&"shotgun", Verbs.FORCE_HIT, Vector2.ZERO)),
+	assert_true(_prop_of(encounter).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)),
 		"the authored verb destroys the disguised source")
 	assert_eq(encounter.result(), Encounter.RESULT_COLLATERAL,
 		"destroying the source is its own outcome, not a defeat")
@@ -267,7 +267,7 @@ func test_the_collateral_fact_is_authored_rather_than_inferred_from_the_rubble()
 	collateral.bind(services)
 	collateral.trigger()
 	_drive(collateral, 0.3)
-	_prop_of(collateral).receive(Hit.new(&"shotgun", Verbs.FORCE_HIT, Vector2.ZERO))
+	_prop_of(collateral).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO))
 
 	assert_eq(combat.presentation_clip(), collateral.presentation_clip(),
 		"both endings look the same on the floor")
@@ -279,7 +279,7 @@ func test_the_source_cannot_be_destroyed_once_the_creature_is_out() -> void:
 	encounter.bind(services)
 	encounter.trigger()
 	_drive(encounter, FULL_EMERGENCE_S)
-	assert_false(_prop_of(encounter).receive(Hit.new(&"shotgun", Verbs.FORCE_HIT, Vector2.ZERO)),
+	assert_false(_prop_of(encounter).receive(Hit.new(&"lasso", Verbs.PULL, Vector2.ZERO)),
 		"a spent shell is scenery; it cannot resolve an encounter that is already active")
 	assert_eq(encounter.phase(), EncounterBook.Phase.ACTIVE, "the fight continues")
 

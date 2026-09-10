@@ -7,18 +7,16 @@ extends RefCounted
 
 const PULL := &"pull"
 const PRECISION_HIT := &"precision_hit"
-const FORCE_HIT := &"force_hit"
-const LONG_PRECISION_HIT := &"long_precision_hit"
 const SWING := &"swing"
 
-const ALL: Array[StringName] = [PULL, PRECISION_HIT, FORCE_HIT, LONG_PRECISION_HIT, SWING]
+const ALL: Array[StringName] = [PULL, PRECISION_HIT, SWING]
 
-## Which tool emits which verb. One tool, one physical verb.
+## Which tool emits which verb. The kit is two tools (D21): the lasso, whose
+## verb depends on what it catches -- an anchor gives SWING, anything else
+## gives PULL -- and the pistol.
 const TOOL_VERB := {
 	&"lasso": PULL,
 	&"pistol": PRECISION_HIT,
-	&"shotgun": FORCE_HIT,
-	&"rifle": LONG_PRECISION_HIT,
 }
 
 static func is_known(verb: StringName) -> bool:

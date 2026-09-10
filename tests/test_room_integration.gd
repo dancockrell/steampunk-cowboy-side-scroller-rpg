@@ -60,8 +60,8 @@ func _hit(tool_id: StringName, verb: StringName) -> Hit:
 func test_the_right_tool_moves_a_mechanism_and_the_wrong_one_does_not() -> void:
 	var bell := _target("Bell")
 	assert_not_null(bell, "the bell exists in the room")
-	assert_false(bell.receive(_hit(&"shotgun", Verbs.FORCE_HIT)),
-		"a shotgun blast does not ring a bell that asks for a precise shot")
+	assert_false(bell.receive(_hit(&"lasso", Verbs.PULL)),
+		"a rope yank does not ring a bell that asks for a precise shot")
 	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 0,
 		"and the refused hit did not advance the mechanism")
 	assert_true(bell.receive(_hit(&"pistol", Verbs.PRECISION_HIT)), "the pistol rings it")
@@ -72,7 +72,7 @@ func test_a_refused_hit_explains_itself_rather_than_doing_nothing_silently() -> 
 	var reasons: Array[String] = []
 	var bell := _target("Bell")
 	bell.hit_rejected.connect(func(_h: Hit, reason: String) -> void: reasons.append(reason))
-	bell.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	bell.receive(_hit(&"lasso", Verbs.PULL))
 	assert_eq(reasons.size(), 1, "the refusal is reported")
 	assert_eq(reasons[0], "wrong tool", "with a reason the feedback layer can show")
 
@@ -94,7 +94,7 @@ func test_destroying_the_sacred_urn_is_a_fact_the_keeper_witnesses() -> void:
 	main.services.relationships.judgment_delivered.connect(
 		func(_h: StringName, _e: StringName, line: String) -> void: lines.append(line))
 
-	assert_true(urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT)), "it can be destroyed")
+	assert_true(urn.receive(_hit(&"lasso", Verbs.PULL)), "it can be destroyed")
 	assert_true(urn.is_destroyed(), "and it records that it was")
 	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
 	assert_true(state.has_witnessed(&"urn_destroyed"), "the Keeper saw it happen")
@@ -110,7 +110,7 @@ func test_preserving_the_urn_is_its_own_fact_not_merely_the_absence_of_breaking_
 
 func test_a_destroyed_urn_is_never_also_reported_as_preserved() -> void:
 	var urn := _target("SacredUrn") as SacredObject
-	urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	urn.receive(_hit(&"lasso", Verbs.PULL))
 	room.report_exit_facts()
 	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
 	assert_true(state.has_witnessed(&"urn_destroyed"), "she saw the destruction")
@@ -127,7 +127,7 @@ func test_pulling_the_counterweight_opens_the_gate() -> void:
 func test_a_checkpoint_rolls_back_everything_that_happened_after_it() -> void:
 	main.world_root.save_checkpoint(&"test_checkpoint", player.global_position)
 	var urn := _target("SacredUrn") as SacredObject
-	urn.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	urn.receive(_hit(&"lasso", Verbs.PULL))
 	_target("Bell").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
 	assert_true(urn.is_destroyed(), "the urn was destroyed after the checkpoint")
 
@@ -149,7 +149,7 @@ func test_a_reloaded_room_puts_the_gate_back_where_the_save_says() -> void:
 func test_progress_made_before_a_checkpoint_survives_the_rollback() -> void:
 	_target("Bell").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
 	main.world_root.save_checkpoint(&"test_checkpoint", player.global_position)
-	_target("StonePlug").receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	_target("StonePlug").receive(_hit(&"lasso", Verbs.PULL))
 	main.world_root.reload_checkpoint()
 	assert_eq(int(main.services.puzzles.get_field(&"gallery_bell", &"uses", 0)), 1,
 		"work done before the checkpoint is kept")
@@ -176,7 +176,7 @@ func test_the_shrine_captures_a_checkpoint_the_game_can_actually_reload() -> voi
 
 func test_a_mechanism_can_always_be_reset() -> void:
 	var plug := _target("StonePlug")
-	plug.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	plug.receive(_hit(&"lasso", Verbs.PULL))
 	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 1, "it moved")
 	plug.reset_mechanism()
 	assert_eq(int(main.services.puzzles.get_field(&"gallery_stone_plug", &"uses", 0)), 0,
@@ -690,15 +690,15 @@ func test_the_full_route_connects_all_three_authored_rooms() -> void:
 	assert_eq(room.room_id, &"gallery_of_vessels", "starts in the Gallery")
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
 	assert_eq(room.room_id, &"procession_hall", "reaches the Procession Hall")
-	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	_target("FarCounterweight").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
 	assert_true((room.get_node_or_null(^"ExitGate") as MechanismGate).is_open(),
-		"the rifle, not the lasso, opens the far counterweight in this room")
+		"the pistol, not the lasso, opens the far counterweight in this room")
 	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
 	assert_eq(room.room_id, &"burial_works", "and finally the Burial Works")
 
 func _in_burial_works() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	_target("FarCounterweight").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
 	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks")
 	assert_eq(room.room_id, &"burial_works", "reached Burial Works")
 
@@ -776,19 +776,20 @@ func test_burial_works_every_puzzle_id_is_actually_unique() -> void:
 			"puzzle_id '%s' is not reused by a second target" % target.puzzle_id)
 		seen.append(target.puzzle_id)
 
-func test_burial_works_has_a_pit_encounter_and_a_shotgun_plug() -> void:
+func test_burial_works_has_a_pit_encounter_and_a_plug_the_rope_hauls_out() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	var pit := room.get_node_or_null(^"PitEncounter") as Encounter
 	assert_not_null(pit, "the burial pit encounter exists")
 	assert_true(pit.is_content_valid(), "and its authored source validates: %s" % str(pit.content_errors()))
-	assert_false(_target("StonePlug").receive(_hit(&"lasso", Verbs.PULL)),
-		"the plug asks for force, not a pull")
-	assert_true(_target("StonePlug").receive(_hit(&"shotgun", Verbs.FORCE_HIT)), "the shotgun moves it")
+	assert_false(_target("StonePlug").receive(_hit(&"pistol", Verbs.PRECISION_HIT)),
+		"a bullet does not shift a stone plug")
+	assert_true(_target("StonePlug").receive(_hit(&"lasso", Verbs.PULL)),
+		"roping it and hauling does")
 
 func test_the_funerary_site_can_be_preserved_or_disturbed_and_the_keeper_notices_either_way() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	var site := _target("FunerarySite") as SacredObject
 	assert_not_null(site, "the funerary site exists")
 	room.report_exit_facts()
@@ -798,9 +799,9 @@ func test_the_funerary_site_can_be_preserved_or_disturbed_and_the_keeper_notices
 
 func test_disturbing_the_funerary_site_is_a_distinct_fact_from_preserving_it() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	var site := _target("FunerarySite") as SacredObject
-	site.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	site.receive(_hit(&"lasso", Verbs.PULL))
 	room.report_exit_facts()
 	var state := main.services.relationships.state(&"keeper_of_the_clay_dead")
 	assert_true(state.has_witnessed(&"burial_identity_lost"), "disturbing it is witnessed")
@@ -810,9 +811,9 @@ func test_disturbing_the_funerary_site_is_a_distinct_fact_from_preserving_it() -
 
 func test_the_plug_puzzle_can_always_be_reset() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	var plug := _target("StonePlug")
-	plug.receive(_hit(&"shotgun", Verbs.FORCE_HIT))
+	plug.receive(_hit(&"lasso", Verbs.PULL))
 	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 1, "it moved")
 	plug.reset_mechanism()
 	assert_eq(int(main.services.puzzles.get_field(&"burial_stone_plug", &"uses", 0)), 0,
@@ -825,7 +826,7 @@ func test_the_burial_pit_gap_is_bridged_by_a_chain_of_swing_anchors_not_left_imp
 	# chained and well within lasso range, both fixes that and gives the
 	# player more than one hook to use, matching the bridge's redesign.
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	var anchor_names := [&"PitGapSwingAnchorA", &"PitGapSwingAnchorB"]
 	var anchors: Array[ToolTarget] = []
 	for anchor_name: StringName in anchor_names:
@@ -1028,8 +1029,8 @@ func test_a_room_transition_always_resets_depth_to_near() -> void:
 
 func _in_keepers_shrine() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 	assert_eq(room.room_id, &"keepers_shrine", "reached the Keeper's Shrine")
 
 func test_the_keepers_shrine_is_genuinely_bigger_than_it_was() -> void:
@@ -1115,18 +1116,18 @@ func test_the_full_route_connects_all_five_authored_rooms() -> void:
 	assert_eq(room.room_id, &"gallery_of_vessels", "starts in the Gallery, having already crossed the bridge")
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
 	assert_eq(room.room_id, &"procession_hall", "reaches the Procession Hall")
-	_target("FarCounterweight").receive(_hit(&"rifle", Verbs.LONG_PRECISION_HIT))
+	_target("FarCounterweight").receive(_hit(&"pistol", Verbs.PRECISION_HIT))
 	assert_true((room.get_node_or_null(^"ExitGate") as MechanismGate).is_open(),
-		"the rifle, not the lasso, opens the far counterweight in this room")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
+		"the pistol, not the lasso, opens the far counterweight in this room")
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
 	assert_eq(room.room_id, &"burial_works", "reaches the Burial Works")
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 	assert_eq(room.room_id, &"keepers_shrine", "and finally the Keeper's Shrine and return gate")
 
 func test_the_keepers_shrine_has_its_own_major_checkpoint() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 	var shrine := room.get_node_or_null(^"MajorShrine") as CheckpointShrine
 	assert_not_null(shrine, "the final room has its own checkpoint")
 	shrine._on_body_entered(player)
@@ -1136,8 +1137,8 @@ func test_the_keepers_shrine_has_its_own_major_checkpoint() -> void:
 
 func test_recall_to_clay_is_demonstrable_in_the_final_room() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 
 	var e := room.get_node_or_null(^"FinalSentinelEncounter") as Encounter
 	assert_not_null(e, "the final room has an encounter to demonstrate the intervention on")
@@ -1159,8 +1160,8 @@ func test_recall_to_clay_is_demonstrable_in_the_final_room() -> void:
 
 func test_reaching_the_return_gate_marks_the_route_complete_exactly_once() -> void:
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 
 	assert_false(main.world_root.is_route_complete(), "not complete until the gate is actually reached")
 	var completions: Array[bool] = []
@@ -1182,8 +1183,8 @@ func test_mark_route_complete_is_idempotent_on_its_own_not_only_via_the_exits_ow
 	# once-and-only-once contract every reward and judgment in this game
 	# already goes through the ledger for.
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 	var completions: Array[bool] = []
 	main.world_root.route_completed.connect(func() -> void: completions.append(true))
 	main.world_root.mark_route_complete()
@@ -1195,8 +1196,8 @@ func test_the_return_gate_is_never_blocked_by_a_refused_alliance_or_romance() ->
 	# docs/gameplay-pillars.md: "An optional romance refusal must not block the
 	# temple's exit." Declining both, explicitly, and reaching the gate anyway.
 	_walk_through_gate_and_exit("Counterweight", "ExitToProcessionHall")
-	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"rifle", Verbs.LONG_PRECISION_HIT)
-	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"shotgun", Verbs.FORCE_HIT)
+	_walk_through_gate_and_exit("FarCounterweight", "ExitToBurialWorks", &"pistol", Verbs.PRECISION_HIT)
+	_walk_through_gate_and_exit("StonePlug", "ExitToShrine", &"lasso", Verbs.PULL)
 	main.services.relationships.resolve_alliance_offer(&"keeper_of_the_clay_dead", false)
 	main.services.relationships.resolve_romance_offer(&"keeper_of_the_clay_dead", &"decline")
 	var gate := room.get_node_or_null(^"ReturnGate") as RoomExit
