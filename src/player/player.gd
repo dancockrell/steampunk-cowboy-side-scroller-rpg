@@ -14,7 +14,7 @@ signal hurt(from_direction: Vector2)
 signal facing_changed(facing: int)
 signal depth_changed(layer: Depth.Layer)
 
-enum TraversalMode { GROUNDED, SWINGING }
+enum TraversalMode { GROUNDED, SWINGING, CLIMBING }
 
 ## Authored body box. 64x96 export cell with a visible body near 48x72 and a
 ## foot pivot at the bottom edge (docs/art-direction.md).
@@ -37,6 +37,10 @@ var traversal_mode: TraversalMode = TraversalMode.GROUNDED
 ## not there: this drives the physics collision_mask, not just a visual cue.
 var current_depth: Depth.Layer = Depth.Layer.NEAR
 
+## Ladders, trellises and chains currently overlapping Michael. A list rather
+## than a flag because two surfaces can overlap at a junction, and leaving one
+## of them must not cancel a climb that the other still supports.
+var _climb_zones: Array[Climbable] = []
 var _invulnerable_s: float = 0.0
 var _hurt_stun_s: float = 0.0
 var _input_enabled: bool = true
@@ -79,10 +83,13 @@ func _physics_process(delta: float) -> void:
 	_invulnerable_s = maxf(0.0, _invulnerable_s - delta)
 	_hurt_stun_s = maxf(0.0, _hurt_stun_s - delta)
 
-	if traversal_mode == TraversalMode.SWINGING:
-		_physics_swinging(delta)
-	else:
-		_physics_grounded(delta)
+	match traversal_mode:
+		TraversalMode.SWINGING:
+			_physics_swinging(delta)
+		TraversalMode.CLIMBING:
+			_physics_climbing(delta)
+		_:
+			_physics_grounded(delta)
 
 	if tools != null:
 		tools.step(delta)
@@ -115,6 +122,14 @@ func _physics_grounded(delta: float) -> void:
 		move_axis = Input.get_axis(&"move_left", &"move_right")
 		jump_pressed = Input.is_action_just_pressed(&"jump")
 		jump_held = Input.is_action_pressed(&"jump")
+		# Reaching for a ladder takes precedence over jumping off the floor, or
+		# standing at the foot of one and pressing up just hops. HELD rather
+		# than just-pressed: a single-frame edge is missed by anyone who was
+		# already holding up as they arrived at the ladder, which is most
+		# people running at one, and it is how ladders work everywhere else.
+		if can_climb() and (jump_held or Input.is_action_pressed(&"move_down")):
+			begin_climb()
+			return
 
 	velocity = solver.step(delta, move_axis, jump_pressed, jump_held, is_on_floor())
 	_update_facing(move_axis)
@@ -138,6 +153,71 @@ func _physics_swinging(delta: float) -> void:
 		next_velocity = next_velocity.slide(collision.get_normal())
 	velocity = next_velocity
 	_update_facing(signf(velocity.x))
+
+## True while any ladder, trellis or chain overlaps Michael on his own plane.
+func can_climb() -> bool:
+	for zone: Climbable in _climb_zones:
+		if is_instance_valid(zone):
+			return true
+	return false
+
+func enter_climb_zone(zone: Climbable) -> void:
+	if not _climb_zones.has(zone):
+		_climb_zones.append(zone)
+
+func exit_climb_zone(zone: Climbable) -> void:
+	_climb_zones.erase(zone)
+	if traversal_mode == TraversalMode.CLIMBING and not can_climb():
+		end_climb(0.0)
+
+func begin_climb() -> void:
+	if traversal_mode == TraversalMode.SWINGING:
+		end_swing()
+	traversal_mode = TraversalMode.CLIMBING
+	velocity = Vector2.ZERO
+	solver.velocity = Vector2.ZERO
+	solver.rising_from_jump = false
+
+## Leaves the ladder. `push` is a sideways shove so stepping off clears the
+## surface instead of re-entering it on the very next frame.
+func end_climb(push: float) -> void:
+	if traversal_mode != TraversalMode.CLIMBING:
+		return
+	traversal_mode = TraversalMode.GROUNDED
+	velocity.x = push
+	solver.velocity = velocity
+
+func _physics_climbing(delta: float) -> void:
+	var up := 0.0
+	var side := 0.0
+	if _input_enabled and _hurt_stun_s <= 0.0:
+		up = Input.get_axis(&"jump", &"move_down")
+		side = Input.get_axis(&"move_left", &"move_right")
+
+	# Stepping sideways off a ladder is how you dismount, and it is worth more
+	# than a dedicated button: the player is already holding the direction they
+	# want to end up going.
+	if not is_zero_approx(side):
+		end_climb(side * tuning.climb_dismount_push_px_s)
+		_update_facing(side)
+		return
+
+	velocity = Vector2(0.0, up * tuning.climb_speed_px_s)
+	move_and_slide()
+	# Climbing off the top: floor underfoot AND actually above the ladder.
+	# Testing only for floor dismounted him at the FOOT of the ladder, where
+	# there is also floor -- so he mounted and stepped off on alternate frames
+	# and climbed exactly zero pixels while genuinely being in climbing mode.
+	if is_on_floor() and up < 0.0 and global_position.y <= _highest_climb_top() + 8.0:
+		end_climb(0.0)
+
+## Top edge of the highest ladder currently overlapping, in world space.
+func _highest_climb_top() -> float:
+	var top := INF
+	for zone: Climbable in _climb_zones:
+		if is_instance_valid(zone):
+			top = minf(top, zone.vertical_span().x)
+	return top
 
 func _update_facing(axis: float) -> void:
 	if is_zero_approx(axis):

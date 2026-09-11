@@ -70,6 +70,10 @@ def beat(bid, x, y, intent, *elements):
             suffix = bid if n == 0 else "%s_%d" % (bid, n)
             name = "DrownedSupplicant" if bid == "z9b" else "Urn_" + suffix
             N("urn", name, ex, ey, puzzle="urn_" + suffix)
+        elif kind == "ladder":
+            N("ladder", "Ladder_%s_%d" % (bid, len([q for q in nodes if q[0] == "ladder"
+              and q[1].startswith("Ladder_" + bid)])), ex, ey, h=rest[0],
+              kind_name=rest[1] if len(rest) > 1 else "ladder")
         elif kind == "shrine":
             N("shrine", "Shrine_%s" % bid, ex, ey, checkpoint="cistern_%s" % bid)
         elif kind == "spawn":
@@ -85,6 +89,7 @@ def beat(bid, x, y, intent, *elements):
 
 import cistern_beats
 cistern_beats.author(beat, FLOOR_Y)
+cistern_beats.author_climbs(beat, FLOOR_Y)
 
 FAMILY = {"jar": ("ceramic", "ceramic_sentinel"),
           "mural": ("inscription", "painted_procession_guard"),
@@ -110,6 +115,7 @@ ext = [
     ("Script", "res://src/world/hazard.gd", "9_hazard"),
     ("Script", "res://src/world/sacred_object.gd", "10_sacred"),
     ("Script", "res://src/world/room_exit.gd", "11_exit"),
+    ("Script", "res://src/world/climbable.gd", "13_climb"),
     ("PackedScene", "res://levels/temple_clay_dead/burial_works.tscn", "12_burial"),
 ]
 
@@ -119,6 +125,7 @@ for t, p, i in ext:
     L.append('[ext_resource type="%s" path="%s" id="%s"]' % (t, p, i))
 L.append("")
 for sid, sz in [("small_box", "28, 28"), ("trigger_box", "64, 160"),
+                ("ladder_box", "52, 100"),
                 ("gate_box", "32, 112"), ("anchor_box", "30, 24"),
                 ("supplicant_box", "34, 44")]:
     L.append('[sub_resource type="RectangleShape2D" id="%s"]\nsize = Vector2(%s)\n' % (sid, sz))
@@ -253,6 +260,17 @@ for kind, name, x, y, kw in nodes:
         L.append('[node name="Graybox" type="Polygon2D" parent="%s"]' % name)
         L.append('color = Color(0.88, 0.84, 0.72, 1)')
         L.append('polygon = %s\n' % poly(17, 22))
+    elif kind == "ladder":
+        L.append('[node name="%s" type="Area2D" parent="."]' % name)
+        L.append('position = Vector2(%d, %d)' % (x, y))
+        L.append('script = ExtResource("13_climb")')
+        L.append('surface_kind = &"%s"\n' % kw["kind_name"])
+        L.append('[node name="Shape" type="CollisionShape2D" parent="%s"]' % name)
+        L.append('shape = SubResource("ladder_box")')
+        L.append('scale = Vector2(1, %f)\n' % (kw["h"] / 100.0))
+        L.append('[node name="Graybox" type="Polygon2D" parent="%s"]' % name)
+        L.append('color = Color(0.52, 0.40, 0.24, 1)')
+        L.append('polygon = %s\n' % poly(11, kw["h"] // 2))
     elif kind == "exit":
         pass
 

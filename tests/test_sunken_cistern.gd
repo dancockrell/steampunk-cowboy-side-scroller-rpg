@@ -307,3 +307,63 @@ func test_the_cistern_gives_the_keeper_a_supplicant_to_witness() -> void:
 	assert_not_null(supplicant, "there is a supplicant down here")
 	assert_eq(supplicant.preserved_event_id, &"supplicant_protected",
 		"leaving her alone is the fact the Keeper already has a line for")
+
+# --- ladders, trellises and chains ------------------------------------------
+
+func _climbables() -> Array[Climbable]:
+	var out: Array[Climbable] = []
+	for node: Node in _all(room):
+		var c := node as Climbable
+		if c != null:
+			out.append(c)
+	return out
+
+func test_every_vertical_region_has_a_climb_as_well_as_a_rope() -> void:
+	# The rope is the fast, expressive way up and it asks for timing. A temple
+	# that can ONLY be ascended by rope punishes a player who is bad at rope,
+	# which is the same complaint that produced the jump-reachability work.
+	var climbs := _climbables()
+	assert_true(climbs.size() >= 5,
+		"the cistern has climbable surfaces, found %d" % climbs.size())
+	var bounds := room.camera_bounds()
+	var left := 0
+	var right := 0
+	for c: Climbable in climbs:
+		if c.global_position.x < bounds.size.x * 0.5:
+			left += 1
+		else:
+			right += 1
+	assert_true(left >= 2 and right >= 2,
+		"both halves of the level can be climbed (%d west, %d east)" % [left, right])
+
+func test_no_ladder_is_crossed_by_a_floor_slab() -> void:
+	# The defect this exists for, found by driving a real climb: a ladder that
+	# passes through a solid platform is a ladder you climb two pixels and stop
+	# on, and it looks identical to a broken climbing mechanic from outside.
+	# Four of the first six ladders authored here had a floor through them.
+	var terrain := room.get_node_or_null(^"Terrain") as GrayboxTerrain
+	assert_not_null(terrain, "the terrain exists")
+	var blocked: Array[String] = []
+	for c: Climbable in _climbables():
+		var span := c.vertical_span()
+		for rect: Rect2 in terrain.platforms:
+			var overlaps_x: bool = c.global_position.x > rect.position.x - 13.0 \
+				and c.global_position.x < rect.end.x + 13.0
+			var overlaps_y: bool = rect.end.y > span.x and rect.position.y < span.y
+			if overlaps_x and overlaps_y:
+				blocked.append("%s at x=%d crossed by a slab at y=%d"
+					% [c.name, int(c.global_position.x), int(rect.position.y)])
+				break
+	assert_eq(blocked.size(), 0, "no climbable is blocked by terrain: %s" % ", ".join(blocked))
+
+func test_a_climbable_declares_what_it_is_made_of() -> void:
+	# Presentation only -- the simulation treats a vine exactly like an iron
+	# ladder -- but a level that names its surfaces can look like a temple
+	# rather than a set of identical brown rectangles.
+	var kinds: Array[StringName] = []
+	for c: Climbable in _climbables():
+		assert_true(c.surface_kind != &"", "'%s' says what it is" % c.name)
+		if not kinds.has(c.surface_kind):
+			kinds.append(c.surface_kind)
+	assert_true(kinds.size() >= 3,
+		"the cistern uses more than one kind of climbable surface, found %s" % str(kinds))

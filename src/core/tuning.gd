@@ -62,6 +62,14 @@ extends Resource
 ## to gain height -- see SwingSolver.climb.
 @export var swing_climb_speed_px_s: float = 260.0
 
+@export_group("Climbing")
+## Ladders, trellises, chains and scaffolds. Deliberately slower than running:
+## a climb is the patient way up, the rope is the fast one.
+@export var climb_speed_px_s: float = 130.0
+## A small sideways shove when stepping off a ladder, so dismounting clears the
+## surface instead of re-entering it on the next frame.
+@export var climb_dismount_push_px_s: float = 120.0
+
 @export_group("Firearms")
 @export var pistol_range_px: float = 220.0
 @export var pistol_commit_ms: int = 90

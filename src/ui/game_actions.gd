@@ -14,6 +14,7 @@ extends RefCounted
 ## pause menu has to let go of it explicitly.
 
 const MOVE_LEFT := &"move_left"
+const MOVE_DOWN := &"move_down"
 const MOVE_RIGHT := &"move_right"
 const JUMP := &"jump"
 const TOOL_USE := &"tool_use"
@@ -27,7 +28,7 @@ const PAUSE := &"pause"
 const DIALOGUE_ADVANCE := &"dialogue_advance"
 
 const ALL: Array[StringName] = [
-	MOVE_LEFT, MOVE_RIGHT, JUMP,
+	MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN, JUMP,
 	TOOL_USE, TOOL_CANCEL,
 	TOOL_LASSO, TOOL_PISTOL,
 	INTERACT, RELOAD, INTERVENTION,
@@ -38,7 +39,7 @@ const ALL: Array[StringName] = [
 ## and every group member is in ALL; the test checks both, so a new action cannot
 ## be added to one structure and forgotten in the other.
 const GROUPS: Array[Dictionary] = [
-	{"title": "Movement", "actions": [MOVE_LEFT, MOVE_RIGHT, JUMP]},
+	{"title": "Movement", "actions": [MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN, JUMP]},
 	{"title": "Tools", "actions": [TOOL_USE, TOOL_CANCEL, TOOL_LASSO, TOOL_PISTOL]},
 	{"title": "Interaction", "actions": [INTERACT, RELOAD, INTERVENTION]},
 	{"title": "System", "actions": [PAUSE, DIALOGUE_ADVANCE]},
@@ -47,6 +48,7 @@ const GROUPS: Array[Dictionary] = [
 const LABELS: Dictionary = {
 	MOVE_LEFT: "Move left",
 	MOVE_RIGHT: "Move right",
+	MOVE_DOWN: "Climb down / drop",
 	JUMP: "Jump",
 	TOOL_USE: "Aim / use equipped tool",
 	TOOL_CANCEL: "Lasso release / cancel",

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://src/world/room.gd" id="1_room"]
 [ext_resource type="Script" path="res://src/world/graybox_terrain.gd" id="2_terrain"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://src/world/hazard.gd" id="9_hazard"]
 [ext_resource type="Script" path="res://src/world/sacred_object.gd" id="10_sacred"]
 [ext_resource type="Script" path="res://src/world/room_exit.gd" id="11_exit"]
+[ext_resource type="Script" path="res://src/world/climbable.gd" id="13_climb"]
 [ext_resource type="PackedScene" path="res://levels/temple_clay_dead/burial_works.tscn" id="12_burial"]
 
 [sub_resource type="RectangleShape2D" id="small_box"]
@@ -18,6 +19,9 @@ size = Vector2(28, 28)
 
 [sub_resource type="RectangleShape2D" id="trigger_box"]
 size = Vector2(64, 160)
+
+[sub_resource type="RectangleShape2D" id="ladder_box"]
+size = Vector2(52, 100)
 
 [sub_resource type="RectangleShape2D" id="gate_box"]
 size = Vector2(32, 112)
@@ -3925,6 +3929,84 @@ shape = SubResource("anchor_box")
 [node name="Graybox" type="Polygon2D" parent="A_z11j_0"]
 color = Color(0.55, 0.75, 0.85, 1)
 polygon = PackedVector2Array(-15, -11, 15, -11, 15, 11, -15, 11)
+
+[node name="Ladder_z12a_0" type="Area2D" parent="."]
+position = Vector2(640, 680)
+script = ExtResource("13_climb")
+surface_kind = &"ladder"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12a_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 4.000000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12a_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -200, 11, -200, 11, 200, -11, 200)
+
+[node name="Ladder_z12b_0" type="Area2D" parent="."]
+position = Vector2(700, 1300)
+script = ExtResource("13_climb")
+surface_kind = &"trellis"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12b_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 3.400000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12b_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -170, 11, -170, 11, 170, -11, 170)
+
+[node name="Ladder_z12c_0" type="Area2D" parent="."]
+position = Vector2(1440, 1580)
+script = ExtResource("13_climb")
+surface_kind = &"chain"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12c_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 4.200000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12c_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -210, 11, -210, 11, 210, -11, 210)
+
+[node name="Ladder_z12d_0" type="Area2D" parent="."]
+position = Vector2(2740, 740)
+script = ExtResource("13_climb")
+surface_kind = &"scaffold"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12d_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 3.800000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12d_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -190, 11, -190, 11, 190, -11, 190)
+
+[node name="Ladder_z12e_0" type="Area2D" parent="."]
+position = Vector2(4020, 2180)
+script = ExtResource("13_climb")
+surface_kind = &"ladder"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12e_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 2.600000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12e_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -130, 11, -130, 11, 130, -11, 130)
+
+[node name="Ladder_z12f_0" type="Area2D" parent="."]
+position = Vector2(980, 2180)
+script = ExtResource("13_climb")
+surface_kind = &"trellis"
+
+[node name="Shape" type="CollisionShape2D" parent="Ladder_z12f_0"]
+shape = SubResource("ladder_box")
+scale = Vector2(1, 3.200000)
+
+[node name="Graybox" type="Polygon2D" parent="Ladder_z12f_0"]
+color = Color(0.52, 0.40, 0.24, 1)
+polygon = PackedVector2Array(-11, -160, 11, -160, 11, 160, -11, 160)
 
 [node name="ExitToBurialWorks" type="Area2D" parent="."]
 position = Vector2(4980, 2640)

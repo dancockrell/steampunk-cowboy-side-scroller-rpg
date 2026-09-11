@@ -294,3 +294,37 @@ The mouse now only steers the aim for `MOUSE_AIM_TIMEOUT_S` after it is actually
 moved or clicked, and the controller starts stale, so a session that never
 touches a mouse never aims with one. Same position after the fix: switch scores
 52, anchor 352, and `_find_lasso_anchor` returns `cistern_kiln_bar`.
+
+## Climbing (11 Sep 2026)
+
+Ladders, trellises and chains (`src/world/climbable.gd`). Dan's direction:
+climbing should not be only the rope. The rope is the fast expressive route and
+asks for timing; a ladder is the patient one and asks for nothing.
+
+```
+godot --headless --fixed-fps 60 --path <copy> --script res://tools/verify_climbing.gd --quit-after 420
+```
+
+**192 px of ascent in 90 physics ticks**, against a theoretical 195 at the tuned
+130 px/s.
+
+`--fixed-fps 60` is required rather than decoration. The check counts frames in
+`_process` while climbing happens in `_physics_process`, and headless with no
+vsync runs render frames far faster than physics ticks: the same climb measured
+75, 77 and 99 px on three consecutive runs before the rate was pinned. All of
+that wobble was the instrument.
+
+Three defects were found getting this to work, and only the first was in the
+mechanic:
+
+1. `_physics_process` never routed CLIMBING anywhere -- the edit adding it to
+   the dispatch silently did not apply, so a climbing player fell through to the
+   grounded branch, which re-entered the climb and returned, every frame. He sat
+   perfectly still in a valid climbing state.
+2. The "climbed off the top" test was `is_on_floor()` alone, which is also true
+   at the FOOT of a ladder, so he mounted and dismounted on alternate frames.
+   It now also requires being above the ladder's own top edge.
+3. Four of the first six ladders had a floor slab through them. A ladder that
+   passes through solid terrain is one you climb two pixels and stop on, and
+   from outside it is indistinguishable from a broken mechanic.
+   `test_no_ladder_is_crossed_by_a_floor_slab` now fails on that.

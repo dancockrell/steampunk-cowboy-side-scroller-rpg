@@ -68,7 +68,7 @@ prompt.
 
 **Michael identity block** (verbatim from `michael_run_right_v001`):
 
-> Consistent design in every cell: mature rugged face, dark swept hair, brown broad-brim cowboy hat, short brown leather duster with split tails, ivory shirt, dark teal waistcoat, brass mechanical forearm bracer, dark trousers, brown boots, pistol holster, coiled lasso on belt.
+> Consistent design in every cell: mature rugged face, dark swept hair, brown broad-brim cowboy hat with brass goggles pushed up on the band, short brown leather duster with split tails, ivory shirt, dark teal waistcoat, brass mechanical forearm bracer, dark trousers, brown boots, pistol holster, coiled lasso on belt.
 
 **Keeper identity block** (verbatim from `keeper_portrait_expressions_v001`):
 

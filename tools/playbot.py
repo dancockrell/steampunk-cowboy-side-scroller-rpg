@@ -360,25 +360,27 @@ class Nav:
                                           math.dist((nx, ny), (bx, by)) * 0.9 + 150.0,
                                           k, holds[len(holds) // 2])
 
-                        # Upward edges, which no amount of pendulum gives you.
-                        # Hauling the rope in raises Michael toward the anchor,
-                        # so a ledge ABOVE the launch is reachable when the
-                        # measured apex clears it and the ledge sits near the
-                        # anchor rather than out at the end of the arc.
-                        if self.climb_apex > 40.0:
-                            for j in self._near(anx, any_, self.reach):
-                                if j == i:
-                                    continue
-                                bx, by = self.nodes[j]
-                                rise = ny - by
-                                if rise <= 40.0 or rise > self.climb_apex:
-                                    continue
-                                if by < any_ - 24.0:
-                                    continue        # never above the anchor
-                                if abs(bx - anx) > rope * 1.1:
-                                    continue        # out at the end of the arc
-                                self._add(i, j, "climb",
-                                          rise * 1.2 + 170.0, k, "climb")
+                            # Upward edges, which no amount of pendulum gives
+                            # you. Hauling the rope in raises Michael toward the
+                            # anchor, so a ledge ABOVE the launch is reachable
+                            # when the measured apex clears it and the ledge
+                            # sits near the anchor rather than out at the end of
+                            # the arc. Measured apex: best +362px, and +155px on
+                            # the 45 rides that held the climb.
+                            if self.climb_apex > 40.0:
+                                for j in self._near(anx, anyy, self.reach):
+                                    if j == i:
+                                        continue
+                                    bx, by = self.nodes[j]
+                                    rise = ny - by
+                                    if rise <= 40.0 or rise > self.climb_apex:
+                                        continue
+                                    if by < anyy - 24.0:
+                                        continue      # never above the anchor
+                                    if abs(bx - anx) > rope * 1.1:
+                                        continue      # out at the end of the arc
+                                    self._add(i, j, "climb",
+                                              rise * 1.2 + 170.0, k, "climb")
 
     def nearest(self, p):
         best, bd = -1, 1e18

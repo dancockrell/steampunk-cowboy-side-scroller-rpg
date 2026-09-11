@@ -1341,3 +1341,82 @@ def author(beat, FLOOR_Y):
         ("ledge", 72, -168, 60), ("ledge", 0, -224, 60), ("ledge", 72, -280, 60),
         ("ledge", 0, -336, 60), ("ledge", 72, -392, 60), ("ledge", 0, -448, 60),
         ("ledge", 72, -504, 60), ("anchor", 160, -260))
+
+
+def author_climbs(beat, FLOOR_Y):
+    """Ladders, trellises and chains.
+
+    Added after the rope was measured and found to be the only way up in this
+    level. A temple you can only ascend by lasso punishes a player who is bad at
+    lasso, and the rope is meant to be the fast expressive route, not the toll
+    gate. These are the patient way: slower than a swing, free of timing, and
+    always there.
+    """
+
+    beat("z12a", 640, 1000, """
+        An iron maintenance ladder in the shaft-side gap of the west wing,
+        running from the gallery floor up to the entry level in a clear
+        column -- it has to be a clear column, because a ladder that passes
+        through a floor slab is a ladder you climb two pixels and stop on. It is the first
+        thing in the cistern that goes up without asking anything of the player
+        at all -- no timing, no throw, no arc. A player who has just been
+        beaten by the entry-ledge swing can come down here, find the ladder, and
+        get back up to where they failed, which turns that swing from a wall
+        into something they can keep attempting. Slower than the rope by a wide
+        margin, and that is the trade it exists to offer.
+        """,
+        ("ladder", 0, -320, 400, "ladder"))
+
+    beat("z12b", 700, 1560, """
+        A rotted trellis, once used to dry reeds, spanning the gap between the
+        second and third gallery shelves. It is shorter than the ladder and
+        placed where the descent's rope line is hardest, so a player who does
+        not trust the staggered anchors at z3b has a way down the same stretch
+        of wall. Being a trellis rather than a ladder matters only to the eye;
+        the simulation treats every climbable surface identically, which is why
+        the level can afford to make each one look like something the temple
+        would actually contain.
+        """,
+        ("ladder", 0, -260, 340, "trellis"))
+
+    beat("z12c", 1440, 1880, """
+        A chain hanging the full depth of the shaft's western wall, from the
+        mid lip down to the rope line above the water. The shaft is the fastest
+        route through the cistern and, until now, the one most likely to kill
+        you: miss a swing and the drop is the whole level. The chain makes the
+        shaft climbable in both directions at walking pace, so it stops being a
+        commitment and becomes a choice between fast and safe, which is what
+        every other vertical section here already offered.
+        """,
+        ("ladder", 0, -300, 420, "chain"))
+
+    beat("z12d", 2740, 1020, """
+        A scaffold ladder up the face of the kiln stack, on the cool western
+        end where the vents are not. The stack was authored to be fought upward
+        through and its shortcut from the roof inverts every ambush in it; this
+        gives a third way, which is to climb it slowly on the safe side and
+        arrive at the top with ammunition and health intact. It deliberately
+        stops one tier short of the top, so the last shelf still has to be
+        earned by rope or by jump.
+        """,
+        ("ladder", 0, -280, 380, "scaffold"))
+
+    beat("z12e", 4020, 2360, """
+        A short ladder out of the eastern water onto the tier the winch fight
+        spills onto. This is the one place in the cistern where a player can
+        arrive with no health, no plan and a creature behind them -- knocked off
+        the tier into the shallows -- and the swim back used to mean crossing
+        the shards at z8g and climbing the stack again. Being able to get
+        straight back up to where you fell is not generosity; it is what stops
+        one bad moment costing five minutes.
+        """,
+        ("ladder", 0, -180, 260, "ladder"))
+
+    beat("z12f", 980, 2420, """
+        A trellis on the west face of the water, reaching from the shallows up
+        to the lower galleries. It closes the last place in the level where
+        falling meant a long walk: the western floor. With this, every one of
+        the cistern's four vertical regions has both a rope route and a climb
+        route, which was the point of adding climbing at all.
+        """,
+        ("ladder", 0, -240, 320, "trellis"))
