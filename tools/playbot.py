@@ -97,6 +97,7 @@ class Nav:
         self.samples = swing_samples
         self.swing_measured = bool(swing_samples)
         self.grab_dx, self.grab_dy = 0.0, 0.0
+        self.climb_apex = 0.0
         self.rope_lo, self.rope_hi = 0.0, 0.0
         if self.swing_measured:
             gdx = sorted(s["side"] * (s["grab"][0] - s["from"][0]) for s in swing_samples)
@@ -105,6 +106,15 @@ class Nav:
             self.grab_dx = gdx[len(gdx) // 2]
             self.grab_dy = gdy[len(gdy) // 2]
             self.rope_lo, self.rope_hi = ropes[0], ropes[-1]
+            # How high the rope can actually put him, measured. A climb lifts
+            # Michael and he then falls back to whatever is underneath, so the
+            # LANDING is at or below the launch and says nothing about whether a
+            # ledge above is reachable. The apex does. Taken at the 80th
+            # percentile of measured climbs rather than the best single one, so
+            # the graph believes in a height most climbs reach and not a fluke.
+            apexes = sorted(-s["apex_dy"] for s in swing_samples
+                            if s.get("apex_dy") is not None and s["apex_dy"] < 0)
+            self.climb_apex = apexes[int(len(apexes) * 0.8)] if len(apexes) >= 8 else 0.0
             self.sbucket = defaultdict(list)
             for s in swing_samples:
                 key = (int(round(s["ax"] / self.TOL_ANCHOR)),
@@ -349,6 +359,26 @@ class Nav:
                                 self._add(i, j, "swing",
                                           math.dist((nx, ny), (bx, by)) * 0.9 + 150.0,
                                           k, holds[len(holds) // 2])
+
+                        # Upward edges, which no amount of pendulum gives you.
+                        # Hauling the rope in raises Michael toward the anchor,
+                        # so a ledge ABOVE the launch is reachable when the
+                        # measured apex clears it and the ledge sits near the
+                        # anchor rather than out at the end of the arc.
+                        if self.climb_apex > 40.0:
+                            for j in self._near(anx, any_, self.reach):
+                                if j == i:
+                                    continue
+                                bx, by = self.nodes[j]
+                                rise = ny - by
+                                if rise <= 40.0 or rise > self.climb_apex:
+                                    continue
+                                if by < any_ - 24.0:
+                                    continue        # never above the anchor
+                                if abs(bx - anx) > rope * 1.1:
+                                    continue        # out at the end of the arc
+                                self._add(i, j, "climb",
+                                          rise * 1.2 + 170.0, k, "climb")
 
     def nearest(self, p):
         best, bd = -1, 1e18
@@ -676,7 +706,7 @@ class Bot:
             tgt = self.nav.nodes[step["node"]]
             move = step["move"]
 
-            if move == "swing":
+            if move in ("swing", "climb"):
                 at = tuple(st["pos"])
                 st, used, why = self._do_swing(step)
                 elapsed += used / 60.0
@@ -885,6 +915,12 @@ def main():
     ap.add_argument("--out", default="playbot_out")
     ap.add_argument("--port", type=int, default=PORT)
     ap.add_argument("--host", default=HOST)
+    ap.add_argument("--room", default=ROOM,
+                    help="scene path of the room to play or audit")
+    ap.add_argument("--audit", action="store_true",
+                    help="build the graph and report reachability, then stop. "
+                         "No play, no goals -- for rooms that have no authored "
+                         "route through them yet.")
     ap.add_argument("--swing-model", default="swing_model.json",
                     help="the measured envelope from tools/calibrate_swing.py")
     args = ap.parse_args()
@@ -911,7 +947,7 @@ def main():
 
     s = socket.create_connection((args.host, args.port), timeout=30)
     g = Game(s)
-    g.send(cmd="load_room", scene=ROOM)
+    g.send(cmd="load_room", scene=args.room)
     level = g.send(cmd="level")
     level["encounters"] = g.send(cmd="state").get("encounters", [])
 
@@ -933,6 +969,16 @@ def main():
     print("reachable from entry: %d of %d spots (%.0f%%)" % (
         len(nav.reachable(start)), len(nav.nodes),
         100.0 * len(nav.reachable(start)) / len(nav.nodes)))
+
+    if args.audit:
+        start = nav.nearest((90, 620))
+        reach = nav.reachable(start)
+        orphans = len(nav.nodes) - len(reach)
+        print("AUDIT %s: %d spots, %d reachable (%.0f%%), %d orphaned" % (
+            args.room.split("/")[-1], len(nav.nodes), len(reach),
+            100.0 * len(reach) / max(1, len(nav.nodes)), orphans))
+        g.send(cmd="quit")
+        return
 
     bot = Bot(g, nav, shots, trace=args.trace)
 

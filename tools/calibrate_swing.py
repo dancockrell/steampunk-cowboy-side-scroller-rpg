@@ -74,16 +74,24 @@ class Game:
 
 
 def _ride_climb(g, side):
-    """Hold jump and haul the rope in, then release near the top of the arc."""
+    """Hold jump and haul the rope in, reporting the highest point reached.
+
+    The apex is the measurement that matters and the first version of this file
+    threw it away. A climb genuinely lifts Michael 200px; he then releases and
+    falls back to whatever is underneath, so the LANDING is at or below where he
+    started and the model concluded swings cannot climb. What a navigation graph
+    needs to know is how high the rope can put him, because that is what decides
+    whether a ledge up there is reachable.
+    """
     best_y = None
     for i in range(CLIMB_FRAMES):
         st = g.send(cmd="act", n=1, press=["jump"])
         if not st["swinging"]:
-            return None
+            return None if best_y is None else (i + 1, best_y)
         y = st["pos"][1]
         if best_y is None or y < best_y:
             best_y = y
-    return CLIMB_FRAMES
+    return CLIMB_FRAMES, best_y
 
 
 def _ride_auto(g, side):
@@ -96,13 +104,17 @@ def _ride_auto(g, side):
     if the arc never came round.
     """
     prev_vy = None
+    best_y = None
     for i in range(MAX_RIDE):
         st = g.send(cmd="act", n=1, press=[])
         if not st["swinging"]:
             return None
+        y = st["pos"][1]
+        if best_y is None or y < best_y:
+            best_y = y
         vx, vy = st["vel"]
         if prev_vy is not None and prev_vy > 20.0 and vy <= 0.0 and vx * side > 40.0:
-            return i + 1
+            return i + 1, best_y
         prev_vy = vy
     return None
 
@@ -134,19 +146,31 @@ def one_trial(g, start, anchor, hold, reach):
         return None
 
     g.send(cmd="act", n=1, press=[], swing_at=list(anchor))
+    apex_y = None
     if hold == "climb":
-        held = _ride_climb(g, side)
-        if held is None:
+        got = _ride_climb(g, side)
+        if got is None:
             return None
+        held, apex_y = got
     elif hold == "auto":
-        held = _ride_auto(g, side)
-        if held is None:
+        got = _ride_auto(g, side)
+        if got is None:
             return None
+        held, apex_y = got
     else:
         held = hold
-        st = g.send(cmd="act", n=hold, press=[])
-        if not st["swinging"]:
-            return None                  # something ended the swing for us
+        # Stepped in chunks rather than one jump, so the apex is observable. A
+        # single act(n=hold) advances the whole ride with nothing sampled in
+        # between and the highest point is lost.
+        apex_y = st["pos"][1]
+        remaining = hold
+        while remaining > 0:
+            chunk = min(5, remaining)
+            st = g.send(cmd="act", n=chunk, press=[])
+            remaining -= chunk
+            if not st["swinging"]:
+                return None              # something ended the swing for us
+            apex_y = min(apex_y, st["pos"][1])
     st = g.send(cmd="act", n=1, press=[], release_swing=True)
     st = g.send(cmd="act", n=FLIGHT_FRAMES, press=[])
     end = tuple(st["pos"])
@@ -168,6 +192,10 @@ def one_trial(g, start, anchor, hold, reach):
         "end": [round(end[0]), round(end[1])],
         "dx": round(dx, 1),
         "dy": round(dy, 1),
+        # Highest point reached DURING the swing, relative to the launch. This
+        # is what says whether a ledge above is reachable; "dy" only says where
+        # he came to rest afterwards.
+        "apex_dy": round((apex_y - start[1]), 1) if apex_y is not None else None,
         # Anchor-relative, rope-normalised. `u` is forward along the run, so a
         # left-hand swing and its mirror image are the same sample.
         "ax": round(side * (anchor[0] - start[0]) / rope, 4),
@@ -217,6 +245,16 @@ def summarise(samples):
     ropes = [s["rope"] for s in moved]
     print("  forward travel px : p05 %+d  median %+d  p95 %+d  max %+d"
           % (pct(fwd, 0.05), pct(fwd, 0.5), pct(fwd, 0.95), max(fwd)))
+    apexes = [x["apex_dy"] for x in good if x.get("apex_dy") is not None]
+    if apexes:
+        a = sorted(apexes)
+        climbs = [x for x in good if x["mode"] == "climb" and x.get("apex_dy") is not None]
+        ca = sorted(x["apex_dy"] for x in climbs) if climbs else []
+        print("  APEX above launch : best %+d  median %+d  (this is what decides"
+              " whether a ledge above is reachable)" % (-a[0], -a[len(a) // 2]))
+        if ca:
+            print("  apex, climb rides : best %+d  median %+d  over %d rides"
+                  % (-ca[0], -ca[len(ca) // 2], len(ca)))
     print("  vertical px       : best %+d (up)  median %+d  p95 %+d (down)"
           % (min(dys), pct(dys, 0.5), pct(dys, 0.95)))
     print("  rope length px    : min %d  median %d  max %d"
